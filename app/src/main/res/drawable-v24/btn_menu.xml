@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- state_pressed true 클릭이 되었을 경우 해당 이미지를 넣어 줍니다.-->
+    <item android:drawable="@mipmap/btn_menu_pre" android:state_pressed="true"/>
+    <item android:drawable="@mipmap/btn_menu_normal"/>
+</selector>
