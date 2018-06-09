@@ -10,7 +10,7 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 
 /**
  * 18-05-25
- * 스케줄 메인 화면 프레그먼트 구성
+ * 스케줄 메인 하ㅗ면
  */
 public class ScheduleFragment extends BaseFragment {
 

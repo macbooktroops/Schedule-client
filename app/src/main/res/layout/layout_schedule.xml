@@ -12,6 +12,6 @@
         android:background="@color/calendar_bg_color"
         app:week_text_size="@integer/calendar_text_size"/>
 
-    <
+    
 
 </LinearLayout>
