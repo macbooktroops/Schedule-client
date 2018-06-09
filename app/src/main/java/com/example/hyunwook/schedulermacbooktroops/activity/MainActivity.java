@@ -1,9 +1,12 @@
 package com.example.hyunwook.schedulermacbooktroops.activity;
 
 
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,10 +14,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
 import com.example.hyunwook.schedulermacbooktroops.app.BaseActivity;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -32,6 +38,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private String[] mMonthText;
 
     private List<EventSet> mEventSets;
+
+    private BaseFragment mScheduleFragment;
 
     static final String TAG = MainActivity.class.getSimpleName();
     @Override
@@ -72,10 +80,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         initEventSetList();
     }
 
+    //RecyclerView 설정
     private void initEventSetList() {
+        mEventSets = new ArrayList<>();
+
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        manager.setOrientation(LinearLayoutManager.VERTICAL); //세로 배치
+
+        //item view가 추가/삭제/이동 할때 animation
+        DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setSupportsChangeAnimations(false); //비활성화
+
+        goScheduleFragment();
 
     }
 
+    //goto ScheduleView Fragment()
+    private void goScheduleFragment() {
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_NONE); //Fragment 에서 애니메이션 효과 없이..
+
+        if (mScheduleFragment == null) {
+            //get Instance ScheduleFragment...
+            mScheduleFragment = ScheduleFragment.getInstance();
+        }
+
+
+
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

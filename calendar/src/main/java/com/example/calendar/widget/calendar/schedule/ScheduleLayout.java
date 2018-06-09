@@ -1,0 +1,94 @@
+package com.example.calendar.widget.calendar.schedule;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.widget.FrameLayout;
+
+import com.example.calendar.R;
+
+import java.util.Calendar;
+import java.util.jar.Attributes;
+
+/**
+ * 18-05-25
+ * 스케줄 표시 레이아웃
+ * 실질적 표시
+ */
+public class ScheduleLayout extends FrameLayout {
+
+    static final String TAG = ScheduleLayout.class.getSimpleName();
+    private final int DEFAULT_MONTH = 0;
+    private final int DEFAULT_WEEK = 1;
+    private int mDefaultView;
+    private boolean mIsAutoChangeMonthRow;
+
+    private int mRowSize;
+    private int mMinDistance;
+    private int mAutoScrollDistance;
+
+    private int mCurrentSelectYear;
+    private int mCurrentSelectMonth;
+    private int mCurrentSelectDay;
+
+    private MonthCalendarView monthCalendar;
+    //터치 이벤트 처리
+    private GestureDetector mGestureDetector;
+
+    private ScheduleState mState;
+    public ScheduleLayout(Context context) {
+        this(context, null);
+    }
+
+    public ScheduleLayout(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public ScheduleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initAttrs(context.obtainStyledAttributes(attrs, R.styleable.ScheduleLayout));
+    }
+
+    //스케줄 사이즈 설정
+    public void initAttrs(TypedArray array) {
+        mDefaultView = array.getInt(R.styleable.ScheduleLayout_default_view, DEFAULT_MONTH);
+        mIsAutoChangeMonthRow = array.getBoolean(R.styleable.ScheduleLayout_auto_change_month_row, false);
+        array.recycle();
+
+        //스케줄 상태
+        mState = ScheduleState.OPEN;
+        mRowSize = getResources().getDimensionPixelSize(R.dimen.week_calendar_height);
+        mMinDistance = getResources().getDimensionPixelSize(R.dimen.calendar_min_distance);
+        mAutoScrollDistance = getResources().getDimensionPixelSize(R.dimen.auto_scroll_distance);
+
+        initDate();
+    }
+
+    //Date 얻기
+    private void initDate() {
+        Calendar calendar = Calendar.getInstance();
+        resetCurrentSelectDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        initGestureDetector();
+    }
+
+    //현재 선택한 날짜 재설정
+    private void resetCurrentSelectDate(int year, int month, int day) {
+        mCurrentSelectYear  = year;
+        mCurrentSelectMonth = month;
+        mCurrentSelectDay = day;
+
+        Log.d(TAG, "current day -->" + mCurrentSelectYear + "-" + mCurrentSelectMonth + "-" + mCurrentSelectDay);
+    }
+
+    private void initGestureDetector() {
+        mGestureDetector = new GestureDetector(getContext(), new OnScheduleScrollListener(this));
+    }
+
+    //캘린더 스크롤 시..
+    protected void onCalendarScroll(float distanceY) {
+        MonthView monthView = mC
+    }
+}

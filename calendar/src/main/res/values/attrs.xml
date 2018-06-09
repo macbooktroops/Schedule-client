@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="WeekView">
+        <attr name="week_text_color" format="color"/>
+        <attr name="week_text_size" format="integer"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="ScheduleLayout">
+        <attr name="default_view">
+            <enum name="month" value="0"/>
+            <enum name="week" value="1"/>
+        </attr>
+        <attr name="auto_change_month_row" format="boolean"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_alignWithParentIfMissing="true">
+
+    <com.example.calendar.widget.calendar.WeekView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/week_bar_height"
+        android:background="@color/calendar_bg_color"
+        app:week_text_size="@integer/calendar_text_size"/>
+
+    <
+
+</LinearLayout>
