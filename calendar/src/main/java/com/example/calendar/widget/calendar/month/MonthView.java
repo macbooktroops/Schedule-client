@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.calendar.R;
+import com.example.calendar.widget.calendar.CalendarUtils;
 
 import java.util.Calendar;
 import java.util.jar.Attributes;
@@ -43,8 +44,13 @@ public class MonthView extends View {
 
     private int mSelYear, mSelMonth, mSelDay; //선택한 연월
 
+    private int mColumnSize, mRowSize, mSelectCircleSize;
+
     private int mCurrYear, mCurrMonth, mCurrDay; //현재  연월일
     private DisplayMetrics mDisplayMetrics;
+
+    private int[][] mDaysText;
+    private OnMonthClickListener mDateClickListener;
 
     private GestureDetector mGestureDetector; //터치 이벤트처
     static final String TAG = MonthView.class.getSimpleName();
@@ -180,9 +186,81 @@ public class MonthView extends View {
         if (y > getHeight())
             return;
 
-        int row = y / mRow
+        int row = y / mRowSize;
+        Log.d(TAG, "doClickAction row -->" + y + "-" + mRowSize + "-" + row);
+        int column = x / mColumnSize;
+        Log.d(TAG, "doClickAction column --> " + x + "-" + mColumnSize + "-" + column);
+
+        column = Math.min(column, 6);
+        int clickYear = mSelYear, clickMonth = mSelMonth;
+
+        Log.d(TAG, "mDaysText value-->" + mDaysText[row][column]);
+        if (row == 0 ) {
+            Log.d(TAG, "doClickAction row 0 ..." );
+            if (mDaysText[row][column] >= 23) {
+                if (mSelMonth == 0) {
+                    Log.d(TAG, "doClickAction Selmonth =0");
+                    clickYear = mSelYear - 1;
+                    clickMonth = 11;
+                } else {
+                    Log.d(TAG, "doClickAction not selmonth - 0" + mSelMonth);
+                    clickYear = mSelYear;
+                    clickMonth = mSelMonth - 1;
+                }
+
+                if (mDateClickListener != null) {
+                    mDateClickListener.onClickLastMonth(clickYear, clickMonth, mDaysText[row][column]);
+                }
+            } else {
+                Log.d(TAG, "doClickAction clickThismonth");
+                clickThisMonth(clickYear, clickMonth, mDaysText[row][column]);
+            }
+        } else {
+            Log.d(TAG, "doClickAction row not 0..");
+            int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth);
+            Log.d(TAG, "monthDays --> " +monthDays);
+
+            int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth);
+            Log.d(TAG, "weekNumber --> " + weekNumber);
+
+            int nextMonthDays = 42 - monthDays - weekNumber + 1;
+
+            if (mDaysText[row][column] <= nextMonthDays && row >= 4) {
+                Log.d(TAG, "doClickAction click ..");
+                if (mSelMonth == 11) {
+                    clickYear = mSelYear + 1;
+                    clickMonth = 0;
+                } else {
+                    clickYear = mSelYear;
+                    clickMonth = mSelMonth + 1;
+                }
+                if (mDateClickListener != null) {
+                    mDateClickListener.onClickNextMonth(clickYear, clickMonth, mDaysText[row][column]);
+                }
+            } else {
+                clickThisMonth(clickYear, clickMonth, mDaysText[row][column]);
+            }
+        }
     }
 
+    /**
+     * 해당 날짜로 이동
+     */
+    public void clickThisMonth(int year, int month, int day) {
+        if (mDateClickListener != null) {
+            mDateClickListener.onClickThisMonth(year, month, day);
+        }
+        setSelectYearMonth(year, month, day);
+        invalidate();
+    }
 
+    /**
+     * 날짜 클릭 리스너
+     * @param dateClickListener
+     */
+
+    public void setOnDateClickListener(OnMonthClickListener dateClickListener) {
+        this.mDateClickListener = dateClickListener;
+    }
 
 }
