@@ -6,8 +6,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.example.calendar.R;
+import com.example.calendar.widget.calendar.month.MonthCalendarView;
+import com.example.calendar.widget.calendar.month.MonthView;
 
 import java.util.Calendar;
 import java.util.jar.Attributes;
@@ -19,11 +22,16 @@ import java.util.jar.Attributes;
  */
 public class ScheduleLayout extends FrameLayout {
 
+//    private MonthCalendarView monthView;
     static final String TAG = ScheduleLayout.class.getSimpleName();
     private final int DEFAULT_MONTH = 0;
     private final int DEFAULT_WEEK = 1;
     private int mDefaultView;
     private boolean mIsAutoChangeMonthRow;
+
+    private MonthCalendarView mvView;
+
+    private boolean mCurrentRowsIsSix = true;
 
     private int mRowSize;
     private int mMinDistance;
@@ -36,6 +44,9 @@ public class ScheduleLayout extends FrameLayout {
     private MonthCalendarView monthCalendar;
     //터치 이벤트 처리
     private GestureDetector mGestureDetector;
+
+    private RelativeLayout rlMonthCalendar;
+    private RelativeLayout rlScheduleList;
 
     private ScheduleState mState;
     public ScheduleLayout(Context context) {
@@ -87,8 +98,38 @@ public class ScheduleLayout extends FrameLayout {
         mGestureDetector = new GestureDetector(getContext(), new OnScheduleScrollListener(this));
     }
 
+
+    /**
+     * xml 로 부터 모든 뷰를 inflate 를 끝내고 실행.
+     * 대부분 이 함수에서는 각종 변수 초기화가 이루어짐.
+     * super 메소드에서는 아무것도하지않기 때문에 쓰지 않는다.
+     */
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        monthCalendar = (MonthCalendarView) findViewById(R.id.m)
+    }
+
     //캘린더 스크롤 시..
     protected void onCalendarScroll(float distanceY) {
-        MonthView monthView = mC
+        MonthView monthView = monthCalendar.getCurrentMonthView();
+        Log.d(TAG, "mcView getCurrentMonthView --> " + monthView);
+
+        distanceY = Math.min(distanceY, mAutoScrollDistance);
+        float calendarDistanceY = distanceY / (mCurrentRowsIsSix ? 5.0f : 4.0f);
+
+        int row = monthView.getWeekRow() -1;
+        Log.d(TAG, "onCalendarScroll row -->" + row);
+
+        int calendarTop = -row * mRowSize;
+
+        int scheduleTop = mRowSize;
+
+        float calendarY = rlMonthCalendar.getY() - calendarDistanceY * row;
+        calendarY = Math.min(calendarY, 0);
+        calendarY = Math.max(calendarY, calendarTop);
+        rlMonthCalendar.setY(calendarY);
+
+        float scheduleY = rlScheduleList.
     }
 }

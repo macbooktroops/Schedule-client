@@ -12,15 +12,13 @@ import android.view.View;
 
 import com.example.calendar.R;
 
-import java.util.jar.Attributes;
-
 /**
  * 18-05-25
  * 메인에 현재 날짜 표시해주는 뷰
  */
-public class WeekView extends View {
+public class WeekBarView extends View {
 
-    static final String TAG = WeekView.class.getSimpleName();
+    static final String TAG = WeekBarView.class.getSimpleName();
     private int mWeekTextColor;
     private int mWeekSize;
     private String[] mWeekString;
@@ -29,15 +27,15 @@ public class WeekView extends View {
     private DisplayMetrics mDisplayMetrics;
 
 
-    public WeekView(Context context) {
+    public WeekBarView(Context context) {
         this(context, null);
     }
 
-    public WeekView(Context context, AttributeSet attrs) {
+    public WeekBarView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WeekView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WeekBarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
     }
@@ -45,12 +43,12 @@ public class WeekView extends View {
 
     //주간 날짜 특징 설정
     private void initAttrs(Context context, AttributeSet attrs) {
-        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.WeekView);
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.WeekBarView);
 
         //날짜 표시 색깔
-        mWeekTextColor = array.getColor(R.styleable.WeekView_week_text_color, Color.parseColor("#d817b5"));
+        mWeekTextColor = array.getColor(R.styleable.WeekBarView_week_text_color, Color.parseColor("#d817b5"));
 
-        mWeekSize = array.getInteger(R.styleable.WeekView_week_text_size, 13);
+        mWeekSize = array.getInteger(R.styleable.WeekBarView_week_text_size, 13);
         mWeekString = context.getResources().getStringArray(R.array.calendar_week); //Sun~Saturday
 
         array.recycle();

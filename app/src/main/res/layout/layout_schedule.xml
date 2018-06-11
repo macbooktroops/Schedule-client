@@ -6,7 +6,7 @@
               android:layout_height="match_parent"
               android:layout_alignWithParentIfMissing="true">
 
-    <com.example.calendar.widget.calendar.WeekView
+    <com.example.calendar.widget.calendar.WeekBarView
         android:layout_width="match_parent"
         android:layout_height="@dimen/week_bar_height"
         android:background="@color/calendar_bg_color"

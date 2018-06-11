@@ -44,6 +44,7 @@ public class MonthView extends View {
 
     private int mSelYear, mSelMonth, mSelDay; //선택한 연월
 
+    private int mWeekRow;
     private int mColumnSize, mRowSize, mSelectCircleSize;
 
     private int mCurrYear, mCurrMonth, mCurrDay; //현재  연월일
@@ -255,12 +256,40 @@ public class MonthView extends View {
     }
 
     /**
+     * 현재 선택 년도 얻기
+     */
+    public int getSelectYear() {
+        return mSelYear;
+    }
+
+    /**
+     * 현재 선택 달 얻기
+     */
+    public int getSelectMonth() {
+        return mSelMonth;
+    }
+
+    /**
+     * 현재 선택 일 얻기
+     */
+    public int getSelectDay() {
+        return this.mSelDay;
+    }
+
+    //week of the current month
+    public int getWeekRow() {
+        return mWeekRow;
+    }
+    /**
      * 날짜 클릭 리스너
      * @param dateClickListener
      */
 
+
     public void setOnDateClickListener(OnMonthClickListener dateClickListener) {
         this.mDateClickListener = dateClickListener;
     }
+
+
 
 }

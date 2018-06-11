@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.v4.view.*;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.SparseArray;
 import android.widget.ViewFlipper;
 
 import com.example.calendar.R;
@@ -99,27 +100,55 @@ public class MonthCalendarView extends ViewPager implements OnMonthClickListener
 
         //새 페이지 선택
         @Override
-        public void onPageSelected(int position) {
+        public void onPageSelected(final int position) {
             Log.d(TAG, "onPageSelected");
             MonthView monthView = mMonthAdapter.getViews().get(getCurrentItem());
 
             if (monthView != null) {
-                monthView.clickThisMonth(monthView.getSelectYear(),);
-            }
+                monthView.clickThisMonth(monthView.getSelectYear(), monthView.getSelectMonth(), monthView.getSelectDay());
 
+                if (mOnCalendarClickListener != null) {
+                    //페이지 체인지
+                    mOnCalendarClickListener.onPageChange(monthView.getSelectYear(), monthView.getSelectMonth(), monthView.getSelectDay());
+                }
+            } else {
+                MonthCalendarView.this.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onPageSelected(position);
+                    }
+                }, 50);
+            }
         }
 
         /**
          * 스크롤 상태가 변경되면 호출됩니다.
          * 사용자가 드래그를 시작할 때, 호출기가 현재 페이지로 자동으로 이동하거나,
          * 완전히 중지 / 유휴 상태 일 때 검색하는 데 유용합니다.
+         * 변경된 페이지Position을 CallBack받을 수 있다.
          * @param state
          */
         @Override
         public void onPageScrollStateChanged(int state) {
             Log.d(TAG, "onPageScrollStateChanged");
         }
+    };
+
+
+    public SparseArray<MonthView> getMonthViews() {
+        Log.d(TAG, "getMonthViews --> " + mMonthAdapter.getViews());
+        return mMonthAdapter.getViews();
     }
 
+    public MonthView getCurrentMonthView() {
+        return getMonthViews().get(getCurrentItem());
+    }
+
+    /**
+     * 클릭 날짜 리스너
+     */
+    public void setOnCalendarClickListener(OnCalendarClickListener onCalendarClickListener) {
+        mOnCalendarClickListener = onCalendarClickListener;
+    }
 
 }
