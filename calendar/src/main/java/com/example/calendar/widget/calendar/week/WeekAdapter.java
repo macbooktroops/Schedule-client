@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 public class WeekAdapter extends PagerAdapter {
 
     static final String TAG = WeekAdapter.class.getSimpleName();
-    private SparseArray<WeekBarView> mViews;
+    private SparseArray<WeekView> mViews;
     private Context mContext;
     private TypedArray mArray;
     private WeekCalendarView mWeekCalendarView;
@@ -77,7 +77,7 @@ public class WeekAdapter extends PagerAdapter {
         container.removeView((View) object);
    }
 
-    public SparseArray<WeekBarView> getViews() {
+    public SparseArray<WeekView> getViews() {
         return mViews;
     }
 
@@ -85,8 +85,8 @@ public class WeekAdapter extends PagerAdapter {
         return mWeekCount;
     }
 
-    public WeekBarView instanceWeekView(int position) {
-        WeekBarView weekView = new WeekBarView(mContext, mArray, mStartDate.plusWeeks(position - mWeekCount /2));
+    public WeekView instanceWeekView(int position) {
+        WeekView weekView = new WeekView(mContext, mArray, mStartDate.plusWeeks(position - mWeekCount /2));
         weekView.setId(position);
         weekView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         weekView.setOnWeekClickListener(mWeekCalendarView);
