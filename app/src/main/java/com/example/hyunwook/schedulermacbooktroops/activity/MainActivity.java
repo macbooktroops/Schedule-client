@@ -42,6 +42,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private BaseFragment mScheduleFragment;
 
     static final String TAG = MainActivity.class.getSimpleName();
+
+    private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
@@ -82,6 +84,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     //RecyclerView 설정
     private void initEventSetList() {
+        Log.d(TAG, "initEventSetList...");
         mEventSets = new ArrayList<>();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -102,11 +105,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         if (mScheduleFragment == null) {
             //get Instance ScheduleFragment...
+            Log.d(TAG, "goSchedule instance");
             mScheduleFragment = ScheduleFragment.getInstance();
+            ft.add(R.id.frameContainer, mScheduleFragment);
         }
+        ft.show(mScheduleFragment);
+        ft.commit();
 
+        linearDate.setVisibility(View.VISIBLE);
+        tvTitle.setVisibility(View.GONE);
+        drawMain.closeDrawer(Gravity.START);
 
+        initBroadcastReceiver();
 
+    }
+
+    private void initBroadcastReceiver() {
+//        if ()
     }
     @Override
     public void onClick(View v) {
@@ -120,5 +135,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 //                goScheduleFragment();
                 break;
         }
+    }
+
+    //메인 타이틀에 년월일 재설정
+    public void resetMainTitleDate(int year, int month, int day) {
+        linearDate.setVisibility(View.VISIBLE);
+        tvTitle.setVisibility(View.GONE);
+
+        Calendar calendar = Calendar.getInstance();
+
+        if (year == calendar.get(Calendar.YEAR) &&
+                month == calendar.get(Calendar.MONTH) &&
+                day == calendar.get(Calendar.DAY_OF_MONTH)) {
+
+            tvTitleMonth.setText(mMonthText[month]);
+            tvTitleDay.setText(getString(R.string.calendar_today));
+        } else {
+            if (year == calendar.get(Calendar.YEAR)) {
+                tvTitleMonth.setText(mMonthText[month]);
+            } else {
+                //매개 년도랑 현재 년도가 다름?
+                tvTitleMonth.setText(String.format("%s%s", String.format(getString(R.string.calendar_year), year),
+                        mMonthText[month]));
+            }
+            tvTitleDay.setText(String.format(getString(R.string.calendar_day), day));
+        }
+        setCurrentSelectDate(year, month, day);
+    }
+
+    private void setCurrentSelectDate(int year, int month, int day) {
+        mCurrentSelectYear = year;
+        mCurrentSelectMonth = month;
+        mCurrentSelectDay = day;
     }
 }

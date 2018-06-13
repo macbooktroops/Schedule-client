@@ -9,8 +9,13 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.example.calendar.R;
+import com.example.calendar.widget.calendar.CalendarUtils;
+import com.example.calendar.widget.calendar.OnCalendarClickListener;
 import com.example.calendar.widget.calendar.month.MonthCalendarView;
 import com.example.calendar.widget.calendar.month.MonthView;
+import com.example.calendar.widget.calendar.week.WeekCalendarView;
+import com.example.calendar.widget.calendar.week.WeekView;
+import com.example.common.bean.Schedule;
 
 import java.util.Calendar;
 import java.util.jar.Attributes;
@@ -29,8 +34,6 @@ public class ScheduleLayout extends FrameLayout {
     private int mDefaultView;
     private boolean mIsAutoChangeMonthRow;
 
-    private MonthCalendarView mvView;
-
     private boolean mCurrentRowsIsSix = true;
 
     private int mRowSize;
@@ -42,13 +45,18 @@ public class ScheduleLayout extends FrameLayout {
     private int mCurrentSelectDay;
 
     private MonthCalendarView monthCalendar;
+    private WeekCalendarView weekCalendar;
     //터치 이벤트 처리
     private GestureDetector mGestureDetector;
 
     private RelativeLayout rlMonthCalendar;
     private RelativeLayout rlScheduleList;
 
+    private OnCalendarClickListener mOnCalendarClickListener;
     private ScheduleState mState;
+
+    private ScheduleRecyclerView rvScheduleList;
+
     public ScheduleLayout(Context context) {
         this(context, null);
     }
@@ -107,7 +115,182 @@ public class ScheduleLayout extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        monthCalendar = (MonthCalendarView) findViewById(R.id.m)
+        monthCalendar = (MonthCalendarView) findViewById(R.id.monthCalendar);
+        weekCalendar = (WeekCalendarView) findViewById(R.id.weekCalendar);
+
+        rlMonthCalendar = (RelativeLayout) findViewById(R.id.rlMonthCalendar);
+
+        rlScheduleList = (RelativeLayout) findViewById(R.id.rlScheduleList);
+
+        bindingMonthAndWeekCalendar();
+    }
+
+    private void bindingMonthAndWeekCalendar() {
+        monthCalendar.setOnCalendarClickListener(mMonthCalendarClickListener);
+        weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
+
+        //view init
+        Calendar calendar = Calendar.getInstance();
+        if (mIsAutoChangeMonthRow) {
+            mCurrentRowsIsSix = CalendarUtils.getMonthRows(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH)) == 6;
+        }
+
+        //mDefaultView == 0
+        if (mDefaultView == DEFAULT_MONTH) {
+            Log.d(TAG, "binding mDefaultView is DEFAULT_MONTH");
+            weekCalendar.setVisibility(INVISIBLE);
+            mState = ScheduleState.OPEN;
+
+            if (!mCurrentRowsIsSix) {
+                rlScheduleList.setY(rlScheduleList.getY() - mRowSize);
+            }
+        } else if (mDefaultView == DEFAULT_WEEK) {
+            Log.d(TAG, "binding mDefaultView is DEFAULT_WEEK");
+            weekCalendar.setVisibility(VISIBLE);
+            mState = ScheduleState.CLOSE;
+            int row = CalendarUtils.getWeekRow(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+            rlMonthCalendar.setX(-row * mRowSize);
+            rlScheduleList.setY(rlScheduleList.getY() - 5 * mRowSize);
+        }
+    }
+
+
+
+    //MonthCalendarView 클릭
+    private OnCalendarClickListener mMonthCalendarClickListener = new OnCalendarClickListener() {
+        @Override
+        public void onClickDate(int year, int month, int day) {
+            Log.d(TAG, "onCLickDate MonthCalendarView..");
+            monthCalendar.setOnClickListener(null);
+
+            Log.d(TAG, "month calendar click listener -->" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay +"/" +year + "/" +month + "/" + day);
+            int weeks = CalendarUtils.getWeeksAgo(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, year, month, day);
+
+            Log.d(TAG, "Week -->" + weeks);
+            resetCurrentSelectDate(year, month, day);
+
+            int position = weekCalendar.getCurrentItem() + weeks;
+            if (weeks != 0) {
+                weekCalendar.setCurrentItem(position, false);
+            }
+
+            resetWeekView(position);
+            weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
+        }
+
+        @Override
+        public void onPageChange(int year, int month, int day) {
+            computeCurrentRowsIsSix(year, month);
+        }
+    };
+
+    //WeekCalendarView 클릭
+     private OnCalendarClickListener mWeekCalendarClickListener = new OnCalendarClickListener() {
+        @Override
+        public void onClickDate(int year, int month, int day) {
+            monthCalendar.setOnCalendarClickListener(null);
+
+            Log.d(TAG, "week calendar click listener -->" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + year + "/" + month);
+            int months = CalendarUtils.getMonthsAgo(mCurrentSelectYear, mCurrentSelectMonth, year, month);
+
+            resetCurrentSelectDate(year, month, day);
+
+            if (months != 0) {
+                int position = monthCalendar.getCurrentItem() + months;
+                monthCalendar.setCurrentItem(position, false);
+            }
+
+            resetMonthView();
+            monthCalendar.setOnCalendarClickListener(mMonthCalendarClickListener);
+
+            if (mIsAutoChangeMonthRow) {
+                mCurrentRowsIsSix = CalendarUtils.getMonthRows(year, month) == 6; //이번달은 6주인가 ?
+            }
+        }
+
+        @Override
+        public void onPageChange(int year, int month, int day) {
+            //page 변경
+            if (mIsAutoChangeMonthRow) {
+                if (mCurrentSelectMonth != month) {
+                    mCurrentRowsIsSix = CalendarUtils.getMonthRows(year, month) == 6;
+                }
+            }
+        }
+    };
+
+     public void setOnCalendarClickListener(OnCalendarClickListener onCalendarClickListener) {
+         mOnCalendarClickListener = onCalendarClickListener;
+     }
+    //MonthView 재설정
+    private void resetMonthView() {
+         MonthView monthView = monthCalendar.getCurrentMonthView();
+
+         if (monthView != null) {
+             monthView.setSelectYearMonth(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+             monthView.invalidate();
+         }
+
+         if (mOnCalendarClickListener != null) {
+             mOnCalendarClickListener.onClickDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+         }
+
+         resetCalendarPosition();
+    }
+
+    private void resetCalendarPosition() {
+         Log.d(TAG, "resetCalendarPosition");
+         if (mState == ScheduleState.OPEN) {
+             rlMonthCalendar.setY(0);
+
+             if (mCurrentRowsIsSix) {
+                 rlScheduleList.setY(monthCalendar.getHeight());
+             } else {
+                 rlScheduleList.setY(monthCalendar.getHeight() - mRowSize);
+             }
+         } else {
+             rlMonthCalendar.setY(-CalendarUtils.getWeekRow(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay) * mRowSize);
+             rlScheduleList.setY(mRowSize);
+         }
+    }
+    //WeekView 재설정
+    private void resetWeekView(int position) {
+        WeekView weekView = weekCalendar.getCurrentWeekView();
+
+        if (weekView != null) {
+            weekView.setSelectYearMonth(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+            weekView.invalidate();
+        } else {
+            WeekView newWeekView = weekCalendar.getWeekAdapter().instanceWeekView(position);
+            newWeekView.setSelectYearMonth(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+            newWeekView.invalidate();
+            weekCalendar.setCurrentItem(position);
+        }
+        if (mOnCalendarClickListener != null) {
+            mOnCalendarClickListener.onClickDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+        }
+    }
+
+    //현재 rows 계산
+    private void computeCurrentRowsIsSix(int year, int month) {
+        if (mIsAutoChangeMonthRow) {
+            boolean isSixRow = CalendarUtils.getMonthRows(year, month) == 6;//최대 6주면 true
+            if (mCurrentRowsIsSix != isSixRow) {
+                mCurrentRowsIsSix = isSixRow;
+
+                Log.d(TAG, "mRowSize compute -->" + mRowSize);
+                if (mState == ScheduleState.OPEN) {
+                    if (mCurrentRowsIsSix) {
+                        AutoMoveAnimation animation = new AutoMoveAnimation(rlScheduleList, mRowSize);
+                        rlScheduleList.startAnimation(animation);
+                    } else {
+                        AutoMoveAnimation animation = new AutoMoveAnimation(rlScheduleList, -mRowSize);
+                        rlScheduleList.startAnimation(animation);
+                    }
+                }
+            }
+        }
     }
 
     //캘린더 스크롤 시..
@@ -130,6 +313,18 @@ public class ScheduleLayout extends FrameLayout {
         calendarY = Math.max(calendarY, calendarTop);
         rlMonthCalendar.setY(calendarY);
 
-        float scheduleY = rlScheduleList.
+        float scheduleY = rlScheduleList.getY() - distanceY;
+        if (mCurrentRowsIsSix) {
+            scheduleY = Math.min(scheduleY, monthCalendar.getHeight());
+        } else {
+            scheduleY = Math.min(scheduleY, monthCalendar.getHeight() - mRowSize);
+        }
+        scheduleY = Math.max(scheduleY, scheduleTop);
+        rlScheduleList.setY(scheduleY);
+
+    }
+
+    public ScheduleRecyclerView getSchedulerRecyclerView() {
+         return rvScheduleList;
     }
 }

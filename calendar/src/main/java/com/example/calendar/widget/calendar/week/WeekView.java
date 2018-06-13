@@ -252,6 +252,8 @@ public class WeekView extends View {
         }
     }
 
+
+
     //선택 연월일
     public void setSelectYearMonth(int year, int month, int day) {
         mSelYear = year;
@@ -259,4 +261,25 @@ public class WeekView extends View {
         mSelDay = day;
     }
 
+    /**
+     * 현재 선택연도 가져오기
+     * @return
+     */
+    public int getSelectYear() {
+        return mSelYear;
+    }
+
+    /**
+     * 현재 선택달 가져오기
+     */
+    public int getSelectMonth() {
+        return mSelMonth;
+    }
+
+    /**
+     * 현재 선택일 가져오기
+     */
+    public int getSelectDay() {
+        return this.mSelDay;
+    }
 }

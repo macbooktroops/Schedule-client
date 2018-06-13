@@ -77,24 +77,58 @@ public class CalendarUtils {
         return holidays;
     }
 
+
     public static int getWeekRow(int year, int month, int day) {
         int week = getFirstDayWeek(year, month);
-        Log.d(TAG, "getWeekRow -->" + week);
+        Log.d(TAG, "getWeekRow -->" + week); //3? 수욜
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
 
-        int lastWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int lastWeek = calendar.get(Calendar.DAY_OF_WEEK); //
 
         Log.d(TAG, "lastWeek -->" + lastWeek);
         if (lastWeek == 7) {
             day--;
         }
-
+//24 + 6 / 7
         return (day + week -1) /7;
 
     }
 
+    /**
+     * Get two dates away for a few weeks
+     */
+    public static int getWeeksAgo(int lastYear, int lastMonth, int lastDay, int year, int month, int day) {
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+
+        Log.d(TAG, "getWeeksAgo -->" + lastYear + "/" + lastMonth + "/" + lastDay + "/" + year + "/" + month + "/" + day);
+        start.set(lastYear, lastMonth, lastDay);
+        end.set(year, month, day);
+
+        int week = start.get(Calendar.DAY_OF_WEEK);
+        Log.d(TAG, "getWeeksAgo week ->" + week);
+        start.add(Calendar.DATE, -week);
+
+        week = end.get(Calendar.DAY_OF_WEEK);
+        end.add(Calendar.DATE, 7 - week);
+
+        float v = (end.getTimeInMillis() - start.getTimeInMillis() / (3600 * 1000 * 24 * 7 * 1.0f));
+        return (int) (v - 1);
+    }
+    /**
+     * Get two dates away from several months
+     * @param lastYear
+     * @param lastMonth
+     * @param year
+     * @param month
+     * @return
+     */
+    public static int getMonthsAgo(int lastYear, int lastMonth, int year, int month) {
+        Log.d(TAG, "getMonthsAgo -->" + lastYear + "/" + lastMonth + "/" + year + "/" + month);
+        return (year - lastYear) * 12 + (month - lastMonth);
+    }
     /**
      * 년과 월을 통해 날짜 얻기
      *
@@ -136,9 +170,21 @@ public class CalendarUtils {
         }
     }
 
+    /**
+     * 해당 이번연월이 몇주일지 계
+     * @param year
+     * @param month
+     * @return
+     */
+    public static int getMonthRows(int year, int month) {
+        int size = getFirstDayWeek(year, month) + getMonthDays(year, month) -1; //6(토요일)  + 30(11월)
+        return size % 7 == 0 ? size /7 : (size / 7) + 1; //5주 아니면 6주..
+
+    }
 
     /**
      * 요일에 현재 월 번호 1을 반환합니다.
+     * 선택된 연 월에 매 1일 이 몇요일인지 판단
      */
     public static int getFirstDayWeek(int year, int month) {
         Calendar calendar = Calendar.getInstance();

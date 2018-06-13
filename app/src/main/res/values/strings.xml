@@ -20,4 +20,8 @@
     <item>November</item>
     <item>December</item>
 </string-array>
+
+    <string name="calendar_day">%d day</string>
+    <string name="calendar_year">%d-</string>
+
 </resources>

@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -47,11 +48,55 @@
                         app:month_show_task_hint="false"/>
                 </RelativeLayout>
 
-                <com.example.calendar.widget.calendar.WeekBarView
-                    android:layout_width=""
-                    android:layout_height="" />
-                        </com.example.calendar.widget.calendar.month.MonthCalendarView>
-                </
+                <com.example.calendar.widget.calendar.week.WeekCalendarView
+                    android:id="@+id/weekCalendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/week_calendar_height"
+                    android:background="@color/calendar_bg_color"
+                    android:overScrollMode="never"
+                    android:visibility="gone"
+                    app:week_day_text_size="@integer/calendar_text_size"
+                    app:week_holiday_color="@color/holiday_text_color"
+                    app:week_selected_circle_color="@color/select_circle_color"
+                    app:week_show_holiday_hint="true"
+                    app:week_show_lunar="true"
+                    app:week_show_task_hint="false"/>
+                
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:id="@+id/rlScheduleList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorBackground">
+
+                <com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView
+                    android:id="@+id/rvScheduleList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:orientation="vertical"
+                    android:overScrollMode="never"
+                    android:paddingTop="6dp"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/rlNoTask"
+                    android:background="@color/colorBackground">
+
+                    <ImageView
+                        android:id="@+id/imNoTask"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="50dp"
+                        android:src="@mipmap/notask"/>
+
+            </RelativeLayout>
+
             </RelativeLayout>
         </LinearLayout>
     </com.example.calendar.widget.calendar.schedule.ScheduleLayout>

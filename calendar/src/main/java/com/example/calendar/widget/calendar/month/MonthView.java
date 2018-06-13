@@ -2,6 +2,7 @@ package com.example.calendar.widget.calendar.month;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -23,6 +24,8 @@ import java.util.jar.Attributes;
  */
 public class MonthView extends View {
 
+    private static final int NUM_COLUMNS = 7; //요일 7개
+    private static final int NUM_ROWS = 6; //6주까지
     private Paint mPaint;
     private Paint mLunarPaint;
     private int mNormalDayColor;
@@ -51,6 +54,7 @@ public class MonthView extends View {
     private DisplayMetrics mDisplayMetrics;
 
     private int[][] mDaysText;
+    private String[][] mHolidayOrLunarText;
     private OnMonthClickListener mDateClickListener;
 
     private GestureDetector mGestureDetector; //터치 이벤트처
@@ -77,7 +81,7 @@ public class MonthView extends View {
     private void initAttrs(TypedArray array, int year, int month) {
         Log.d(TAG, "initAttrs array -->" + array.toString());
         if (array != null) {
-            mSelectDayColor = array.getColor(R.styleable.MonthCalendarView_month_selected_text_color, Color.parseColor("FFFFFF")); //white
+            mSelectDayColor = array.getColor(R.styleable.MonthCalendarView_month_selected_text_color, Color.parseColor("#FFFFFF")); //white
             mSelectBGColor = array.getColor(R.styleable.MonthCalendarView_month_selected_circle_color, Color.parseColor("#E8E8E8")); //살짝 흰색? 그레이
             mSelectBGTodayColor = array.getColor(R.styleable.MonthCalendarView_month_selected_circle_today_color, Color.parseColor("#FF8594")); //분홍빨강
 
@@ -154,6 +158,60 @@ public class MonthView extends View {
         }
 
         initGestureDetector();
+    }
+
+
+    //그리기
+    @Override
+    protected void onDraw(Canvas canvas) {
+        Log.d(TAG, "onDraw~~~");
+        initSize();
+    }
+
+    private void initSize() {
+        mColumnSize = getWidth() / NUM_COLUMNS;
+        mRowSize = getHeight() / NUM_ROWS;
+
+        mSelectCircleSize = (int) (mColumnSize / 3.2);
+
+        while (mSelectCircleSize > mRowSize /2) {
+            Log.d(TAG, "initSize mSelectCircleSize -->" + mSelectCircleSize + "::rowSize ->" + mRowSize);
+            mSelectCircleSize = (int) (mSelectCircleSize / 1.3);
+        }
+
+        clearData();
+    }
+
+    //날짜 텍스트, 휴일,음력 배열 세팅
+    private void clearData() {
+        mDaysText = new int[6][7];
+        mHolidayOrLunarText = new String[6][7];
+
+        drawLastMonth(canvas);
+        int selected[] = drawThisMonth(canvas);
+        drawNextMonth(canvas);
+        drawHintCircle(canvas);
+        drawLunarText(canvas, selected);
+        drawHoliday(canvas);
+
+    }
+
+    private void drawLastMonth(Canvas canvas) {
+        int lastYear, lastMonth;
+        Log.d(TAG, "drawLastMonth -->" + mSelMonth);
+        if (mSelMonth == 0) {
+            lastYear = mSelYear - 1;
+            lastMonth = 11;
+        } else {
+            lastYear = mSelYear;
+            lastMonth = mSelMonth - 1;
+        }
+
+        mPaint.setColor(mLastOrNextMonthTextColor);
+        int monthDays = CalendarUtils.getMonthDays(lastYear, lastMonth); //세팅 연월에 일자가 몇개인지..
+        int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //선택 연월에 1일
+
+
     }
 
     //선택연월
