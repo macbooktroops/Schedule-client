@@ -191,4 +191,26 @@ public class CalendarUtils {
         calendar.set(year, month, 1);
         return calendar.get(Calendar.DAY_OF_WEEK);//현재 요일 (일요일은 1, 토요일은 7)
     }
+
+    /**
+     * 각각 국가공휴일/휴가 설정 해야함..
+     * 추후에 서버에서
+     */
+    public static String getHolidayFromSolar(int year, int month, int day) {
+        String message = "";
+
+        //month = SelYear -1 이므로 1월1
+        if (month == 0 && day == 1) {
+            message = "새해";
+        } else if (month == 1 && day == 14) { //2.14
+            message = "발렌타인데이";
+        } else if (month == 4 && day == 1) { //5.1
+            message = "근로자의 날";
+        } else if (month == 4 && day == 5) {// 5.5
+            message = "어린이 날";
+        } else if (month == 11 && day == 25) { //12.25
+            message = "크리스마스";
+        }
+        return message;
+    }
 }

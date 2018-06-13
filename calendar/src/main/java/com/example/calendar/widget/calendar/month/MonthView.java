@@ -166,11 +166,15 @@ public class MonthView extends View {
     protected void onDraw(Canvas canvas) {
         Log.d(TAG, "onDraw~~~");
         initSize();
+
+        drawLastMonth(canvas);
+        int selected[] = drawThisMonth(canvas);
     }
 
     private void initSize() {
-        mColumnSize = getWidth() / NUM_COLUMNS;
-        mRowSize = getHeight() / NUM_ROWS;
+        Log.d(TAG, "initSize =====");
+        mColumnSize = getWidth() / NUM_COLUMNS; //일월화수목금토 7개 사이즈 나누기
+        mRowSize = getHeight() / NUM_ROWS; //최대 6주로 사이즈 계산
 
         mSelectCircleSize = (int) (mColumnSize / 3.2);
 
@@ -184,21 +188,16 @@ public class MonthView extends View {
 
     //날짜 텍스트, 휴일,음력 배열 세팅
     private void clearData() {
-        mDaysText = new int[6][7];
-        mHolidayOrLunarText = new String[6][7];
+        Log.d(TAG, "clearData =====");
+        mDaysText = new int[6][7]; //6주//7일
+        mHolidayOrLunarText = new String[6][7]; //음력도 6주//7일//
 
-        drawLastMonth(canvas);
-        int selected[] = drawThisMonth(canvas);
-        drawNextMonth(canvas);
-        drawHintCircle(canvas);
-        drawLunarText(canvas, selected);
-        drawHoliday(canvas);
 
     }
 
+    //첫쨰 주 그리기
     private void drawLastMonth(Canvas canvas) {
         int lastYear, lastMonth;
-        Log.d(TAG, "drawLastMonth -->" + mSelMonth);
         if (mSelMonth == 0) {
             lastYear = mSelYear - 1;
             lastMonth = 11;
@@ -206,12 +205,52 @@ public class MonthView extends View {
             lastYear = mSelYear;
             lastMonth = mSelMonth - 1;
         }
+        Log.d(TAG, "drawLastMonth =====" + lastYear + "/" + lastMonth);
 
         mPaint.setColor(mLastOrNextMonthTextColor);
-        int monthDays = CalendarUtils.getMonthDays(lastYear, lastMonth); //세팅 연월에 일자가 몇개인지..
-        int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //선택 연월에 1일
+        int monthDays = CalendarUtils.getMonthDays(lastYear, lastMonth); //세팅 연월에 최대 일이 몇개인지...
+        int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //선택 연월에 1일이 몇요일인지
+        /** 일요일1 ~ 토요일7
+         * weeknumber =6 monthdays =30 ,
+         * day = 5 (Weeknumber -1 ) 배열 0 부터시작
+         * 첫째 주 그리기
+          */
+        for (int day = 0; day < weekNumber -1; day++) {
+
+            mDaysText[0][day] = monthDays - weekNumber + day + 2;
+            Log.d(TAG, "drawLastMonth mDaysText --->"  + mDaysText[0][day]);
+            String dayString = String.valueOf(mDaysText[0][day]);
+            int startX = (int) (mColumnSize * day + (mColumnSize - mPaint.measureText(dayString)) /2);
+            int startY = (int) (mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) /2);
+
+            Log.d(TAG, "drawLastMonth for -->" + dayString + "--"+ day + "--" + monthDays +"--"+ weekNumber);
+            canvas.drawText(dayString, startX, startY, mPaint);
+
+            mHolidayOrLunarText[0][day] = CalendarUtils.getHolidayFromSolar(lastYear, lastMonth, mDaysText[0][day]);
+        }
 
 
+    }
+
+    private int[] drawThisMonth(Canvas canvas) {
+        String dayString;
+
+        int selectedPoint[] = new int[2];
+        int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth); //해당 연월 일개수
+        int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //해당 연월 1일 요일
+
+        /**
+         * monthDays = 30
+         * 일요일1 ~ 토요일7
+         * weeknumber =6
+         */
+        for (int day = 0; day < monthDays; day ++){
+            dayString = String.valueOf(day + 1);
+            int col = (day + weekNumber -1) % 7; //컬럼 (0 + 5) % 7 = 1
+            int row = (day + weekNumber -1) / 7; // (0 + 29 -1 ) /7 = 4
+
+            mDaysText[row][col] = day + 1;
+        }
     }
 
     //선택연월
