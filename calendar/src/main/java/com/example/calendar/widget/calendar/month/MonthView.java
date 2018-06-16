@@ -169,6 +169,9 @@ public class MonthView extends View {
 
         drawLastMonth(canvas);
         int selected[] = drawThisMonth(canvas);
+        drawNextMonth(canvas);
+
+        drawHintCircle(canvas);
     }
 
     private void initSize() {
@@ -195,7 +198,7 @@ public class MonthView extends View {
 
     }
 
-    //첫쨰 주 그리기
+    //지난 달 그리기
     private void drawLastMonth(Canvas canvas) {
         int lastYear, lastMonth;
         if (mSelMonth == 0) {
@@ -232,7 +235,9 @@ public class MonthView extends View {
 
     }
 
+    //이번 달 그리기
     private int[] drawThisMonth(Canvas canvas) {
+        Log.d(TAG, "drawThisMonth ======");
         String dayString;
 
         int selectedPoint[] = new int[2];
@@ -244,12 +249,97 @@ public class MonthView extends View {
          * 일요일1 ~ 토요일7
          * weeknumber =6
          */
-        for (int day = 0; day < monthDays; day ++){
+        for (int day = 0; day < monthDays; day ++) {
             dayString = String.valueOf(day + 1);
-            int col = (day + weekNumber -1) % 7; //컬럼 (0 + 5) % 7 = 1
-            int row = (day + weekNumber -1) / 7; // (0 + 29 -1 ) /7 = 4
+            int col = (day + weekNumber - 1) % 7; //컬럼 (0 + 5) % 7 = 5
+            int row = (day + weekNumber - 1) / 7; // (0 + 29 -1 ) /7 = 4
 
             mDaysText[row][col] = day + 1;
+
+            int startX = (int) (mColumnSize * col + (mColumnSize - mPaint.measureText(dayString)) / 2);
+            int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
+
+            //선택날짜랑 dayString 이 같을경우.
+            if (dayString.equals(String.valueOf(mSelDay))) {
+                int startRecX = mColumnSize * col;
+                Log.d(TAG, "drawThisMonth startRecX -->" + startRecX);
+
+                int startRecY = mRowSize * row;
+                Log.d(TAG, "drawThisMonth startRecY -->" + startRecY);
+
+                int endRecX = startRecX + mColumnSize;
+                Log.d(TAG, "drawThisMonth endRecX -->" + endRecX);
+
+                int endRecY = startRecY + mRowSize;
+                Log.d(TAG, "drawThisMOnth endRecY -->" + endRecY);
+
+                if (mSelYear == mCurrYear && mSelMonth == mCurrMonth && day + 1 == mCurrDay) {
+                    mPaint.setColor(mSelectBGTodayColor);
+                } else {
+                    mPaint.setColor(mSelectBGColor);
+                }
+
+                canvas.drawCircle((startRecX + endRecX) / 2, (startRecY + endRecY) / 2, mSelectCircleSize, mPaint);
+                mWeekRow = row + 1;
+            }
+
+            if (dayString.equals(String.valueOf(mSelDay))) {
+                selectedPoint[0] = row;
+                selectedPoint[1] = col;
+
+                mPaint.setColor(mSelectBGColor);
+                //day가 현재날짜랑 같을 경우?
+            } else if (dayString.equals(String.valueOf(mCurrDay)) && mCurrDay != mSelDay && mCurrMonth == mSelMonth && mCurrYear == mSelYear) {
+                mPaint.setColor(mCurrentDayColor);
+            } else {
+                mPaint.setColor(mNormalDayColor);
+            }
+            canvas.drawText(dayString, startX, startY, mPaint);
+            mHolidayOrLunarText[row][col] = CalendarUtils.getHolidayFromSolar(mSelYear, mSelMonth, mDaysText[row][col]);
+        }
+        return selectedPoint;
+    }
+
+    //다음 달 그리기
+    private void drawNextMonth(Canvas canvas) {
+        mPaint.setColor(mLastOrNextMonthTextColor);
+
+        //30
+        int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth); //선택연월 일 개수 얻기
+
+        //현재 요일 (일요일은 1, 토요일은 7)
+        //해당 연월에 1일이 무슨요일인지 .
+        int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth);  //7
+
+        int nextMonthDays = 42 - monthDays - weekNumber + 1; //6
+        int nextMonth = mSelMonth + 1;
+        int nextYear = mSelYear;
+
+        if (nextMonth == 12) {
+            //12월이 지나면
+            nextMonth = 0;
+            nextYear += 1;
+        }
+
+        for (int day = 0; day < nextMonthDays; day++) {
+            int column = (monthDays + weekNumber -1 + day) % 7; //(30 + 7 - 1 + 5 ) % 7
+            int row = 5 - (nextMonthDays - day - 1) /7; //(5 - (6 - 0 -1 ) /7;
+
+            try {
+                mDaysText[row][column] = day + 1;
+                mHolidayOrLunarText[row][column] = CalendarUtils.getHolidayFromSolar(nextYear, nextMonth, mDaysText[row][column]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String dayString = String.valueOf(mDaysText[row][column]);
+            Log.d(TAG, "dayString ---> " + dayString);
+
+            int startX = (int) (mColumnSize * column + (mColumnSize - mPaint.measureText(dayString)) / 2);
+            int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) /2);
+
+            canvas.drawText(dayString, startX, startY, mPaint);
+
         }
     }
 
