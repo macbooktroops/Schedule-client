@@ -4,6 +4,11 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +24,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.common.base.app.BaseFragment;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 
 import java.util.Calendar;
 
@@ -36,6 +43,11 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     private ScheduleLayout scheduleLayout;
 
     private ScheduleRecyclerView rvSchedule;
+
+    private EditText etInputContent;
+
+    static final String TAG = ScheduleFragment.class.getSimpleName();
+//    private ScheduleAdapter
 
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
 
@@ -52,7 +64,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     @Override
     protected void bindView() {
         scheduleLayout = searchViewById(R.id.sdLayout);
-
+        etInputContent = searchViewById(R.id.etInputContent); //스케줄 입력 창
 //        scheduleLayout.setOnCalendarClickListener(this);
 
         initScheduleList();
@@ -87,6 +99,24 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ibMainClock:
+                showSelectDateDialog();
+                //시간 설정이 가능한 다이얼로그?
+                break;
+            case R.id.ibMainOK:
+                addSchedule();
+                break;
+        }
+    }
+
+    //스케줄 작성 전 시작 시간을 적을 수 있는 다이얼로그.
+    private void showSelectDateDialog() {
+         new SelectDateDialog(mActivity, this, mCurrentSelectDay, mCurrentSelectMonth, mCurrentSelectDay,
+                 scheduleLayout.getMonthCalendar().getCurrentItem()).show();
+    }
     //스케줄 리스트 리셋
     public void resetScheduleList() {
         //병렬로 작업을 실행하는 데 사용할 수있는 실행
@@ -114,5 +144,41 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false);
 
+        initBottomInputBar();
     }
+
+    //스케줄 메모 부분 InputBar
+     private void initBottomInputBar() {
+
+        //http://egloos.zum.com/killins/v/3008925  --> TextWatcher
+        etInputContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //start 지점에서 시작되는 count 갯수만큼의
+                //글자들이 after 길이만큼의 글자로 대치되려고 할 때 호출된다
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //start 지점에서 시작되는 before 갯수만큼의 글자들이
+                //count 갯수만큼의 글자들로 대치되었을 때 호출된다.
+
+            }
+
+            //EditText의 텍스트가 변경되면 호출된다.
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d(TAG, "afterTextChanged --->" + s.toString());
+                etInputContent.setGravity(s.length() == 0 ? Gravity.CENTER : Gravity.CENTER_VERTICAL);
+            }
+        });
+
+        etInputContent.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                return false;
+            }
+        });
+     }
 }

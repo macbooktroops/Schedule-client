@@ -327,4 +327,8 @@ public class ScheduleLayout extends FrameLayout {
     public ScheduleRecyclerView getSchedulerRecyclerView() {
          return rvScheduleList;
     }
+
+    public MonthCalendarView getMonthCalendar() {
+        return monthCalendar;
+    }
 }

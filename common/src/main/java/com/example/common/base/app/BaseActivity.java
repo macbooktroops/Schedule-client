@@ -1,4 +1,4 @@
-package com.example.hyunwook.schedulermacbooktroops.app;
+package com.example.common.base.app;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
