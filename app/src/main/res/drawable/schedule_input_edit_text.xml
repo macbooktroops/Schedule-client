@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://arabiannight.tistory.com/entry/안드로이드Android-XML-Selector-사용-하기 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/schedule_input_edit_text_focus" android:state_focused="true"/>
+    <item android:drawable="@drawable/schedule_input_edit_text_focus" android:state_pressed="true"/>
+    <item android:drawable="@drawable/schedule_input_edit_text_normal"/>
+</selector>

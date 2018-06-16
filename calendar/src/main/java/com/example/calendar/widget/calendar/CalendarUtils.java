@@ -9,8 +9,10 @@ import com.google.gson.reflect.TypeToken;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +27,7 @@ public class CalendarUtils {
     private static CalendarUtils sUtils;
     private Map<String, int[]> sAllHolidays = new HashMap<>(); //휴일Map
 
+    private Map<String, List<Integer>> sMonthTaskHint = new HashMap<>();
     //캘린더작업 인스턴스 얻기
     public static synchronized CalendarUtils getInstance(Context context) {
         if (sUtils == null) {
@@ -212,5 +215,25 @@ public class CalendarUtils {
             message = "크리스마스";
         }
         return message;
+    }
+
+    //할 일 얻기
+    public List<Integer> getTaskHints(int year, int month) {
+        String key = hashKey(year, month);
+        Log.d(TAG, "key --->" + key);
+
+        List<Integer> hints = sUtils.sMonthTaskHint.get(key);
+
+        if (hints == null) {
+            hints = new ArrayList<>();
+            sUtils.sMonthTaskHint.put(key, hints);
+        }
+        return hints;
+    }
+
+
+    //hashKey
+    private static String hashKey(int year, int month) {
+        return String.format("%s:%s", year, month);
     }
 }

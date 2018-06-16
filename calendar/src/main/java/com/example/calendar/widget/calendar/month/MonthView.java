@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.example.calendar.R;
 import com.example.calendar.widget.calendar.CalendarUtils;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.jar.Attributes;
 
 /**
@@ -56,6 +58,8 @@ public class MonthView extends View {
     private int[][] mDaysText;
     private String[][] mHolidayOrLunarText;
     private OnMonthClickListener mDateClickListener;
+
+    private int mCircleRadius = 6;
 
     private GestureDetector mGestureDetector; //터치 이벤트처
     static final String TAG = MonthView.class.getSimpleName();
@@ -172,6 +176,8 @@ public class MonthView extends View {
         drawNextMonth(canvas);
 
         drawHintCircle(canvas);
+        drawHoliday(canvas);
+
     }
 
     private void initSize() {
@@ -340,6 +346,75 @@ public class MonthView extends View {
 
             canvas.drawText(dayString, startX, startY, mPaint);
 
+        }
+    }
+
+    /**
+     * 서클 힌트 그리기
+     */
+    private void drawHintCircle(Canvas canvas) {
+        if (mIsShowHint) {
+            List<Integer> hints = CalendarUtils.getInstance(getContext()).getTaskHints(mSelYear, mSelMonth);
+
+            if (hints.size() > 0) {
+                mPaint.setColor(mHintCircleColor);
+
+                int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth); //세팅연월 일 얻기
+                int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //선택연월 1일 요일얻기
+
+                for (int day = 0; day < monthDays; day++) {
+                    int col = (day + weekNumber -1) % 7;
+                    int row = (day + weekNumber -1) / 7;
+
+                    //day +1 값이 hint에 없으면 continue;
+                    if (!hints.contains(day + 1)) continue;
+                    float circleX = (float) (mColumnSize * col + mColumnSize * 0.5);
+                    float circleY = (float) (mRowSize * row + mRowSize * 0.75);
+                    canvas.drawCircle(circleX, circleY, mCircleRadius, mPaint);
+                }
+            }
+        }
+    }
+
+    /**
+     * Drawing Lunar Calendar
+     */
+    private void drawLunarText(Canvas canvas, int[] selected) {
+        if (mIsShowLunar) {
+            Log.d(TAG, "drawLunarText -->");
+            int firstYear, firstMonth, firstDay, monthDays;
+
+            //선택 연월 1일 요일구하기.
+            //(일요일은 1, 토요일은 7)
+            int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth);
+
+            if (weekNumber == 1) {
+                //sunday
+                firstYear = mSelYear;
+                firstMonth = mSelMonth + 1;
+                firstDay = 1;
+                monthDays = CalendarUtils.getMonthDays(firstYear, firstMonth); //연월 최대 몇일인지.
+            } else {
+                if (mSelMonth == 0) {
+                    firstYear = mSelYear -1;
+                    firstMonth = 1;;
+                    monthDays = CalendarUtils.getMonthDays(firstYear, firstMonth);
+                    firstMonth = 12;
+                } else {
+                    firstYear = mSelYear;
+                    firstMonth = mSelMonth - 1;
+                    monthDays = CalendarUtils.getMonthDays(firstYear, firstMonth);
+                    firstMonth = mSelMonth;
+                }
+                firstDay = monthDays - weekNumber + 2;
+            }
+        }
+    }
+
+    //휴일 그리기
+    private void drawHoliday(Canvas canvas) {
+        if (mIsShowHolidayHint) {
+//            Rect rect = new Rect(0, 0, mREst)
         }
     }
 

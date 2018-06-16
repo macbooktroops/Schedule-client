@@ -11,4 +11,10 @@
     <color name="color_menu_background">#454567</color>
     <color name="color_menu_border">#2D2D51</color>
 
+    <color name="color_schedule_focus">#9082BD</color>
+    <color name="color_schedule_normal">#9E9DC9</color>
+
+    <color name="color_schedule_title_text">#272E3E</color>
+    <color name="color_text_grey">#ADADB9</color>
+
 </resources>

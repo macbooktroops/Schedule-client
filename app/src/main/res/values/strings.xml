@@ -24,4 +24,8 @@
     <string name="calendar_day">%d day</string>
     <string name="calendar_year">%d-</string>
 
+    <!-- 스케줄 -->
+    <string name="schedule_input"> 할 일을 적으세요..</string>
 </resources>
+
+
