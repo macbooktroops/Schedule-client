@@ -21,5 +21,6 @@
     <color name="color_small_calendar_text">#7452E4</color>
     <color name="color_select_date_dialog_edit_text_bg_focus">#A68BFF</color>
 
+    <color name="color_select_date_dialog_edit_text_bg_normal">#C6C0DC</color>
 
 </resources>
