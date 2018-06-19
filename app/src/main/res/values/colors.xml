@@ -24,4 +24,7 @@
     <color name="color_select_date_dialog_edit_text_bg_normal">#C6C0DC</color>
     <color name="color_cancel_normal">#B6B6B6</color>
 
+    <color name="color_confirm_pre">#9F8F81BC</color>
+    <color name="color_confirm_normal">#8F81BC</color>
+
 </resources>
