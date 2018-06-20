@@ -14,9 +14,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.common.base.app.BaseActivity;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
-import com.example.hyunwook.schedulermacbooktroops.app.BaseActivity;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 

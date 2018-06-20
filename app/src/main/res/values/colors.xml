@@ -26,5 +26,6 @@
 
     <color name="color_confirm_pre">#9F8F81BC</color>
     <color name="color_confirm_normal">#8F81BC</color>
+    <color name="color_schedule_finish">#EC4A5F</color>
 
 </resources>

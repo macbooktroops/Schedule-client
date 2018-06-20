@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.example.common.base.app.BaseFragment;
 import com.example.hyunwook.schedulermacbooktroops.R;
@@ -38,13 +39,16 @@ import java.util.Calendar;
  * 스케줄 작성 메인화면 하단뷰
  */
 
-public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener {
+public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener, View.OnClickListener {
 
     private ScheduleLayout scheduleLayout;
 
     private ScheduleRecyclerView rvSchedule;
 
     private EditText etInputContent;
+
+    private RelativeLayout rlNoTask;
+    private ScheduleAdapter mScheduleAdapter;
 
     static final String TAG = ScheduleFragment.class.getSimpleName();
 //    private ScheduleAdapter
@@ -65,8 +69,12 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     protected void bindView() {
         scheduleLayout = searchViewById(R.id.sdLayout);
         etInputContent = searchViewById(R.id.etInputContent); //스케줄 입력 창
-//        scheduleLayout.setOnCalendarClickListener(this);
 
+        rlNoTask = searchViewById(R.id.rlNoTask);
+        scheduleLayout.setOnCalendarClickListener(this);
+
+        searchViewById(R.id.ibMainClock).setOnClickListener(this);
+        searchViewById(R.id.ibMainOK).setOnClickListener(this);
         initScheduleList();
     }
 
@@ -136,14 +144,17 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     }
     //스케줄 리스트 생성
     private void initScheduleList() {
-//        rvSchedule = scheduleLayout.getSchedulerRecyclerView();
+        rvSchedule = scheduleLayout.getSchedulerRecyclerView();
         LinearLayoutManager manager = new LinearLayoutManager(mActivity);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
 
+        rvSchedule.setLayoutManager(manager);
         //item view가 추가/삭제/이동 할때 animation
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false);
+        rvSchedule.setItemAnimator(itemAnimator);
 
+        m
         initBottomInputBar();
     }
 
