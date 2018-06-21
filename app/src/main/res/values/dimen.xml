@@ -39,4 +39,6 @@
 
     <dimen name="schedule_item_size">50dp</dimen>
 
+    <dimen name="schedule_item_center_size">50dp</dimen>
+
 </resources>

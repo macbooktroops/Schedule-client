@@ -32,6 +32,9 @@
     <string name="cancel">취소</string>
     <string name="confirm">확인</string>
 
+    <string name="schedule_show_finish_task">스케줄 완료 보기</string>
+    <string name="finished">완료</string>
+
 </resources>
 
 

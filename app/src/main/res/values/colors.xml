@@ -28,4 +28,9 @@
     <color name="color_confirm_normal">#8F81BC</color>
     <color name="color_schedule_finish">#EC4A5F</color>
 
+    <color name="color_show_finish_pre">#B2B1D3</color>
+    <color name="color_show_finish_normal">#9E9DC9</color>
+
+    <color name="color_finish_hint_text">#8D8BA0</color>
+
 </resources>

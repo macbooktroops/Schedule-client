@@ -2,6 +2,8 @@ package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -48,7 +50,11 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == SCHEDULE_TYPE) {
-            return new ScheduleViewHolder
+            Log.d(TAG, "SCHEDULE_TYPE");
+            return new ScheduleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_schedule, parent, false));
+        } else if (viewType == SCHEDULE_FINISH_TYPE) {
+            Log.d(TAG, "SCHEDULE_FINISH_TYPE");
+            return new ScheduleFinish
         }
     }
 
@@ -62,7 +68,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-
+    //schedule holder
     protected class ScheduleViewHolder extends RecyclerView.ViewHolder {
 
         protected View vScheduleHintBlock;
@@ -73,8 +79,35 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public ScheduleViewHolder(View itemView) {
             super(itemView);
 
-            vScheduleHintBlock = itemView.findViewById(R.id.vSc)
+            vScheduleHintBlock = itemView.findViewById(R.id.vScheduleHintBlock);
+            tvScheduleState = (TextView) itemView.findViewById(R.id.tvScheduleState); //스케줄 완료여부
+            tvScheduleTitle = (TextView) itemView.findViewById(R.id.tvScheduleTitle); //스케줄 이름
+            tvScheduleTime = (TextView) itemView.findViewById(R.id.tvScheduleTime); //시간 표시부분
         }
     }
+
+    //Finished Schedule
+    protected class ScheduleFinishViewHolder extends RecyclerView.ViewHolder {
+
+        protected TextView tvChangeTaskList;
+        protected TextView tvFinishHint;
+
+        public ScheduleFinishViewHolder(View itemView) {
+            super(itemView);
+            tvChangeTaskList = (TextView) itemView.findViewById(R.id.tvChangeTaskList);
+            tvFinishHint = (TextView)  itemView.findViewById(R.id.tvFinishHint);
+        }
+
+    }
+
+    protected class ScheduleBottomViewHolder extends RecyclerView.ViewHolder {
+
+        public ScheduleBottomViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+
+
 
 }
