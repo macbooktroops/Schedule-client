@@ -33,4 +33,7 @@
 
     <color name="color_finish_hint_text">#8D8BA0</color>
 
+    <color name="color_schedule_grey">#B9B9BD</color>
+    <color name="color_schedule_finish_title_text">#7F838F</color>
+
 </resources>

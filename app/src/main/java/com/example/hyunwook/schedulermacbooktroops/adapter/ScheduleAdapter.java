@@ -54,7 +54,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ScheduleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_schedule, parent, false));
         } else if (viewType == SCHEDULE_FINISH_TYPE) {
             Log.d(TAG, "SCHEDULE_FINISH_TYPE");
-            return new ScheduleFinish
+            return new ScheduleFinishViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_Schedule_finish))
         }
     }
 
@@ -98,6 +98,18 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tvFinishHint = (TextView)  itemView.findViewById(R.id.tvFinishHint);
         }
 
+    }
+
+    protected class ScheduleCenterViewHolder extends RecyclerView.ViewHolder {
+
+        protected TextView tvChangeTaskList;
+        protected TextView tvFinishHint;
+
+        public ScheduleCenterViewHolder(View itemView) {
+            super(itemView);
+            tvChangeTaskList = (TextView) itemView.findViewById(R.id.tvChangeTaskList);
+            tvFinishHint = (TextView) itemView.findViewById(R.id.tvFinishHint);
+        }
     }
 
     protected class ScheduleBottomViewHolder extends RecyclerView.ViewHolder {
