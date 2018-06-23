@@ -2,8 +2,12 @@ package com.example.hyunwook.schedulermacbooktroops.activity;
 
 
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +17,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.common.base.app.BaseActivity;
 import com.example.common.base.app.BaseFragment;
@@ -23,6 +28,7 @@ import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
 
 /**
  * 18-05-24
@@ -44,6 +50,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     static final String TAG = MainActivity.class.getSimpleName();
 
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
+
+    public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
+    private long[] mNotes = new long[2]; //back button save.
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
@@ -121,6 +130,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void initBroadcastReceiver() {
+
 //        if ()
     }
     @Override
@@ -168,4 +178,36 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mCurrentSelectMonth = month;
         mCurrentSelectDay = day;
     }
+
+    //back button click.
+    @Override
+    public void onBackPressed() {
+        if (drawMain.isDrawerOpen(Gravity.START)) {
+            drawMain.closeDrawer(Gravity.START);
+        } else {
+            //http://forum.falinux.com/zbxe/index.php?document_srl=571358&mid=lecture_tip
+            System.arraycopy(mNotes, 1, mNotes, 0, mNotes.length -1);
+            mNotes[mNotes.length - 1] = SystemClock.uptimeMillis();
+            Log.d(TAG, "mNotes value --> " + mNotes[mNotes.length - 1]);
+            if (SystemClock.uptimeMillis() - mNotes[0] < 1000) {
+                finish();
+            } else {
+                Toast.makeText(this, getString(R.string.exit_app_hint), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    //메뉴 계획 항목 추가 리시버
+    private class AddEventSetBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ADD_EVENT_SET_ACTION.equals(intent.getAction())) {
+//                EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
+//                if (eventSet != null) {
+//                    mEventSetAdapter.inserItem(eventSet);
+                }
+            }
+        }
+
 }

@@ -31,6 +31,7 @@ public class MonthCalendarView extends ViewPager implements OnMonthClickListener
     public MonthCalendarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initAttrs(context, attrs);
+        addOnPageChangeListener(mOnPageChangeListener);
     }
 
     /**

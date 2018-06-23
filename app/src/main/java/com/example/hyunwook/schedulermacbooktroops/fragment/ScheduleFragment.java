@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 import com.example.common.base.app.BaseFragment;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
+import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 
 import java.util.Calendar;
@@ -39,7 +40,7 @@ import java.util.Calendar;
  * 스케줄 작성 메인화면 하단뷰
  */
 
-public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener, View.OnClickListener {
+public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener, View.OnClickListener, SelectDateDialog.OnSelectDateListener {
 
     private ScheduleLayout scheduleLayout;
 
@@ -49,6 +50,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     private RelativeLayout rlNoTask;
     private ScheduleAdapter mScheduleAdapter;
+
+    private long mTime;
 
     static final String TAG = ScheduleFragment.class.getSimpleName();
 //    private ScheduleAdapter
@@ -115,7 +118,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 //시간 설정이 가능한 다이얼로그?
                 break;
             case R.id.ibMainOK:
-                addSchedule();
+//                addSchedule();
                 break;
         }
     }
@@ -148,13 +151,14 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         LinearLayoutManager manager = new LinearLayoutManager(mActivity);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        rvSchedule.setLayoutManager(manager);
+        Log.d(TAG, "rvSchedule --->" + rvSchedule);
+//        rvSchedule.setLayoutManager(manager);
         //item view가 추가/삭제/이동 할때 animation
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false);
-        rvSchedule.setItemAnimator(itemAnimator);
+//        rvSchedule.setItemAnimator(itemAnimator);
 
-        m
+
         initBottomInputBar();
     }
 
@@ -192,4 +196,20 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             }
         });
      }
+
+     //SelectDateDialog override
+    @Override
+    public void onSelectDate(final int year, final int month, final int day, long time, int position) {
+        scheduleLayout.getMonthCalendar().setCurrentItem(position);
+
+        scheduleLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                scheduleLayout.getMonthCalendar().getCurrentMonthView().clickThisMonth(year, month, day);
+            }
+        }, 100);
+        mTime = time;
+    }
+
+
 }

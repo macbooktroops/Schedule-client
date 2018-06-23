@@ -79,6 +79,9 @@ public class MonthView extends View {
         super(context, attrs, defStyleAttrs);
 
         initAttrs(array, year, month);
+        initPaint();
+        initMonth();;
+        initGestureDetector();
     }
 
     //월 뷰 기본색상설정
@@ -125,7 +128,6 @@ public class MonthView extends View {
         Log.d(TAG, "mSel Year/Month --> " + mSelYear + "-" + mSelMonth);
 
 
-        initPaint();
     }
 
     //스케줄 화면 텍스트 세팅
@@ -142,7 +144,6 @@ public class MonthView extends View {
         mLunarPaint.setTextSize(mLunarTextSize * mDisplayMetrics.scaledDensity);
         mLunarPaint.setColor(mLunarTextColor);
 
-        initMonth();
     }
 
     //스케줄 월 날짜 세팅
@@ -161,7 +162,27 @@ public class MonthView extends View {
             setSelectYearMonth(mSelYear, mSelMonth, 1);
         }
 
-        initGestureDetector();
+    }
+
+
+    @Override
+    protected void onMeasure(int width, int height) {
+        int widthSize = MeasureSpec.getSize(width);
+        int widthMode = MeasureSpec.getMode(width);
+
+        int heightSize = MeasureSpec.getSize(height);
+        int heightMode = MeasureSpec.getMode(height);
+
+        if (heightMode == MeasureSpec.AT_MOST) {
+            heightSize = mDisplayMetrics.densityDpi * 200;
+        }
+
+        if (widthMode == MeasureSpec.AT_MOST) {
+            widthSize = mDisplayMetrics.densityDpi * 300;
+        }
+
+        setMeasuredDimension(widthSize, heightSize);
+
     }
 
 
@@ -170,6 +191,7 @@ public class MonthView extends View {
     protected void onDraw(Canvas canvas) {
         Log.d(TAG, "onDraw~~~");
         initSize();
+        clearData();
 
         drawLastMonth(canvas);
         int selected[] = drawThisMonth(canvas);
@@ -192,7 +214,6 @@ public class MonthView extends View {
             mSelectCircleSize = (int) (mSelectCircleSize / 1.3);
         }
 
-        clearData();
     }
 
     //날짜 텍스트, 휴일,음력 배열 세팅
@@ -542,10 +563,25 @@ public class MonthView extends View {
     public int getWeekRow() {
         return mWeekRow;
     }
+
+
+    //OnClickListener 강제 발생
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mGestureDetector.onTouchEvent(event);
+    }
+
+
     /**
      * 날짜 클릭 리스너
      * @param dateClickListener
      */
+
 
 
     public void setOnDateClickListener(OnMonthClickListener dateClickListener) {

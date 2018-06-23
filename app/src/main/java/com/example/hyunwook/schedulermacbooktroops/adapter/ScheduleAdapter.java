@@ -2,6 +2,7 @@ package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,13 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ScheduleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_schedule, parent, false));
         } else if (viewType == SCHEDULE_FINISH_TYPE) {
             Log.d(TAG, "SCHEDULE_FINISH_TYPE");
-            return new ScheduleFinishViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_Schedule_finish))
+            return new ScheduleFinishViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_schedule_finish, parent, false));
+        } else if (viewType == SCHEDULE_CENTER) {
+            Log.d(TAG, "SCHEDULE_CENTER");
+            return new ScheduleCenterViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_schedule_center, parent, false));
+        } else {
+            Log.d(TAG, "SCHEDULE_BOTTOM");
+            return new ScheduleBottomViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_schedule_bottom, parent, false));
         }
     }
 
@@ -84,6 +91,12 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             tvScheduleTitle = (TextView) itemView.findViewById(R.id.tvScheduleTitle); //스케줄 이름
             tvScheduleTime = (TextView) itemView.findViewById(R.id.tvScheduleTime); //시간 표시부분
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return mSchedules.size() + mFinishSchedules.size() + 2;
+
     }
 
     //Finished Schedule
