@@ -45,7 +45,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private List<EventSet> mEventSets;
 
-    private BaseFragment mScheduleFragment;
+    private BaseFragment mScheduleFragment, mEventSetFragment;
+    private EventSet mCurrentEventSet;
 
     static final String TAG = MainActivity.class.getSimpleName();
 
@@ -67,6 +68,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         searchViewById(R.id.linearMenuSchedule).setOnClickListener(this);
 
         initUI();
+        initEventSetList();
+        goScheduleFragment();
+        initBroadcastReceiver();
+
     }
 
     //UI 초기화
@@ -88,7 +93,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             tvMenuTitle.setGravity(Gravity.CENTER_VERTICAL);
         }
 
-        initEventSetList();
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        resetMainTitleDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
     }
 
     //RecyclerView 설정
@@ -103,7 +113,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false); //비활성화
 
-        goScheduleFragment();
 
     }
 
@@ -125,8 +134,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         tvTitle.setVisibility(View.GONE);
         drawMain.closeDrawer(Gravity.START);
 
-        initBroadcastReceiver();
 
+    }
+
+    //goto eventset fragment
+    //스케줄 작성 된 프레그먼트로.
+    public void gotoEventSetFragment(EventSet eventSet) {
+        Log.d(TAG, "gotoEventSetFragment");
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+
+        if (mCurrentEventSet != eventSet || eventSet.getId() == 0) {
+            if (mEventSetFragment != null)
+                ft.remove(mEventSetFragment);
+
+            mEventSetFragment = EventSetFragment.getInstance(eventSet);
+            ft.add(R.id.frameContainer, mEventSetFragment);
+        }
+
+        ft.hide(mScheduleFragment);
+        ft.show(mEventSetFragment);
+        ft.commit();
+
+        Log.d(TAG, "gotoEventSet getName ->" + eventSet.getName());
+        resetTitleText(eventSet.getName());
+        drawMain.closeDrawer(Gravity.START);
+        mCurrentEventSet = eventSet;
     }
 
     private void initBroadcastReceiver() {
@@ -143,6 +177,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             case R.id.linearMenuSchedule:
 //                goScheduleFragment();
+                break;
+
+            case R.id.linearMenuNoCategory:
+                mCurrentEventSet = new EventSet();
+                mCurrentEventSet.setName(getString(R.string.menu_schedule_category));
+                gotoEventSetFragment(mCurrentEventSet);
                 break;
         }
     }
@@ -177,6 +217,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mCurrentSelectYear = year;
         mCurrentSelectMonth = month;
         mCurrentSelectDay = day;
+    }
+
+    //Title Text reset.
+    private void resetTitleText(String name) {
+        linearDate.setVisibility(View.GONE);
+        tvTitle.setVisibility(View.VISIBLE);
+        tvTitle.setText(name);
     }
 
     //back button click.

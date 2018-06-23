@@ -17,6 +17,9 @@
     <color name="color_schedule_title_text">#272E3E</color>
     <color name="color_text_grey">#ADADB9</color>
 
+    <color name="color_menu_text_color_normal">#A5A1C2</color>
+    <color name="color_menu_text_color_pre">#73728B</color>
+
     <color name="color_select_date_dialog_line">#B8B5D4</color>
     <color name="color_small_calendar_text">#7452E4</color>
     <color name="color_select_date_dialog_edit_text_bg_focus">#A68BFF</color>

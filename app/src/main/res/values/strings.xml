@@ -5,6 +5,7 @@
     <string name="menu_schedule">Schedule</string>
 
     <string name="calendar_today">Today</string>
+    <string name="menu_schedule_category">스케줄 </string>
 
     <string name="exit_app_hint">한번 더 누르시면 종료됩니다..</string>
     <string-array name="calendar_month">
