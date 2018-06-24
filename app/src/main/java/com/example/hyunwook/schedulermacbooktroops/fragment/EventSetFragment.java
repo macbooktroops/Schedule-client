@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,6 +19,9 @@ import android.widget.RelativeLayout;
 import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
+import com.example.common.bean.Schedule;
+import com.example.common.util.DeviceUtils;
+import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
@@ -44,6 +48,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     private int mPosition = -1;
 
+    private long mTime;
     public static String EVENT_SET_OBJ = "event.set.obj";
     /**
      * http://milkissboy.tistory.com/34
@@ -152,6 +157,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         }
     }
 
+    //시작 시간 설정 다이얼로그.
     private void showSelectDateDialog() {
         if (mSelectDateDialog == null) {
             Calendar calendar = Calendar.getInstance();
@@ -161,8 +167,39 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         mSelectDateDialog.show();
     }
 
+    private void closeSoftInput() {
+        etInput.clearFocus();
+        DeviceUtils.closeSoftInput(mActivity, etInput);
+    }
 
+    //ok버튼 클릭 시 스케줄 등록
     private void addSchedule() {
+        String content = etInput.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+            ToastUtils.showShortToast(mActivity, R.string.schedule_input_null);
+        } else {
+            closeSoftInput();
+
+            //스케줄 저장
+            Schedule schedule = new Schedule();
+            schedule.setTitle(content);
+            schedule.setState(0);
+            schedule.setColor(mEventSet.getColor());
+            schedule.setEventSetId(mEventSet.getId());
+            schedule.setTime(mTime);
+            schedule.setYear(mCurrentSelectYear);
+            schedule.setMonth(mCurrentSelectMonth);
+            schedule.setDay(mCurrentSelectDay);
+
+            new AddScheduleTask(mActivity, OnTaskFinishedListener<Schedule>() {
+                @Override
+                public void onTaskFinished(Schedule data) {
+                    if (data != null) {
+                        mScheduleAdapter.insert
+                    }
+                }
+            }
+        }
 
     }
 
