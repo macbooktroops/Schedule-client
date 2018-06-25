@@ -195,7 +195,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                 @Override
                 public void onTaskFinished(Schedule data) {
                     if (data != null) {
-                        mScheduleAdapter.insert
+                        mScheduleAdapter.insertItem(data);
+
                     }
                 }
             }
