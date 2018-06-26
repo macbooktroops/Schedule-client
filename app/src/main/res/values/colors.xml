@@ -37,6 +37,12 @@
     <color name="color_finish_hint_text">#8D8BA0</color>
 
     <color name="color_schedule_grey">#B9B9BD</color>
+    <color name="color_schedule_purple">#9082BD</color>
+    <color name="color_schedule_orange">#f6af80</color>
+    <color name="color_schedule_pink">#E67986</color>
+    <color name="color_schedule_yellow">#F7E373</color>
+    <color name="color_schedule_green">#84C5A3</color>
+    <color name="color_schedule_blue">#679BE4</color>
     <color name="color_schedule_finish_title_text">#7F838F</color>
 
 </resources>

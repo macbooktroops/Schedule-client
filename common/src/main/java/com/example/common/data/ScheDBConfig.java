@@ -3,6 +3,8 @@ package com.example.common.data;
 /**
  * 18-06-23
  * DB 설정
+ * 좌측메뉴 EventSet
+ * 스케줄 Schedule
  */
 public class ScheDBConfig {
 

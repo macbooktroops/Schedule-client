@@ -25,8 +25,11 @@ import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
+import com.example.hyunwook.schedulermacbooktroops.listener.OnTaskFinishedListener;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * 18-06-19
@@ -48,6 +51,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     private int mPosition = -1;
 
+    private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
     private long mTime;
     public static String EVENT_SET_OBJ = "event.set.obj";
     /**
@@ -191,7 +195,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             schedule.setMonth(mCurrentSelectMonth);
             schedule.setDay(mCurrentSelectDay);
 
-            new AddScheduleTask(mActivity, OnTaskFinishedListener<Schedule>() {
+            new AddScheduleTask(mActivity, com.example.common.listener.OnTaskFinishedListener<Schedule>() {
                 @Override
                 public void onTaskFinished(Schedule data) {
                     if (data != null) {
@@ -204,4 +208,22 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     }
 
+    //현재 날짜
+    private void setCurrentSelectDate(int year, int month, int day) {
+        mCurrentSelectYear = year;
+        mCurrentSelectMonth = month;
+        mCurrentSelectDay = day;
+    }
+
+    @Override
+    public void onSelectDate(int year, int month, int day, long time, int position) {
+        setCurrentSelectDate(year, month, day);
+        mTime = time;
+        mPosition = position;
+    }
+
+    @Override
+    public void onTaskFinished(List<Schedule> data) {
+        mScheduleAdapter.change
+    }
 }

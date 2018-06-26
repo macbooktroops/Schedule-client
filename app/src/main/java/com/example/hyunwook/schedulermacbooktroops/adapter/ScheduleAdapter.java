@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ScheduleViewHolder) {
+            final Schedule schedule = mSchedules.get(position);
+            final ScheduleViewHolder viewHolder = (ScheduleViewHolder) holder;
 
+            viewHolder.vScheduleHintBlock.setBackgroundResource();
         }
     }
 
