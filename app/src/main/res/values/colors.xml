@@ -45,4 +45,6 @@
     <color name="color_schedule_blue">#679BE4</color>
     <color name="color_schedule_finish_title_text">#7F838F</color>
 
+    <color name="color_schedule_start">#3D81E2</color>
+
 </resources>

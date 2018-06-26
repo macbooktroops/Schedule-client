@@ -1,18 +1,23 @@
 package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.text.style.StrikethroughSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
+import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +40,8 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Schedule> mSchedules;
     private List<Schedule> mFinishSchedules; //끝난 스케줄
+
+    private boolean mIsShowFinishTask = false;
 
     public ScheduleAdapter(Context context, BaseFragment baseFragment) {
         mContext = context;
@@ -75,7 +82,93 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final Schedule schedule = mSchedules.get(position);
             final ScheduleViewHolder viewHolder = (ScheduleViewHolder) holder;
 
-            viewHolder.vScheduleHintBlock.setBackgroundResource();
+            viewHolder.vScheduleHintBlock.setBackgroundResource(CalUtils.getScheduleBlockView(schedule.getColor()));;
+            viewHolder.tvScheduleTitle.setText(schedule.getTitle());
+
+            //저장된 데이터 시간검사.
+            if (schedule.getTime() != 0) {
+                viewHolder.tvScheduleTime.setText(CalUtils.timeStamp2Time(schedule.getTime()));
+            } else {
+                viewHolder.tvScheduleTime.setText("");
+            }
+
+            if (schedule.getState() == 0) {
+                viewHolder.tvScheduleState.setBackgroundResource(R.drawable.start_schedule_hint);
+                viewHolder.tvScheduleState.setText(mContext.getString(R.string.start));
+                viewHolder.tvScheduleState.setTextColor(mContext.getResources().getColor(R.color.color_schedule_start));
+            } else {
+                viewHolder.tvScheduleState.setBackgroundResource(R.drawable.finish_schedule_hint);
+                viewHolder.tvScheduleState.setText(mContext.getString(R.string.finish));
+                viewHolder.tvScheduleState.setTextColor(mContext.getResources().getColor(R.color.color_schedule_finish));
+            }
+
+            //상태 클릭시 (시작 , 종료)
+            viewHolder.tvScheduleState.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeScheduleState(schedule);
+                }
+            });
+
+            //스케줄 자체클릭시 디테일 액티비티
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mBaseFragment instanceof ScheduleFragment) {
+                        mContext.startActivity(new Intent(mContext, ScheduleDetailActivity.class)
+                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
+                                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION, ((ScheduleFragment) mBaseFragment).getCurrentCalendarPosition()));
+
+                    } else {
+                        mContext.startActivity(new Intent(mContext, ScheduleDetailActivity.class)
+                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
+                                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION,  -1));
+                    }
+                }
+            });
+        } else if (holder instanceof ScheduleFinishViewHolder) {
+            final Schedule schedule = mFinishSchedules.get(position - mSchedules.size() -1);
+            ScheduleFinishViewHolder viewHolder = (ScheduleFinishViewHolder) holder;
+
+            viewHolder.tvScheduleTitle.setText(schedule.getTitle());
+
+            if (mIsShowFinishTask) {
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) viewHolder.itemView.getLayoutParams();
+                params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                params.bottomMargin = mContext.getResources().getDimensionPixelSize(R.dimen.space_3dp);
+                viewHolder.itemView.setLayoutParams(params);
+            } else {
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) viewHolder.itemView.getLayoutParams();
+                params.height = 0;
+                params.bottomMargin = 0;
+                viewHolder.itemView.setLayoutParams(params);
+            }
+
+            //finish 상태에서 다시 클릭 시 삭제.
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    showDeleteScheduleDialog(schedule);
+                }
+            });
+            //완료된 내용들보기.
+        } else if (holder instanceof ScheduleCenterViewHolder) {
+            ScheduleCenterViewHolder viewHolder = (ScheduleCenterViewHolder) holder;
+            if (mFinishSchedules.size() > 0) {
+                viewHolder.tvChangeTaskList.setEnabled(true);
+            } else {
+                viewHolder.tvChangeTaskList.setEnabled(false);
+            }
+
+            viewHolder.tvChangeTaskList.setText(mIsShowFinishTask ? mContext.getString(R.string.schedule_hide_finish_task) : mContext.getString(R.string.schedule_show_finish_task));
+            viewHolder.tvFinishHint.setVisibility(mIsShowFinishTask && mFinishSchedules.size() > 0 ? View.VISIBLE : View.GONE);
+            viewHolder.tvChangeTaskList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mIsShowFinishTask = !mIsShowFinishTask;
+                    //완료된 게 오픈인지 아닌지.
+                    notifyDataSetChanged();
+                }
+            });
         }
     }
 
@@ -106,13 +199,14 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     //Finished Schedule
     protected class ScheduleFinishViewHolder extends RecyclerView.ViewHolder {
 
-        protected TextView tvChangeTaskList;
-        protected TextView tvFinishHint;
+        protected StrikeThruTextView tvScheduleTitle;
+        protected TextView tvScheduleTime;
+
 
         public ScheduleFinishViewHolder(View itemView) {
             super(itemView);
-            tvChangeTaskList = (TextView) itemView.findViewById(R.id.tvChangeTaskList);
-            tvFinishHint = (TextView)  itemView.findViewById(R.id.tvFinishHint);
+            tvScheduleTitle = (StrikeThruTextView) itemView.findViewById(R.id.tvScheduleTitle);
+            tvScheduleTime = (TextView) itemView.findViewById(R.id.tvScheduleTime);
         }
 
     }

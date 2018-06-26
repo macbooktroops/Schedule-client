@@ -35,7 +35,8 @@ public class CalUtils {
                 return R.drawable.yellow_schedule_left_block;
             default:
                 return R.drawable.purple_schedule_left_block;
-    }
+        }
 //    public static int getEventSetCOlor(int color)
 
+    }
 }
