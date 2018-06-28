@@ -14,9 +14,11 @@ import android.widget.TextView;
 
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
+import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
 
@@ -184,7 +186,18 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onConfirm() {
                 //확인버튼
-                new RemoveScheduleTask
+                new RemoveScheduleTask(mContext, new OnTaskFinishedListener<Boolean>() {
+                    @Override
+                    public void onTaskFinished(Boolean data) {
+                        //작업이 끝나면
+                        if (data) {
+                            removeItem(schedule);
+                            if (mBaseFragment instanceof ScheduleFragment) {
+                                ((ScheduleFragment) mBaseFragment).resetScheduleList();
+                            }
+                        }
+                    }
+                }, schedule.)
             }
         })
     }

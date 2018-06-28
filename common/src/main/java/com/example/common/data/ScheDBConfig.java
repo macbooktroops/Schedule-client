@@ -6,7 +6,7 @@ package com.example.common.data;
  * 좌측메뉴 EventSet
  * 스케줄 Schedule
  */
-public class ScheDBConfig {
+public interface ScheDBConfig {
 
     int DATABASE_VERSION = 3;
 
