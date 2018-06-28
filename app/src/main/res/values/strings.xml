@@ -42,8 +42,8 @@
     <string name="start">시작</string>
     <string name="finish">완료</string>
 
+    <string name="schedule_delete_this_schedule">스케줄을 삭제할래요?</string>
 
-    <string name="schedule_show_finish_task">완료된 거 보기</string>
     <string name="schedule_hide_finish_task">숨기기 </string>
 </resources>
 

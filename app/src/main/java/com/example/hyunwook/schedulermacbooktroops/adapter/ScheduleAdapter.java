@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
@@ -172,6 +173,21 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    //일정을 삭제하시겠습니까? 다이얼로
+    private void showDeleteScheduleDialog(final Schedule schedule) {
+        new ConfirmDialog(mContext, R.string.schedule_delete_this_schedule, new ConfirmDialog.OnClickListener() {
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onConfirm() {
+                //확인버튼
+                new RemoveScheduleTask
+            }
+        })
+    }
     //schedule holder
     protected class ScheduleViewHolder extends RecyclerView.ViewHolder {
 
