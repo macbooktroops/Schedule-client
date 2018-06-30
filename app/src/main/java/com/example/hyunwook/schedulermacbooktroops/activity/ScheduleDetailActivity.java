@@ -1,17 +1,21 @@
 package com.example.hyunwook.schedulermacbooktroops.activity;
 
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.calendar.widget.calendar.CalendarUtils;
 import com.example.common.base.app.BaseActivity;
 import com.example.common.bean.EventSet;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetMapTask;
+import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
+import com.example.hyunwook.schedulermacbooktroops.utils.DateUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,5 +73,42 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
-    
+    protected void bindData() {
+        super.bindData();
+        setScheduleData();
+    }
+
+    private void setScheduleData() {
+        vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));//색상 설정
+        ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon); //설정한 이벤트셋이 있다면.
+        etTitle.setText(mSchedule.getTitle());
+        etDesc.setText(mSchedule.getDesc()); //자세한 내용
+        EventSet current = mEventSetsMap.get(mSchedule.getEventSetId());
+
+        if (current != null) {
+            tvEventSet.setText(current.getName()); //스케줄 이름
+        }
+        resetDateTimeUi();
+
+        if (TextUtils.isEmpty(mSchedule.getLocation())) {
+            tvLocation.setText(R.string.click_here_select_location);
+        } else {
+            tvLocation.setText(mSchedule.getLocation());
+        }
+
+
+    }
+
+    private void resetDateTimeUi() {
+        if (mSchedule.getTime() == 0) {
+            if (mSchedule.getYear() != 0) {
+                tvTime.setText(String.format(getString(R.string.date_format_no_time), mSchedule.getYear(), mSchedule.getMonth() +1, mSchedule.getDay()));
+            } else {
+                tvTime.setText(R.string.click_here_select_date);
+            }
+        } else {
+            tvTime.setText(DateUtils.timeStamp2Date(mSchedule.getTime(), getString(R.string.date_format)));
+        }
+    }
+
 }

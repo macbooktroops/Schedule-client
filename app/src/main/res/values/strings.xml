@@ -50,6 +50,15 @@
     <string name="schedule_delete_this_schedule">스케줄을 삭제할래요?</string>
 
     <string name="schedule_hide_finish_task">숨기기 </string>
+
+    <string name="date_format_no_time">%1$s-%2$s-%3$s</string>
+    <string name="click_here_select_date">시간을 선택해주세요.</string>
+
+    <string name="date_format">yyyy-MM-dd HH:mm</string>
+    <string name="click_here_select_location">위치를 선택해주세요.</string>
+
+
+
 </resources>
 
 
