@@ -1,5 +1,6 @@
 package com.example.hyunwook.schedulermacbooktroops.activity;
 
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import com.example.common.bean.EventSet;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetMapTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +65,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         mSchedule = (Schedule)getIntent().getSerializableExtra(SCHEDULE_OBJ);
         mPosition = getIntent().getIntExtra(CALENDAR_POSITION, -1);
 
-        new LoadEventSetMapTask(this, this).exe
+        new LoadEventSetMapTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
+
+    @Override
+    
 }
