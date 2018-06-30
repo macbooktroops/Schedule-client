@@ -2,6 +2,7 @@ package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.text.style.StrikethroughSpan;
@@ -19,6 +20,7 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleTask;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
 
@@ -175,7 +177,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    //일정을 삭제하시겠습니까? 다이얼로
+    //일정을 삭제하시겠습니까? 다이얼로그
     private void showDeleteScheduleDialog(final Schedule schedule) {
         new ConfirmDialog(mContext, R.string.schedule_delete_this_schedule, new ConfirmDialog.OnClickListener() {
             @Override
@@ -197,9 +199,55 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             }
                         }
                     }
-                }, schedule.)
+                }, schedule.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
-        })
+        }).show();
+    }
+
+    public void removeItem(Schedule schedule) {
+        if (mSchedules.remove(schedule)) {
+            notifyDataSetChanged(); //reupdate.
+        } else if (mFinishSchedules.remove(schedule)) {
+            notifyDataSetChanged();
+        }
+    }
+
+    //스케줄 상태 변경
+    private void changeScheduleState(final Schedule schedule) {
+        switch (schedule.getState()) {
+            //start --> finish
+            case 0:
+                schedule.setState(1); //0 --> 1
+                new UpdateScheduleTask(mContext, new OnTaskFinishedListener<Boolean>() {
+                    @Override
+                    public void onTaskFinished(Boolean data) {
+                        changeScheduleItem(schedule);
+                    }
+                }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                break;
+            case 1:
+                //finish -> real finish
+                schedule.setState(2);
+                new UpdateScheduleTask(mContext, new OnTaskFinishedListener<Boolean>() {
+                    @Override
+                    public void onTaskFinished(Boolean data) {
+                        mSchedules.remove(schedule);
+                        mFinishSchedules.add(schedule);
+                        notifyDataSetChanged();
+                    }
+                }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                break;
+        }
+    }
+
+
+
+    private void changeScheduleItem(Schedule schedule) {
+        int i = mSchedules.indexOf(schedule);
+        Log.d(TAG, "changeSchedule --->" + i);
+        if (i != -1) {
+            notifyDataSetChanged();
+        }
     }
     //schedule holder
     protected class ScheduleViewHolder extends RecyclerView.ViewHolder {

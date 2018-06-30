@@ -85,4 +85,26 @@ public class ScheduleDB {
         return row != 0;
     }
 
+    //업데이트
+    public boolean updateSchedule(Schedule schedule) {
+        SQLiteDatabase db = mHelper.getWritableDatabase(); //읽고 쓰기
+        ContentValues values = new ContentValues();
+        values.put(ScheDBConfig.SCHEDULE_TITLE, schedule.getTitle());
+        values.put(ScheDBConfig.SCHEDULE_COLOR, schedule.getColor());
+        values.put(ScheDBConfig.SCHEDULE_DESC, schedule.getDesc());
+        values.put(ScheDBConfig.SCHEDULE_STATE, schedule.getState());
+        values.put(ScheDBConfig.SCHEDULE_LOCATION, schedule.getLocation());
+        values.put(ScheDBConfig.SCHEDULE_YEAR, schedule.getYear());
+        values.put(ScheDBConfig.SCHEDULE_MONTH, schedule.getMonth());
+        values.put(ScheDBConfig.SCHEDULE_TIME, schedule.getTime());
+        values.put(ScheDBConfig.SCHEDULE_DAY, schedule.getDay());
+        values.put(ScheDBConfig.SCHEDULE_EVENT_SET_ID, schedule.getEventSetId());
+
+        int row = db.update(ScheDBConfig.SCHEDULE_TABLE_NAME, values, String.format("%s=?", ScheDBConfig.SCHEDULE_ID), new String[]{String.valueOf(schedule.getId())});
+        db.close();
+        mHelper.close();
+
+        return row > 0;
+    }
+
 }
