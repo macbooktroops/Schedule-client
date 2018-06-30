@@ -27,6 +27,11 @@
     <string name="calendar_year">%d-</string>
 
     <!-- 스케줄 -->
+    <string name="schedule_event_detail_setting">스케줄 세팅</string>
+    <string name="schedule_title">스케줄..</string>
+    <string name="remarks">내용</string>
+    <string name="please_input_desc">내용을 적어주세요..</string>
+
     <string name="schedule_input"> 할 일을 적으세요..</string>
 
     <string name="hour">시작 시간</string>
