@@ -12,8 +12,11 @@ import com.example.common.base.app.BaseActivity;
 import com.example.common.bean.EventSet;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectEventSetDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetMapTask;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.utils.DateUtils;
 
@@ -27,6 +30,9 @@ import java.util.Map;
 public class ScheduleDetailActivity extends BaseActivity implements View.OnClickListener,
         OnTaskFinishedListener<Map<Integer, EventSet>> {
 
+    public static int UPDATE_SCHEDULE_CANCEL = 1;
+    public static int UPDATE_SCHEDULE_FINISH = 2;
+
     private View vSchedule;
     private ImageView ivEventIcon;
     private EditText etTitle, etDesc;
@@ -39,6 +45,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     public static String CALENDAR_POSITION = "calendar.position";
 
     private int mPosition = -1;
+
+    private SelectEventSetDialog mSelectEventSetDialog;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
@@ -77,6 +85,47 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         super.bindData();
         setScheduleData();
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvCancel:
+                setResult(UPDATE_SCHEDULE_CANCEL);
+                finish();
+                break;
+            case R.id.tvFinish:
+                confirm();
+                break;
+            case R.id.llScheduleEventSet:
+                //스케줄 제목적혀있는 레이아웃 클릭
+                showSelectEventSetDialog();
+                break;
+
+        }
+    }
+
+    //확인 버튼
+    private void confirm() {
+        if (etTitle.getText().length() != 0) {
+            mSchedule.setTitle(etTitle.getText().toString());
+            mSchedule.setDesc(etDesc.getText().toString());
+
+            new UpdateScheduleTask(this, new OnTaskFinishedListener<Boolean>() {
+                @Override
+                public void onTaskFinished(Boolean data) {
+                    setResult(UPDATE_SCHEDULE_FINISH);
+                    finish();
+                }
+            }, mSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            ToastUtils.showShortToast(this, R.string.schedule_input_content_is_no_null);
+        }
+    }
+
+    private void showSelectEventSetDialog() {
+        if (mselec)
+    }
+
 
     private void setScheduleData() {
         vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));//색상 설정

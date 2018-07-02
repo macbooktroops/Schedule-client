@@ -46,4 +46,29 @@ public class EventSetDB {
         mHelper.close();
         return eventSets;
     }
+
+
+    //EventSet 저장된 정보얻기
+    public List<EventSet> getAllEventSet() {
+        List<EventSet> eventSets = new ArrayList<>();
+        SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기
+
+        Cursor cursor = db.query(ScheDBConfig.EVENT_SET_TABLE_NAME, null, null, null, null, null, null);
+        EventSet eventSet;
+
+        //저장된 이벤트 셋 모두 얻
+        while (cursor.moveToNext()) {
+            eventSet = new EventSet();
+            eventSet.setId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_ID)));
+            eventSet.setName(cursor.getString(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_NAME)));
+            eventSet.setColor(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_COLOR)));
+            eventSet.setIcon(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_ICON)));
+            eventSets.add(eventSet);
+        }
+        cursor.close();
+        db.close();
+        mHelper.close();
+        return eventSets;
+
+    }
 }

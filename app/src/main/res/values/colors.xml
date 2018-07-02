@@ -49,5 +49,7 @@
 
     <color name="color_schedule_line">#E3E1EE</color>
     <color name="color_schedule_text">#282D40</color>
+    <color name="color_schedule_text_pre">#ABABAD</color>
+
 
 </resources>

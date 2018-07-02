@@ -57,6 +57,10 @@
     <string name="date_format">yyyy-MM-dd HH:mm</string>
     <string name="click_here_select_location">위치를 선택해주세요.</string>
 
+    <string name="schedule_input_content_is_no_null">스케줄 제목이 비었네요..</string>
+
+    <string name="select_event_set">이벤트 선택</string>
+    <string name="menu_add_event_set">이벤트 추가</string>
 
 
 </resources>
