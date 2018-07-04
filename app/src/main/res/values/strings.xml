@@ -62,6 +62,9 @@
     <string name="select_event_set">이벤트 선택</string>
     <string name="menu_add_event_set">이벤트 추가</string>
 
+    <string name="menu_no_category">미정 </string>
+
+
 
 </resources>
 

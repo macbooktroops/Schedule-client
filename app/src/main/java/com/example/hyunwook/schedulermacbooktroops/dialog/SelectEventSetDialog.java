@@ -1,7 +1,9 @@
 package com.example.hyunwook.schedulermacbooktroops.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,6 +12,7 @@ import android.widget.ListView;
 import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.activity.AddEventSetActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.SelectEventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetTask;
 
@@ -20,15 +23,19 @@ import java.util.List;
  * 스케줄 이벤트 설정 다이얼로그
  * DetailActivity
  */
-public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSet>>{
+public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSet>> {
 
     private Context mContext;
     private OnSelectEventSetListener mOnSelectEventSetListener;
+    public static int ADD_EVENT_SET_CODE = 1;
 
     private int mId;
 
     private ListView lvEvent;
     private SelectEventSetAdapter mSelectEventSetAdapter;
+
+    private List<EventSet> mEventSets;
+
     public SelectEventSetDialog(Context context, OnSelectEventSetListener onSelectEventSetListener, int id) {
         super(context, R.style.DialogFullScreen);
         mContext = context;
@@ -55,12 +62,59 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
         lvEvent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mSelect
+                mSelectEventSetAdapter.setSelectPosition(position);
             }
         });
     }
-}
 
-public interface OnSelectEventSetListener {
-    void onSelectEventSet(EventSet eventSet);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvCancel:
+                dismiss();
+                break;
+            case R.id.tvConfirm:
+                if (mOnSelectEventSetListener != null) {
+                    mOnSelectEventSetListener.onSelectEventSet(mEventSets.get(mSelectEventSetAdapter.getSelectPosition()));
+
+                }
+
+                dismiss();
+                break;
+            case R.id.tvAddEventSet:
+                ((Activity) mContext).startActivityForResult(new Intent(mContext, AddEventSetActivity.class), ADD_EVENT_SET_CODE);
+        }
+    }
+
+    //이벤트 추가
+    public void addEventSet(EventSet eventSet) {
+        mEventSets.add(eventSet);
+        mSelectEventSetAdapter.notifyDataSetChanged();
+    }
+
+    //작업이 끝나면
+    @Override
+    public void onTaskFinished(List<EventSet> data) {
+        mEventSets = data;
+
+        EventSet eventSet = new EventSet();
+        eventSet.setName(getContext().getString(R.string.menu_no_category));
+        mEventSets.add(0, eventSet);
+
+        int position = 0;
+        for (int i = 0; i < mEventSets.size(); i++) {
+            if (mEventSets.get(i).getId() == mId) {
+                position = i;
+                break;
+            }
+        }
+
+        mSelectEventSetAdapter = new SelectEventSetAdapter(mContext, mEventSets, position);
+        lvEvent.setAdapter(mSelectEventSetAdapter);
+    }
+
+
+    public interface OnSelectEventSetListener {
+        void onSelectEventSet(EventSet eventSet);
+    }
 }
