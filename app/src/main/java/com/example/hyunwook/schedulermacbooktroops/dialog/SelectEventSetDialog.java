@@ -10,6 +10,7 @@ import android.widget.ListView;
 import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.adapter.SelectEventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetTask;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     private int mId;
 
     private ListView lvEvent;
-    private SelectEventSetAdapter
+    private SelectEventSetAdapter mSelectEventSetAdapter;
     public SelectEventSetDialog(Context context, OnSelectEventSetListener onSelectEventSetListener, int id) {
         super(context, R.style.DialogFullScreen);
         mContext = context;
