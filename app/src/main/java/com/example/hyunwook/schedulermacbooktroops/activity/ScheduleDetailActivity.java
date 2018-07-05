@@ -1,5 +1,6 @@
 package com.example.hyunwook.schedulermacbooktroops.activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.dialog.InputLocationDialog;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectEventSetDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetMapTask;
@@ -29,7 +31,7 @@ import java.util.Map;
  * 스케줄을 위치 등등, 자세하게 적을수있는 Activity
  */
 public class ScheduleDetailActivity extends BaseActivity implements View.OnClickListener,
-        OnTaskFinishedListener<Map<Integer, EventSet>>, SelectEventSetDialog.OnSelectEventSetListener, SelectDateDialog.OnSelectDateListener {
+        OnTaskFinishedListener<Map<Integer, EventSet>>, SelectEventSetDialog.OnSelectEventSetListener, SelectDateDialog.OnSelectDateListener, InputLocationDialog.OnLocationBackListener {
 
     public static int UPDATE_SCHEDULE_CANCEL = 1;
     public static int UPDATE_SCHEDULE_FINISH = 2;
@@ -155,7 +157,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     //위치 설정 레이아웃 클릭
     private void showInputLocationDialog() {
-        if (mINput)
+        if (mInputLocationDialog == null) {
+            mInputLocationDialog = new InputLocationDialog(this, this);
+        }
+        mInputLocationDialog.show();
     }
 
     private void setScheduleData() {
@@ -177,6 +182,14 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         }
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SelectEventSetDialog.ADD_EVENT_SET_CODE) { //event set dialog
+            if (resultCode == AddEventSetActivity)
     }
 
     private void resetDateTimeUi() {

@@ -22,7 +22,27 @@ public class InputLocationDialog extends Dialog implements View.OnClickListener{
     }
 
     private void initView() {
-        setContentView(R.layout.dialog_input)_;
+        setContentView(R.layout.dialog_input_location);
+        etLocationContent = (EditText) findViewById(R.id.etLocationContent);
+        findViewById(R.id.tvCancel).setOnClickListener(this);
+        findViewById(R.id.tvConfirm).setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvCancel:
+            dismiss();
+            break;
+            case R.id.tvConfirm:
+                if (mOnLocationBackListener != null) {
+                    mOnLocationBackListener.onLocationBack(etLocationContent.getText().toString());
+                }
+
+                dismiss();
+                break;
+        }
     }
         public interface OnLocationBackListener {
             void onLocationBack(String text);
