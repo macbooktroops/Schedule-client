@@ -14,6 +14,7 @@ import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectEventSetDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetMapTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
@@ -28,7 +29,7 @@ import java.util.Map;
  * 스케줄을 위치 등등, 자세하게 적을수있는 Activity
  */
 public class ScheduleDetailActivity extends BaseActivity implements View.OnClickListener,
-        OnTaskFinishedListener<Map<Integer, EventSet>> {
+        OnTaskFinishedListener<Map<Integer, EventSet>>, SelectEventSetDialog.OnSelectEventSetListener, SelectDateDialog.OnSelectDateListener {
 
     public static int UPDATE_SCHEDULE_CANCEL = 1;
     public static int UPDATE_SCHEDULE_FINISH = 2;
@@ -47,6 +48,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private int mPosition = -1;
 
     private SelectEventSetDialog mSelectEventSetDialog;
+    private SelectDateDialog mSelectDateDialog;
+    private InputLocationDialog mInputLocationDialog;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
@@ -101,6 +104,16 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                 showSelectEventSetDialog();
                 break;
 
+            case R.id.llScheduleTime:
+                //날짜 선택 레이아웃 클릭 시.
+                showSelectDateDialog();
+                break;
+
+            case R.id.llScheduleLocation:
+                //위치 선택 레이아웃 클릭
+                showInputLocationDialog();
+                break;
+
         }
     }
 
@@ -122,10 +135,28 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         }
     }
 
+
+    //이벤트 설정 레이아웃클릭
     private void showSelectEventSetDialog() {
-        if (mselec)
+        if (mSelectEventSetDialog == null) {
+            mSelectEventSetDialog = new SelectEventSetDialog(this, this, mSchedule.getEventSetId());
+        }
+        mSelectEventSetDialog.show();
     }
 
+
+    //시간 설정 레이아웃클릭
+    private void showSelectDateDialog() {
+        if (mSelectDateDialog == null) {
+            mSelectDateDialog = new SelectDateDialog(this, this, mSchedule.getYear(), mSchedule.getMonth(), mSchedule.getDay(), mPosition);
+        }
+        mSelectDateDialog.show();
+    }
+
+    //위치 설정 레이아웃 클릭
+    private void showInputLocationDialog() {
+        if (mINput)
+    }
 
     private void setScheduleData() {
         vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));//색상 설정

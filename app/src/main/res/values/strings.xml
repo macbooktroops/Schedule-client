@@ -64,6 +64,10 @@
 
     <string name="menu_no_category">미정 </string>
 
+    <string name="add_location">위치 추가</string>
+    <string name="click_input_location">위치를 클릭하세요</string>
+
+
 
 
 </resources>
