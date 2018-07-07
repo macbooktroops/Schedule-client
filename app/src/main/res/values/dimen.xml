@@ -42,4 +42,9 @@
     <dimen name="schedule_item_center_size">50dp</dimen>
     <dimen name="add_event_set_circle_size">16dp</dimen>
 
+    <dimen name="select_color_item_width">60dp</dimen>
+    <dimen name="select_color_item_height">36dp</dimen>
+    <dimen name="select_color_item_child_width">54dp</dimen>
+    <dimen name="select_color_item_child_height">30dp</dimen>
+
 </resources>
