@@ -71,6 +71,7 @@
     <string name="event_set_list_name">스케줄 분류</string>
 
     <string name="event_set_select_color">색깔을 선택해주세요.</string>
+    <string name="event_set_name_is_not_null">내용이 비어있습니다.</string>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.example.common.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,6 +27,19 @@ public class EventSetDB {
         return new EventSetDB(context);
     }
 
+    //EventSet 스케줄 분류 추가
+    public int addEventSet(EventSet eventSet) {
+        SQLiteDatabase db = mHelper.getWritableDatabase(); //쓰기 가능
+        ContentValues values = new ContentValues();
+        values.put(ScheDBConfig.EVENT_SET_NAME, eventSet.getName());
+        values.put(ScheDBConfig.EVENT_SET_COLOR, eventSet.getColor());
+        values.put(ScheDBConfig.EVENT_SET_ICON, eventSet.getIcon());
+
+        long row = db.insert(ScheDBConfig.EVENT_SET_TABLE_NAME, null, values);
+        db.close();
+
+        return row > 0 ? getLastEventSetId() : 0;
+    }
     //EventSet 저장된 정보를 Map 추가.
     public Map<Integer, EventSet> getAllEventSetMap() {
         Map<Integer, EventSet> eventSets = new HashMap<>();
@@ -70,5 +84,21 @@ public class EventSetDB {
         mHelper.close();
         return eventSets;
 
+    }
+
+    //제일 마지막에 저장된 이벤트 id얻기
+    private int getLastEventSetId() {
+        SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기 가능
+        Cursor cursor = db.query(ScheDBConfig.EVENT_SET_TABLE_NAME, null, null, null, null, null, null);
+
+        int id = 0;
+        if (cursor.moveToLast()) {
+            id = cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_ID));
+        }
+
+        cursor.close();
+        db.close();
+        mHelper.close();
+        return id;
     }
 }

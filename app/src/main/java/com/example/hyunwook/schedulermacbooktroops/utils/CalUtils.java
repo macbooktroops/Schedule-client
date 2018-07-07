@@ -58,4 +58,24 @@ public class CalUtils {
 //    public static int getEventSetCOlor(int color)
 
     }
+
+    //EventSetActivity  써클 색깔
+    public static int getEventSetCircle(int color) {
+        switch (color) {
+            case 0:
+                return R.drawable.purple_circle;
+            case 1:
+                return R.drawable.pink_circle;
+            case 2:
+                return R.drawable.orange_circle;
+            case 3:
+                return R.drawable.yellow_circle;
+            case 4:
+                return R.drawable.green_circle;
+            case 5:
+                return R.drawable.blue_circle;
+            default:
+                return R.drawable.purple_circle;
+        }
+    }
 }
