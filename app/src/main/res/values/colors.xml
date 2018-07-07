@@ -55,5 +55,11 @@
     <color name="color_input_location_text">#272E3E</color>
     <color name="color_input_location_text_hint">#AAA8B3</color>
 
+    <color name="color_add_event_set_border">#EEEEEE</color>
+    <color name="color_add_event_set_content">#F4F4F4</color>
+    <color name="color_add_event_text">#282D40</color>
+    <color name="color_circle_border">#706F7D</color>
+    <string name="event_set_color">Color</string>
+
 
 </resources>

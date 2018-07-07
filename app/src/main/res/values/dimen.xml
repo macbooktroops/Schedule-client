@@ -40,5 +40,6 @@
     <dimen name="schedule_item_size">50dp</dimen>
 
     <dimen name="schedule_item_center_size">50dp</dimen>
+    <dimen name="add_event_set_circle_size">16dp</dimen>
 
 </resources>
