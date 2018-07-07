@@ -188,8 +188,19 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == SelectEventSetDialog.ADD_EVENT_SET_CODE) { //event set dialog
-            if (resultCode == AddEventSetActivity)
+        if (requestCode == SelectEventSetDialog.ADD_EVENT_SET_CODE) { //event set dialog에서 추가버튼을 누르고.
+            if (resultCode == AddEventSetActivity.ADD_EVENT_SET_FINISH) {
+                EventSet eventSet = (EventSet) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ); //작업끝
+                if (eventSet != null) {
+                    mSelectEventSetDialog.addEventSet(eventSet);
+                    /**
+                     * 스케줄 분류 항목추가.
+                     * 스케줄 분류 다이얼로그에서 항목을 추가했을 경우,
+                     * Broadcast로 좌측메뉴에도 그 항목을 추가한다고 전송.
+                     */
+                    sendBroadcast(new Intent(MainActivity.ADD_EVENT_SET_ACTION).putExtra(AddEventSetActivity.EVENT_SET_OBJ, eventSet));
+                }
+            }
     }
 
     private void resetDateTimeUi() {

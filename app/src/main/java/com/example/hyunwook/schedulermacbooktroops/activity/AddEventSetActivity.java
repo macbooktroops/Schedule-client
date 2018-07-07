@@ -26,8 +26,8 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
     private View vEventSetColor;
     private SelectColorDialog mSelectColorDialog;
 
-    private static int ADD_EVENT_SET_CANCEL = 1;
-    private static int ADD_EVENT_SET_FINISH = 2;
+    public static int ADD_EVENT_SET_CANCEL = 1;
+    public static int ADD_EVENT_SET_FINISH = 2;
     public static String EVENT_SET_OBJ = "event.set.obj";
 
 
@@ -83,6 +83,7 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
         finish();
     }
 
+    //색깔 선택 다이얼로그에서 Confirm버튼 누르면 호출
     @Override
     public void onSelectColor(int color) {
         mColor = color;

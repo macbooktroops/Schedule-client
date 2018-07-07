@@ -23,6 +23,7 @@ import com.example.common.base.app.BaseActivity;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 
 import java.util.ArrayList;
@@ -51,6 +52,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     static final String TAG = MainActivity.class.getSimpleName();
 
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
+
+    private EventSetAdapter
 
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
     private long[] mNotes = new long[2]; //back button save.
@@ -250,6 +253,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ADD_EVENT_SET_ACTION.equals(intent.getAction())) {
+                EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
+                if (eventSet != null) {
+                    meventset
+                }
 //                EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
 //                if (eventSet != null) {
 //                    mEventSetAdapter.inserItem(eventSet);
