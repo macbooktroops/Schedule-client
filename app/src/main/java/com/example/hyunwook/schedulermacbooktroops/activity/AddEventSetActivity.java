@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.example.common.base.app.BaseActivity;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectColorDialog;
 
 /**
  * 18-06-19
