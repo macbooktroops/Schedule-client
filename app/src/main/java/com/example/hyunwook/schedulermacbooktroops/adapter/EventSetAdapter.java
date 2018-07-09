@@ -2,8 +2,13 @@ package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.common.bean.EventSet;
+import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.widget.SlideDeleteView;
 
 import java.util.List;
 
@@ -23,6 +28,16 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.{
    //ViewHolder 추가
     protected class EventSetViewHolder extends RecyclerView.ViewHolder {
 
-        private Slidedel
+        private SlideDeleteView sdvEventSet;
+        private View vEventSetColor;
+        private TextView tvEventSetName;
+        private ImageButton ibEventSetDelete;
+
+        public EventSetViewHolder(View itemView) {
+            super(itemView);
+
+            sdvEventSet = (SlideDeleteView) itemView.findViewById(R.id.sdvE)
+        }
+
    }
 }

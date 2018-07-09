@@ -60,6 +60,7 @@
     <color name="color_add_event_text">#282D40</color>
     <color name="color_circle_border">#706F7D</color>
     <string name="event_set_color">Color</string>
+    <color name="color_menu_line">#303054</color>
 
 
 </resources>
