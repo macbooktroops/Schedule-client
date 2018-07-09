@@ -101,4 +101,12 @@ public class EventSetDB {
         mHelper.close();
         return id;
     }
+
+    public boolean removeEventSet(int id) {
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        int row = db.delete(ScheDBConfig.EVENT_SET_TABLE_NAME, String.format("%s=?", ScheDBConfig.EVENT_SET_ID), new String[]{String.valueOf(id)});
+        db.close();
+        mHelper.close();;
+        return row != 0;
+    }
 }

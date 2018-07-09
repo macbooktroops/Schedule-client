@@ -73,6 +73,8 @@
     <string name="event_set_select_color">색깔을 선택해주세요.</string>
     <string name="event_set_name_is_not_null">내용이 비어있습니다.</string>
 
+    <string name="event_set_delete_this_event_set">삭제하시겠어요?</string>
+
 
 </resources>
 
