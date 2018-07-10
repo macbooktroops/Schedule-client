@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.SystemClock;
@@ -23,6 +24,7 @@ import com.example.common.base.app.BaseActivity;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 
@@ -53,7 +55,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
 
-    private EventSetAdapter
+    private EventSetAdapter mEventSetAdapter;
+
+    private RecyclerView rvEventSetList;
+    private AddEventSetBroadcastReceiver mAddEventSetBroadcastReceiver;
 
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
     private long[] mNotes = new long[2]; //back button save.
@@ -65,7 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         tvTitleMonth = searchViewById(R.id.tvTitleMonth);
         tvTitleDay = searchViewById(R.id.tvTitleDay);
         tvTitle = searchViewById(R.id.tvTitle);
-
+        rvEventSetList = searchViewById(R.id.rvme)
         //각각 클릭 리스너 적용
         searchViewById(R.id.imgBtnMain).setOnClickListener(this);
         searchViewById(R.id.linearMenuSchedule).setOnClickListener(this);
@@ -112,6 +117,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL); //세로 배치
 
+        rvMe
         //item view가 추가/삭제/이동 할때 animation
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false); //비활성화
@@ -139,6 +145,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
 
     }
+
+
 
     //goto eventset fragment
     //스케줄 작성 된 프레그먼트로.
@@ -168,7 +176,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private void initBroadcastReceiver() {
 
-//        if ()
+        if (mAddEventSetBroadcastReceiver == null) {
+            mAddEventSetBroadcastReceiver = new AddEventSetBroadcastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ADD_EVENT_SET_ACTION);
+
+            registerReceiver(mAddEventSetBroadcastReceiver, filter);
+        }
     }
     @Override
     public void onClick(View v) {
@@ -255,7 +269,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             if (ADD_EVENT_SET_ACTION.equals(intent.getAction())) {
                 EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
                 if (eventSet != null) {
-                    meventset
+                    mEventSetAdapter.insertItem(eventSet);
                 }
 //                EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
 //                if (eventSet != null) {

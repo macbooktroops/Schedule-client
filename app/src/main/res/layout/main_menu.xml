@@ -99,6 +99,29 @@
                         android:layout_marginRight="@dimen/space_10dp"
                         android:src="@mipmap/ic_menu_go"/>
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_height"
+                android:background="@color/color_menu_line"/>
+
+            <com.example.hyunwook.schedulermacbooktroops.widget.AbsoluteRecyclerView
+                android:id="@+id/rvEventSetList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+            android:id="@+id/tvMenuAddEventSet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableLeft="@drawable/btn_add_event_set"
+            android:drawablePadding="@dimen/space_16dp"
+            android:paddingBottom="@dimen/space_16dp"
+            android:paddingLeft="@dimen/space_30dp"
+            android:paddingTop="@dimen/space_16dp"
+            android:text="@string/menu_add_event_set"
+            android:textColor="@color/menu_item_text_color"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

@@ -100,6 +100,20 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
         notifyDataSetChanged();
     }
 
+    //초기화 후 데이터 체인지
+    public void changeAllData(List<EventSet> eventSets) {
+        mEventSets.clear();
+        mEventSets.addAll(eventSets);
+        notifyDataSetChanged();
+    }
+
+    public void insertItem(EventSet eventSet) {
+        mEventSets.add(eventSet);
+        notifyItemInserted(mEventSets.size() -1);
+
+        //리스트 맨끝에 데이터 추가
+    }
+
    //ViewHolder 추가
     protected class EventSetViewHolder extends RecyclerView.ViewHolder {
 
