@@ -221,7 +221,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     //변경
     public void changeAllData(List<Schedule> schedules) {
-        distin
+        distinguishData(schedules);
     }
 
     //데이터 구별

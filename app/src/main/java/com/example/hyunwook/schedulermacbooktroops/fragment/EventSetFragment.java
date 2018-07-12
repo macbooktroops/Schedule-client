@@ -27,7 +27,6 @@ import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
-import com.example.hyunwook.schedulermacbooktroops.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 
 import java.util.Calendar;
@@ -38,7 +37,7 @@ import java.util.List;
  * 스케줄 목록을 보고자 할때 표시되는 프레그먼트
  *
  */
-public class EventSetFragment extends BaseFragment implements View.OnClickListener, SelectDateDialog.OnSelectDateListener {
+public class EventSetFragment extends BaseFragment implements View.OnClickListener, SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<Schedule>> {
 
     static final String TAG = EventSetFragment.class.getSimpleName();
     private ScheduleRecyclerView rvScheduleList;
@@ -229,6 +228,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onTaskFinished(List<Schedule> data) {
-        mScheduleAdapter.changeALl
+        mScheduleAdapter.changeAllData(data);
+        rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
     }
 }

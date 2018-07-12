@@ -137,6 +137,20 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         }
     }
 
+    @Override
+    public void onTaskFinished(Map<Integer, EventSet> data) {
+        mEventSetsMap = data;
+        EventSet eventSet = new EventSet();
+        eventSet.setName(getString(R.string.menu_no_category));
+
+        mEventSetsMap.put(eventSet.getId(), eventSet);
+
+        EventSet current = mEventSetsMap.get(mSchedule.getEventSetId());
+        if (current != null) {
+            tvEventSet.setText(current.getName());
+
+        }
+    }
 
     //이벤트 설정 레이아웃클릭
     private void showSelectEventSetDialog() {
@@ -214,6 +228,12 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         } else {
             tvTime.setText(DateUtils.timeStamp2Date(mSchedule.getTime(), getString(R.string.date_format)));
         }
+    }
+
+    //스케줄 목록클릭
+   @Override
+    public void onSelectEventSet(EventSet eventSet) {
+        mSchedule.setColor();
     }
 
 }
