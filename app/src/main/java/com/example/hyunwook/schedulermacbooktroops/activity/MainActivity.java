@@ -70,10 +70,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         tvTitleMonth = searchViewById(R.id.tvTitleMonth);
         tvTitleDay = searchViewById(R.id.tvTitleDay);
         tvTitle = searchViewById(R.id.tvTitle);
-        rvEventSetList = searchViewById(R.id.rvme)
+        rvEventSetList = searchViewById(R.id.rvEventSetList);
         //각각 클릭 리스너 적용
         searchViewById(R.id.imgBtnMain).setOnClickListener(this);
         searchViewById(R.id.linearMenuSchedule).setOnClickListener(this);
+        searchViewById(R.id.linearMenuNoCategory).setOnClickListener(this);
+        searchViewById(R.id.tvMenuAddEventSet).setOnClickListener(this);
 
         initUI();
         initEventSetList();
@@ -117,11 +119,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL); //세로 배치
 
-        rvMe
+        rvEventSetList.setLayoutManager(manager);
+
         //item view가 추가/삭제/이동 할때 animation
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false); //비활성화
 
+        rvEventSetList.setItemAnimator(itemAnimator);
+
+        mEventSetAdapter = new EventSetAdapter(this, mEventSets);
+        rvEventSetList.setAdapter(mEventSetAdapter);
 
     }
 
@@ -271,9 +278,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 if (eventSet != null) {
                     mEventSetAdapter.insertItem(eventSet);
                 }
-//                EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
-//                if (eventSet != null) {
-//                    mEventSetAdapter.inserItem(eventSet);
+
                 }
             }
         }

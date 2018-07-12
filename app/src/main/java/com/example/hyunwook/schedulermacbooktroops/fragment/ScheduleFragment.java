@@ -211,5 +211,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         mTime = time;
     }
 
-
+    public int getCurrentCalendarPosition() {
+        return scheduleLayout.getMonthCalendar().getCurrentItem();
+    }
 }

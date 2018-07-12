@@ -17,6 +17,7 @@ import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleTask;
@@ -212,7 +213,35 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    //스케줄 상태 변경
+    //추가
+    public void insertItem(Schedule schedule) {
+        mSchedules.add(schedule);
+        notifyItemInserted(mSchedules.size() -1);
+    }
+
+    //변경
+    public void changeAllData(List<Schedule> schedules) {
+        distin
+    }
+
+    //데이터 구별
+    private void distinguishData(List<Schedule> schedules) {
+        mSchedules.clear();
+        mFinishSchedules.clear();
+
+        for (int i =0, count = schedules.size(); i < count; i++) {
+            Schedule schedule = schedules.get(i);
+
+            //상태 2면 끝난 스케줄
+            if (schedule.getState() == 2) {
+                mFinishSchedules.add(schedule);
+            } else {
+                mSchedules.add(schedule);
+            }
+        }
+        notifyDataSetChanged();
+    }
+   //스케줄 상태 변경
     private void changeScheduleState(final Schedule schedule) {
         switch (schedule.getState()) {
             //start --> finish

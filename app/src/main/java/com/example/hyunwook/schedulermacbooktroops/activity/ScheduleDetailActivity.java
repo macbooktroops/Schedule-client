@@ -201,6 +201,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                     sendBroadcast(new Intent(MainActivity.ADD_EVENT_SET_ACTION).putExtra(AddEventSetActivity.EVENT_SET_OBJ, eventSet));
                 }
             }
+        }
     }
 
     private void resetDateTimeUi() {

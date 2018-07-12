@@ -1,5 +1,6 @@
 package com.example.hyunwook.schedulermacbooktroops.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,6 +21,7 @@ import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
 import com.example.common.bean.Schedule;
+import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.util.DeviceUtils;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
@@ -195,15 +197,18 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             schedule.setMonth(mCurrentSelectMonth);
             schedule.setDay(mCurrentSelectDay);
 
-            new AddScheduleTask(mActivity, com.example.common.listener.OnTaskFinishedListener<Schedule>() {
+            new AddScheduleTask(mActivity, new OnTaskFinishedListener<Schedule>() {
                 @Override
                 public void onTaskFinished(Schedule data) {
                     if (data != null) {
                         mScheduleAdapter.insertItem(data);
+                        etInput.getText().clear();
+                        rlNoTask.setVisibility(View.GONE);
+                        mTime = 0;
 
                     }
                 }
-            }
+            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
     }
@@ -224,6 +229,6 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onTaskFinished(List<Schedule> data) {
-        mScheduleAdapter.change
+        mScheduleAdapter.changeALl
     }
 }
