@@ -38,6 +38,29 @@ public class ConfirmDialog extends Dialog implements View.OnClickListener{
 
     private void initView() {
         setContentView(R.layout.dialog_confirm);
+        tvTitle = (TextView) findViewById(R.id.tvTitle);
+        tvTitle.setText(mTitle);
+
+        findViewById(R.id.tvCancel).setOnClickListener(this);
+        findViewById(R.id.tvConfirm).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvCancel:
+                if (mOnClickListener != null) {
+                    mOnClickListener.onCancel();
+                }
+                dismiss();
+                break;
+            case R.id.tvConfirm:
+                if (mOnClickListener != null) {
+                    mOnClickListener.onConfirm();
+                }
+                dismiss();
+                break;
+        }
     }
 
         public interface OnClickListener {
@@ -48,6 +71,8 @@ public class ConfirmDialog extends Dialog implements View.OnClickListener{
 
         @Override
         public void dismiss() {
-
+            if (mAutoDismiss) {
+                super.dismiss();
+            }
         }
 }

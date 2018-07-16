@@ -230,10 +230,38 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         }
     }
 
-    //스케줄 목록클릭
+    //위치 설정 다이얼로그 완료 버튼클릭
+    @Override
+    public void onLocationBack(String text) {
+        mSchedule.setLocation(text);
+
+        if (TextUtils.isEmpty(mSchedule.getLocation())) {
+            tvLocation.setText(R.string.click_here_select_location);
+        } else {
+            tvLocation.setText(mSchedule.getLocation());
+        }
+    }
+    //스케줄 목록다이얼로그 클릭
    @Override
     public void onSelectEventSet(EventSet eventSet) {
-        mSchedule.setColor();
+        mSchedule.setColor(eventSet.getColor());
+        mSchedule.setEventSetId(eventSet.getId());
+
+        vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
+        tvEventSet.setText(eventSet.getName());
+        ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
+    }
+
+    //디테일 한 날짜/시간 설정 완료 클릭
+    @Override
+    public void onSelectDate(int year, int month, int day, long time, int position) {
+        mSchedule.setYear(year);
+        mSchedule.setMonth(month);
+        mSchedule.setDay(day);
+        mSchedule.setTime(time);
+        mPosition = position;
+
+        resetDateTimeUi();
     }
 
 }
