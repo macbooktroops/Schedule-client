@@ -8,11 +8,13 @@ import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.calendar.widget.calendar.OnCalendarClickListener;
 import com.example.calendar.widget.calendar.month.MonthCalendarView;
+import com.example.calendar.widget.calendar.month.MonthView;
 import com.example.hyunwook.schedulermacbooktroops.R;
 
 import java.util.Calendar;
@@ -200,7 +202,19 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
     //날짜 기본 초기화
     private void initDate(int year, int month, int day, int position) {
         setCurrentSelectDate(year, month, day);
-
+        if (position != -1) {
+            monthCalendar.setCurrentItem(position, false);
+            //View 트리에서 글로벌 변경 알림을 받을 수 있는 리스너를 등록
+            //ViewTree의 뷰가 그려질 때마다
+            monthCalendar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    MonthView monthView = monthCalendar.getCurrentMonthView();
+                    monthView.setSelectYearMonth(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+                    monthView.invalidate();
+                }
+            });
+        }
     }
 
     private void setCurrentSelectDate(int year, int month, int day) {

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.widget.DrawerLayout;
@@ -23,10 +24,12 @@ import android.widget.Toast;
 import com.example.common.base.app.BaseActivity;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
+import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetTask;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +41,7 @@ import java.util.concurrent.BrokenBarrierException;
  * Main
  *
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSet>> {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -61,6 +64,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private AddEventSetBroadcastReceiver mAddEventSetBroadcastReceiver;
 
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
+    public static int ADD_EVENT_SET_CODE = 1;
     private long[] mNotes = new long[2]; //back button save.
     @Override
     protected void bindView() {
@@ -109,6 +113,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     protected void initData() {
         super.initData();
         resetMainTitleDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+        new LoadEventSetTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     //RecyclerView 설정
@@ -142,6 +147,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             Log.d(TAG, "goSchedule instance");
             mScheduleFragment = ScheduleFragment.getInstance();
             ft.add(R.id.frameContainer, mScheduleFragment);
+        }
+
+        if (mEventSetFragment != null) {
+            ft.hide(mEventSetFragment);
         }
         ft.show(mScheduleFragment);
         ft.commit();
@@ -200,7 +209,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 break;
 
             case R.id.linearMenuSchedule:
-//                goScheduleFragment();
+                goScheduleFragment();
                 break;
 
             case R.id.linearMenuNoCategory:
@@ -208,6 +217,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 mCurrentEventSet.setName(getString(R.string.menu_schedule_category));
                 gotoEventSetFragment(mCurrentEventSet);
                 break;
+
+            case R.id.tvMenuAddEventSet:
+                gotoAddEventSetActivity();
+                break;
+        }
+    }
+
+    private void gotoAddEventSetActivity() {
+        startActivityForResult(new Intent(this, AddEventSetActivity.class), ADD_EVENT_SET_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_EVENT_SET_CODE) {
+            if (resultCode == AddEventSetActivity.ADD_EVENT_SET_FINISH) {
+                EventSet eventSet = (EventSet) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
+                if (eventSet != null) {
+                    mEventSetAdapter.insertItem(eventSet);
+                }
+            }
         }
     }
 
@@ -266,6 +297,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 Toast.makeText(this, getString(R.string.exit_app_hint), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mAddEventSetBroadcastReceiver != null) {
+            unregisterReceiver(mAddEventSetBroadcastReceiver);
+            mAddEventSetBroadcastReceiver = null;
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onTaskFinished(List<EventSet> data) {
+        mEventSetAdapter.changeAllData(data);
     }
 
     //메뉴 계획 항목 추가 리시버
