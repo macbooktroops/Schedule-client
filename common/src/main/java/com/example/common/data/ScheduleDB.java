@@ -8,6 +8,9 @@ import android.util.Log;
 
 import com.example.common.bean.Schedule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 18-06-22
  * Schedule 저장 DB
@@ -112,6 +115,38 @@ public class ScheduleDB {
         db.delete(ScheDBConfig.SCHEDULE_TABLE_NAME, String.format("%s=", ScheDBConfig.SCHEDULE_EVENT_SET_ID), new String[]{String.valueOf(id)});
         db.close();
         mHelper.close();
+    }
+
+    public List<Schedule> getScheduleByDate(int year, int month, int day) {
+        List<Schedule> schedules = new ArrayList<>();
+        SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기
+        Cursor cursor = db.query(ScheDBConfig.SCHEDULE_TABLE_NAME, null,
+                String.format("%s=? and %s=? and %s=?", ScheDBConfig.SCHEDULE_YEAR,
+                        ScheDBConfig.SCHEDULE_MONTH, ScheDBConfig.SCHEDULE_DAY),
+                new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)}, null, null, null);
+
+        Schedule schedule;
+
+        while (cursor.moveToNext()) {
+            schedule = new Schedule();
+            schedule.setId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_ID)));
+            schedule.setColor(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_COLOR)));
+            schedule.setTitle(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_TITLE)));
+            schedule.setLocation(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_LOCATION)));
+            schedule.setDesc(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_DESC)));
+            schedule.setState(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_STATE)));
+            schedule.setYear(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_YEAR)));
+            schedule.setMonth(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_MONTH)));
+            schedule.setDay(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_DAY)));
+            schedule.setTime(cursor.getLong(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_TIME)));
+            schedule.setEventSetId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_EVENT_SET_ID)));
+            schedules.add(schedule);
+        }
+
+        cursor.close();
+        db.close();
+        mHelper.close();
+        return schedules;
     }
 
 }

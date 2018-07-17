@@ -171,7 +171,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
         mSelectDateDialog.show();
     }
-
+//키보드 닫기
     private void closeSoftInput() {
         etInput.clearFocus();
         DeviceUtils.closeSoftInput(mActivity, etInput);

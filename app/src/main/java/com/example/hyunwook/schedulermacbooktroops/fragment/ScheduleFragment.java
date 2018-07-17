@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,6 +20,8 @@ import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.util.DeviceUtils;
+import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
 
 
@@ -34,6 +37,8 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleTask;
 
 import java.util.Calendar;
 import java.util.List;
@@ -83,6 +88,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
         initScheduleList();
+        initBottomInputBar();
+
     }
 
     @Override
@@ -122,9 +129,46 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 //시간 설정이 가능한 다이얼로그?
                 break;
             case R.id.ibMainOK:
-//                addSchedule();
+                addSchedule();
                 break;
         }
+    }
+
+    //스케줄 추가
+    private void addSchedule() {
+        String content = etInputContent.getText().toString();
+
+        if (TextUtils.isEmpty(content)) {
+            ToastUtils.showShortToast(mActivity, R.string.schedule_input_content_is_no_null);
+        } else {
+            closeSoftInput();
+
+            Schedule schedule = new Schedule();
+            schedule.setTitle(content);
+            schedule.setState(0);
+            schedule.setTime(mTime);
+            schedule.setYear(mCurrentSelectYear);
+            schedule.setMonth(mCurrentSelectMonth);
+            schedule.setDay(mCurrentSelectDay);
+
+            new AddScheduleTask(mActivity, new OnTaskFinishedListener<Schedule>() {
+                @Override
+                public void onTaskFinished(Schedule data) {
+                    if (data != null) {
+                        mScheduleAdapter.insertItem(data);
+                        etInputContent.getText().clear();
+                        rlNoTask.setVisibility(View.GONE);
+                        mTime = 0;
+                        updateTaskHintUi(mScheduleAdapter.getItemCount() -2);
+                    }
+                }
+            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    private void closeSoftInput() {
+        etInputContent.clearFocus();
+        DeviceUtils.closeSoftInput(mActivity, etInputContent);
     }
 
     //스케줄 작성 전 시작 시간을 적을 수 있는 다이얼로그.
@@ -135,7 +179,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     //스케줄 리스트 리셋
     public void resetScheduleList() {
         //병렬로 작업을 실행하는 데 사용할 수있는 실행
-//        new LoadScheduleTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        new LoadScheduleTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 
     //현재 년월일로 세팅
@@ -154,16 +198,18 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         rvSchedule = scheduleLayout.getSchedulerRecyclerView();
         LinearLayoutManager manager = new LinearLayoutManager(mActivity);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
-
+        rvSchedule.setLayoutManager(manager);
         Log.d(TAG, "rvSchedule --->" + rvSchedule);
 //        rvSchedule.setLayoutManager(manager);
         //item view가 추가/삭제/이동 할때 animation
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false);
-//        rvSchedule.setItemAnimator(itemAnimator);
+        rvSchedule.setItemAnimator(itemAnimator);
 
 
-        initBottomInputBar();
+        mScheduleAdapter = new ScheduleAdapter(mActivity, this);
+        rvSchedule.setAdapter(mScheduleAdapter);
+
     }
 
     //스케줄 메모 부분 InputBar
