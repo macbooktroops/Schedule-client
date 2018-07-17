@@ -324,6 +324,32 @@ public class ScheduleLayout extends FrameLayout {
 
     }
 
+    /**
+     * 태스크 삭제
+     * @return
+     */
+    public void removeTaskHint(Integer day) {
+        if (monthCalendar.getCurrentMonthView() != null) {
+            if (monthCalendar.getCurrentMonthView().removeTaskHint(day)) {
+                if (weekCalendar.getCurrentWeekView() != null) {
+                    weekCalendar.getCurrentWeekView().invalidate();
+                }
+            }
+        }
+    }
+
+    //add hint
+    public void addTaskHint(Integer day) {
+        if (monthCalendar.getCurrentMonthView() != null) {
+            if (monthCalendar.getCurrentMonthView().addTaskHint(day)) {
+
+                if (weekCalendar.getCurrentWeekView() != null) {
+                    weekCalendar.getCurrentWeekView().invalidate();
+                }
+            }
+        }
+    }
+
     public ScheduleRecyclerView getSchedulerRecyclerView() {
          return rvScheduleList;
     }

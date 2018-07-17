@@ -577,6 +577,25 @@ public class MonthView extends View {
     }
 
 
+    public boolean addTaskHint(Integer day) {
+        if (mIsShowHint) {
+            if (CalendarUtils.getInstance(getContext()).addTaskHint(mSelYear, mSelMonth, day)) {
+                invalidate();
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean removeTaskHint(Integer day) {
+        if (mIsShowHint) {
+            if (CalendarUtils.getInstance(getContext()).removeTaskHint(mSelYear, mSelMonth, day)) {
+                invalidate();
+                return true;
+            }
+        }
+
+        return false;
+    }
     /**
      * 날짜 클릭 리스너
      * @param dateClickListener

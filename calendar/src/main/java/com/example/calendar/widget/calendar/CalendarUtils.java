@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -229,6 +230,54 @@ public class CalendarUtils {
             sUtils.sMonthTaskHint.put(key, hints);
         }
         return hints;
+    }
+
+    //추가 테스크
+    public boolean addTaskHint(int year, int month, int day) {
+        String key = hashKey(year, month);
+        List<Integer> hints = sUtils.sMonthTaskHint.get(key);
+
+        if (hints == null) {
+            hints = new ArrayList<>();
+            hints.add(day);
+            sUtils.sMonthTaskHint.put(key, hints);
+            return true;
+        } else {
+            if (!hints.contains(day)) {
+                hints.add(day);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+    //삭제 테스크
+    public boolean removeTaskHint(int year, int month, int day) {
+        String key = hashKey(year, month);
+
+        List<Integer> hints = sUtils.sMonthTaskHint.get(key);
+
+        if (hints == null) {
+            hints = new ArrayList<>();
+            sUtils.sMonthTaskHint.put(key, hints);
+        } else {
+            //태스크가 있으면.
+            if (hints.contains(day)) {
+                Iterator<Integer> i = hints.iterator();
+
+                while (i.hasNext()) {
+                    Integer next = i.next();
+                    if (next == day) {
+                        i.remove();
+                        break;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
 

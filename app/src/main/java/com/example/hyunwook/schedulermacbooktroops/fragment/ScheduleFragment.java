@@ -17,6 +17,8 @@ import com.example.calendar.widget.calendar.OnCalendarClickListener;
 import com.example.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
+import com.example.common.bean.Schedule;
+import com.example.common.listener.OnTaskFinishedListener;
 import com.example.hyunwook.schedulermacbooktroops.R;
 
 
@@ -34,13 +36,15 @@ import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * 18-05-25
  * 스케줄 작성 메인화면 하단뷰
  */
 
-public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener, View.OnClickListener, SelectDateDialog.OnSelectDateListener {
+public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener, View.OnClickListener,
+        SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<Schedule>> {
 
     private ScheduleLayout scheduleLayout;
 
@@ -209,6 +213,24 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             }
         }, 100);
         mTime = time;
+    }
+
+    @Override
+    public void onTaskFinished(List<Schedule> data) {
+        Log.d(TAG, "ScheduleFragment onTaskFinished --> " + data);
+        mScheduleAdapter.changeAllData(data);
+
+        //스케줄이 하나도 없으면 이미지.
+        rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
+        updateTaskHintUi(data.size());
+    }
+
+    private void updateTaskHintUi(int size) {
+        if (size == 0) {
+            scheduleLayout.removeTaskHint(mCurrentSelectDay);
+        } else {
+            scheduleLayout.addTaskHint(mCurrentSelectDay);
+        }
     }
 
     public int getCurrentCalendarPosition() {
