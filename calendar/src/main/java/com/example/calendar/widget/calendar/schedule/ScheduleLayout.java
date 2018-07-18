@@ -5,6 +5,9 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -27,6 +30,8 @@ import java.util.jar.Attributes;
  */
 public class ScheduleLayout extends FrameLayout {
 
+    private float mDownPosition[] = new float[2];
+    private boolean mIsScrolling = false;
 //    private MonthCalendarView monthView;
     static final String TAG = ScheduleLayout.class.getSimpleName();
     private final int DEFAULT_MONTH = 0;
@@ -165,7 +170,7 @@ public class ScheduleLayout extends FrameLayout {
         @Override
         public void onClickDate(int year, int month, int day) {
             Log.d(TAG, "onCLickDate MonthCalendarView..");
-            monthCalendar.setOnClickListener(null);
+            weekCalendar.setOnCalendarClickListener(null); //week는 클릭안되게.
 
             Log.d(TAG, "month calendar click listener -->" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay +"/" +year + "/" +month + "/" + day);
             int weeks = CalendarUtils.getWeeksAgo(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, year, month, day);
@@ -326,6 +331,83 @@ public class ScheduleLayout extends FrameLayout {
         rlScheduleList.setY(scheduleY);
 
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+         int height = MeasureSpec.getSize(heightMeasureSpec);
+
+         resetViewHeight(rlScheduleList, height - mRowSize);
+         resetViewHeight(this, height);
+         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+
+    //뷰 높이 재설정
+    private void resetViewHeight(View view, int height) {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        if (layoutParams.height != height) {
+            layoutParams.height = height;
+            view.setLayoutParams(layoutParams);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+         super.onLayout(changed, left, top, right, bottom);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+         switch (ev.getActionMasked()) {
+             case MotionEvent.ACTION_DOWN:
+                 mDownPosition[0] = ev.getRawX();
+                 mDownPosition[1] = ev.getRawY();
+                 mGestureDetector.onTouchEvent(ev);
+                 break;
+         }
+         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+         switch (event.getActionMasked()) {
+             case MotionEvent.ACTION_DOWN:
+                 mDownPosition[0] = event.getRawX();
+                 mDownPosition[1] = event.getRawY();
+                 resetCalendarPosition();
+                 return true;
+             case MotionEvent.ACTION_MOVE:
+                 transferEvent(event);
+                 mIsScrolling = true;
+                 return true;
+             case MotionEvent.ACTION_UP:
+             case MotionEvent.ACTION_CANCEL:
+                 transferEvent(event);
+
+         }
+    }
+
+    private void transferEvent(MotionEvent event) {
+         if (mState == ScheduleState.CLOSE) {
+             monthCalendar.setVisibility(VISIBLE);
+             weekCalendar.setVisibility(INVISIBLE);
+             mGestureDetector.onTouchEvent(event);
+         } else {
+             mGestureDetector.onTouchEvent(event);
+         }
+    }
+
+    /**
+     * ViewGroup의 dispatchTouchEvent의 로직을 대신 담당하여,
+     * 자신에게 속한 하위뷰에게 이벤트를 전달할지 결정한다.
+     */
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mIsScrolling) {
+
+        }
+    }
+
 
     /**
      * 태스크 삭제
