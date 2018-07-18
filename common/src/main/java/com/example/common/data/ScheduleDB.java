@@ -117,6 +117,8 @@ public class ScheduleDB {
         mHelper.close();
     }
 
+
+    //해당되는 연월일에 스케줄 얻기
     public List<Schedule> getScheduleByDate(int year, int month, int day) {
         List<Schedule> schedules = new ArrayList<>();
         SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기

@@ -68,6 +68,9 @@ public class ScheduleLayout extends FrameLayout {
     public ScheduleLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttrs(context.obtainStyledAttributes(attrs, R.styleable.ScheduleLayout));
+        initDate();
+        initGestureDetector();
+
     }
 
     //스케줄 사이즈 설정
@@ -82,7 +85,6 @@ public class ScheduleLayout extends FrameLayout {
         mMinDistance = getResources().getDimensionPixelSize(R.dimen.calendar_min_distance);
         mAutoScrollDistance = getResources().getDimensionPixelSize(R.dimen.auto_scroll_distance);
 
-        initDate();
     }
 
     //Date 얻기
@@ -90,7 +92,6 @@ public class ScheduleLayout extends FrameLayout {
         Calendar calendar = Calendar.getInstance();
         resetCurrentSelectDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
-        initGestureDetector();
     }
 
     //현재 선택한 날짜 재설정
@@ -121,10 +122,12 @@ public class ScheduleLayout extends FrameLayout {
         rlMonthCalendar = (RelativeLayout) findViewById(R.id.rlMonthCalendar);
 
         rlScheduleList = (RelativeLayout) findViewById(R.id.rlScheduleList);
-
+        rvScheduleList = (ScheduleRecyclerView) findViewById(R.id.rvScheduleList);
         bindingMonthAndWeekCalendar();
     }
 
+
+    //binding
     private void bindingMonthAndWeekCalendar() {
         monthCalendar.setOnCalendarClickListener(mMonthCalendarClickListener);
         weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
