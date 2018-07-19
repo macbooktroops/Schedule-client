@@ -383,6 +383,7 @@ public class ScheduleLayout extends FrameLayout {
              case MotionEvent.ACTION_UP:
              case MotionEvent.ACTION_CANCEL:
                  transferEvent(event);
+                 changeCalendarState();
 
          }
     }
@@ -395,6 +396,13 @@ public class ScheduleLayout extends FrameLayout {
          } else {
              mGestureDetector.onTouchEvent(event);
          }
+    }
+
+    //캘린더 상태바꾸
+    private void changeCalendarState() {
+         if (rlScheduleList.getY() > mRowSize * 2 &&
+                 rlScheduleList.getY() < monthCalendar.getHeight() - mRowSize) { //middle
+             ScheduleAnimation
     }
 
     /**
