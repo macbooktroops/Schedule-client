@@ -280,7 +280,32 @@ public class CalendarUtils {
         return false;
     }
 
+    public List<Integer> addTaskHints(int year, int month, List<Integer> days) {
+        String key = hashKey(year, month);
+        List<Integer> hints = sUtils.sMonthTaskHint.get(key);
 
+        if (hints == null) {
+            hints = new ArrayList<>();
+            hints.removeAll(days);
+            hints.addAll(days);
+            sUtils.sMonthTaskHint.put(key, hints);
+        } else {
+            hints.addAll(days);
+        }
+        return hints;
+    }
+
+    public List<Integer> removeTaskHints(int year, int month, List<Integer> days) {
+        String key = hashKey(year, month);
+        List<Integer> hints = sUtils.sMonthTaskHint.get(key);
+        if (hints == null) {
+            hints = new ArrayList<>();
+            sUtils.sMonthTaskHint.put(key, hints);
+        } else {
+            hints.removeAll(days);
+        }
+        return hints;
+    }
     //hashKey
     private static String hashKey(int year, int month) {
         return String.format("%s:%s", year, month);

@@ -24,6 +24,7 @@ import com.example.common.bean.Schedule;
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.jar.Attributes;
 
 /**
@@ -387,8 +388,11 @@ public class ScheduleLayout extends FrameLayout {
              case MotionEvent.ACTION_CANCEL:
                  transferEvent(event);
                  changeCalendarState();
+                 resetScrollingState();
+                 return true;
 
          }
+         return super.onTouchEvent(event);
     }
 
     private void transferEvent(MotionEvent event) {
@@ -462,7 +466,7 @@ public class ScheduleLayout extends FrameLayout {
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     if (mState == ScheduleState.CLOSE) {
-                        mState = ScheduleState.OPEN);
+                        mState = ScheduleState.OPEN;
                     }
                 }
 
@@ -501,6 +505,12 @@ public class ScheduleLayout extends FrameLayout {
                  weekCalendar.setVisibility(INVISIBLE);
                  rlMonthCalendar.setY(0);
              }
+     }
+
+     private void resetScrollingState() {
+         mDownPosition[0] = 0;
+         mDownPosition[1] = 0;
+         mIsScrolling = false;
      }
 
      private void checkWeekCalendar() {
@@ -542,11 +552,76 @@ public class ScheduleLayout extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mIsScrolling) {
+            return true;
+        }
 
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_MOVE:
+                float x = ev.getRawX();
+                float y = ev.getRawY();
+                float distanceX = Math.abs(x - mDownPosition[0]);
+                float distanceY = Math.abs(y - mDownPosition[1]);
+
+                if (distanceY > mMinDistance && distanceY > distanceX * 2.0f) {
+                    return (y > mDownPosition[1] && isRecyclerViewTouch()) ||
+                            (y < mDownPosition[1] && mState == ScheduleState.OPEN);
+                }
+                break;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    //recycler touch
+    private boolean isRecyclerViewTouch() {
+        return mState == ScheduleState.CLOSE && (rvScheduleList.getChildCount() == 0 ||
+            rvScheduleList.isScrollTop());
+    }
+
+    private void resetMonthViewDate(final int year, final int month, final int day, final int position) {
+        if (monthCalendar.getMonthViews().get(position) == null) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    resetMonthViewDate(year, month, day, position);
+                }
+            }, 50);
+        } else {
+            monthCalendar.getMonthViews().get(position).clickThisMonth(year, month, day);
+        }
+    }
+
+    //초기 날짜
+    public void initData(int year, int month, int day) {
+        int monthDis = CalendarUtils.getMonthsAgo(mCurrentSelectYear, mCurrentSelectMonth, year, month);
+        int position = monthCalendar.getCurrentItem() + monthDis;
+        monthCalendar.setCurrentItem(position);
+        resetMonthViewDate(year, month, day, position);
+    }
+
+    /**
+     * 태스크 추가
+     */
+    public void addTaskHints(List<Integer> hints ) {
+        CalendarUtils.getInstance(getContext()).addTaskHints(mCurrentSelectYear, mCurrentSelectMonth, hints);
+        if (monthCalendar.getCurrentMonthView() != null) {
+            monthCalendar.getCurrentMonthView().invalidate();
+        }
+
+        if (weekCalendar.getCurrentWeekView() != null) {
+            weekCalendar.getCurrentWeekView().invalidate();
         }
     }
 
 
+    public void removeTaskHints(List<Integer> hints) {
+        CalendarUtils.getInstance(getContext()).removeTaskHints(mCurrentSelectYear, mCurrentSelectMonth, hints);
+        if (monthCalendar.getCurrentMonthView() != null) {
+            monthCalendar.getCurrentMonthView().invalidate();
+        }
+        if (weekCalendar.getCurrentWeekView() != null) {
+            weekCalendar.getCurrentWeekView().invalidate();
+        }
+    }
     /**
      * 태스크 삭제
      * @return
