@@ -8,6 +8,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -19,6 +20,8 @@ import com.example.calendar.widget.calendar.month.MonthView;
 import com.example.calendar.widget.calendar.week.WeekCalendarView;
 import com.example.calendar.widget.calendar.week.WeekView;
 import com.example.common.bean.Schedule;
+
+import org.joda.time.DateTime;
 
 import java.util.Calendar;
 import java.util.jar.Attributes;
@@ -400,10 +403,137 @@ public class ScheduleLayout extends FrameLayout {
 
     //캘린더 상태바꾸
     private void changeCalendarState() {
-         if (rlScheduleList.getY() > mRowSize * 2 &&
-                 rlScheduleList.getY() < monthCalendar.getHeight() - mRowSize) { //middle
-             ScheduleAnimation
+        if (rlScheduleList.getY() > mRowSize * 2 &&
+                rlScheduleList.getY() < monthCalendar.getHeight() - mRowSize) { //middle
+            ScheduleAnimation animation = new ScheduleAnimation(this, mState, mAutoScrollDistance);
+            animation.setDuration(300);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    changeState();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            rlScheduleList.startAnimation(animation);
+        } else if (rlScheduleList.getY() <= mRowSize * 2) { //상단
+            ScheduleAnimation animation = new ScheduleAnimation(this, ScheduleState.OPEN, mAutoScrollDistance);
+            animation.setDuration(50);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    if (mState == ScheduleState.OPEN) {
+                        changeState();
+                    } else {
+                        resetCalendar();
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            rlScheduleList.startAnimation(animation);
+
+
+        } else {
+            ScheduleAnimation animation = new ScheduleAnimation(this, ScheduleState.CLOSE, mAutoScrollDistance);
+            animation.setDuration(50);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    if (mState == ScheduleState.CLOSE) {
+                        mState = ScheduleState.OPEN);
+                    }
+                }
+
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            rlScheduleList.startAnimation(animation);
+        }
     }
+
+    private void resetCalendar() {
+         if (mState == ScheduleState.OPEN) {
+             monthCalendar.setVisibility(VISIBLE);
+             weekCalendar.setVisibility(INVISIBLE);
+         } else {
+             monthCalendar.setVisibility(INVISIBLE);
+             weekCalendar.setVisibility(VISIBLE);
+         }
+    }
+    private void changeState() {
+
+             //캘린더가 열려있으면 위로 닫는다.
+             if (mState == ScheduleState.OPEN) {
+                 mState = ScheduleState.CLOSE;
+
+                 monthCalendar.setVisibility(INVISIBLE);
+                 weekCalendar.setVisibility(VISIBLE);
+                 rlMonthCalendar.setY((1 - monthCalendar.getCurrentMonthView().getWeekRow()) * mRowSize);
+                 checkWeekCalendar();
+             } else {
+                 mState = ScheduleState.OPEN;
+                 monthCalendar.setVisibility(VISIBLE);
+                 weekCalendar.setVisibility(INVISIBLE);
+                 rlMonthCalendar.setY(0);
+             }
+     }
+
+     private void checkWeekCalendar() {
+         WeekView weekView = weekCalendar.getCurrentWeekView();
+         DateTime start = weekView.getStartDate();
+         DateTime end = weekView.getEndDate();
+         DateTime current = new DateTime(mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay, 23, 59, 59);
+
+         int week = 0;
+         while (current.getMillis() < start.getMillis()) {
+             week--;
+             start = start.plusDays(-7);
+         }
+         current = new DateTime(mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay, 0, 0, 0);
+         if (week == 0) {
+             while (current.getMillis() > end.getMillis()) {
+                 week++;
+                 end = end.plusDays(7);
+             }
+         }
+         if (week != 0) {
+             int position = weekCalendar.getCurrentItem() + week;
+             if (weekCalendar.getWeekViews().get(position) != null) {
+                 weekCalendar.getWeekViews().get(position).setSelectYearMonth(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+                 weekCalendar.getWeekViews().get(position).invalidate();
+             } else {
+                 WeekView newWeekView = weekCalendar.getWeekAdapter().instanceWeekView(position);
+                 newWeekView.setSelectYearMonth(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+                 newWeekView.invalidate();
+             }
+             weekCalendar.setCurrentItem(position, false);
+         }
+     }
 
     /**
      * ViewGroup의 dispatchTouchEvent의 로직을 대신 담당하여,

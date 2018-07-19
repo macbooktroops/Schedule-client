@@ -253,6 +253,13 @@ public class WeekView extends View {
     }
 
 
+    public DateTime getStartDate() {
+        return mStartDate;
+    }
+
+    public DateTime getEndDate() {
+        return mStartDate.plusDays(6);
+    }
 
     //선택 연월일
     public void setSelectYearMonth(int year, int month, int day) {
