@@ -151,4 +151,36 @@ public class ScheduleDB {
         return schedules;
     }
 
+    //id에 따른 스케줄 정보얻기.
+    public List<Schedule> getScheduleByEventSetId(int id) {
+        List<Schedule> schedules = new ArrayList<>();
+
+        SQLiteDatabase db = mHelper.getReadableDatabase(); //쓰기만 허용
+        Cursor cursor = db.query(ScheDBConfig.SCHEDULE_TABLE_NAME, null,
+                String.format("%s=?", ScheDBConfig.SCHEDULE_EVENT_SET_ID), new String[]{String.valueOf(id)}, null, null, null);
+
+        Schedule schedule;
+
+        while (cursor.moveToNext()) { //자료있을때까지 계속.
+            schedule = new Schedule();
+            schedule.setId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_ID)));
+            schedule.setColor(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_COLOR)));
+            schedule.setTitle(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_TITLE)));
+            schedule.setDesc(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_DESC)));
+            schedule.setLocation(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_LOCATION)));
+            schedule.setState(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_STATE)));
+            schedule.setYear(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_YEAR)));
+            schedule.setMonth(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_MONTH)));
+            schedule.setDay(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_DAY)));
+            schedule.setTime(cursor.getLong(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_TIME)));
+            schedule.setEventSetId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_EVENT_SET_ID)));
+            schedules.add(schedule);
+        }
+        cursor.close();
+        db.close();
+        mHelper.close();
+        return schedules;
+
+    }
+
 }
