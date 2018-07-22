@@ -205,6 +205,20 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }).show();
     }
 
+    //getItemViewType을 호출해서 현재 position의 viewType얻기
+    @Override
+    public int getItemViewType(int position) {
+        if (position < mSchedules.size()) {
+            return SCHEDULE_TYPE;
+        } else if (position == mSchedules.size()) {
+            return SCHEDULE_CENTER;
+        } else if (position == getItemCount() -1) {
+            return SCHEDULE_BOTTOM;
+        } else {
+            return SCHEDULE_FINISH_TYPE;
+        }
+    }
+
     public void removeItem(Schedule schedule) {
         if (mSchedules.remove(schedule)) {
             notifyDataSetChanged(); //reupdate.

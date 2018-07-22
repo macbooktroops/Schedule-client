@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * 18-07-03
- * 이벤트 저장된 데이터 어댑터
+ * 스케줄 분류 저장된 데이터 어댑터
  */
 public class SelectEventSetAdapter extends BaseAdapter {
 

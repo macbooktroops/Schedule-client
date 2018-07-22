@@ -183,4 +183,22 @@ public class ScheduleDB {
 
     }
 
+    //해당연월 힌트?얻기 .
+    public List<Integer> getTaskHintByMonth(int year, int month) {
+        List<Integer> taskHint = new ArrayList<>();
+        SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기
+        Cursor cursor = db.query(ScheDBConfig.SCHEDULE_TABLE_NAME, new String[]{ScheDBConfig.SCHEDULE_DAY},
+                String.format("%s=? and %s=?", ScheDBConfig.SCHEDULE_YEAR,
+                        ScheDBConfig.SCHEDULE_MONTH), new String[] {String.valueOf(year), String.valueOf(month)}, null, null, null);
+
+        while (cursor.moveToNext()) {
+            taskHint.add(cursor.getInt(0));
+        }
+        cursor.close();
+        db.close();
+        mHelper.close();
+        return taskHint;
+
+    }
+
 }

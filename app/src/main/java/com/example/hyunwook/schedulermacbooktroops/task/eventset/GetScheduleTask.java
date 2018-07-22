@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Created by hyunwook on 2018-07-20.
+ * 저장된 스케줄 전부 가져오는 태스크.
  */
 
 public class GetScheduleTask extends BaseAsyncTask<List<Schedule>> {

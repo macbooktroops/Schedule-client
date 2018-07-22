@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.example.calendar.R;
 import com.example.calendar.widget.calendar.CalendarUtils;
+import com.example.common.data.ScheduleDB;
 
 import java.util.Calendar;
 import java.util.List;
@@ -80,8 +81,17 @@ public class MonthView extends View {
 
         initAttrs(array, year, month);
         initPaint();
-        initMonth();;
+        initMonth();
         initGestureDetector();
+        initTaskHint();
+    }
+
+    private void initTaskHint() {
+        if (mIsShowHint) {
+            //DB에서 힌트가져오기.
+            ScheduleDB db = ScheduleDB.getInstance(getContext());
+            CalendarUtils.getInstance(getContext()).addTaskHints(mSelYear, mSelMonth, db.getTaskHintByMonth(mSelYear, mSelMonth));
+        }
     }
 
     //월 뷰 기본색상설정

@@ -18,6 +18,7 @@ public class InputLocationDialog extends Dialog implements View.OnClickListener{
 
     public InputLocationDialog(Context context, OnLocationBackListener onLocationBackListener) {
         super(context, R.style.DialogFullScreen);
+        mOnLocationBackListener = onLocationBackListener;
         initView();
     }
 
@@ -33,8 +34,8 @@ public class InputLocationDialog extends Dialog implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvCancel:
-            dismiss();
-            break;
+                dismiss();
+                break;
             case R.id.tvConfirm:
                 if (mOnLocationBackListener != null) {
                     mOnLocationBackListener.onLocationBack(etLocationContent.getText().toString());
