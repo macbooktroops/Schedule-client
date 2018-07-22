@@ -58,7 +58,19 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tvFinish:
                 addEventSet();
+            case R.id.rlEventSetColor:
+                showSelectColorDialog();
+                break;
         }
+    }
+
+    //스케줄 분류 중요도 색상 다이얼로그
+    private void showSelectColorDialog() {
+        if (mSelectColorDialog == null) {
+            mSelectColorDialog = new SelectColorDialog(this, this);
+        }
+
+        mSelectColorDialog.show();
     }
 
     //스케줄 분류 항목 추가
