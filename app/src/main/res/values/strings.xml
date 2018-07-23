@@ -25,6 +25,7 @@
 
     <string name="calendar_day">%d day</string>
     <string name="calendar_year">%d-</string>
+    <string name="menu_event_set">이벤트</string>
 
     <!-- 스케줄 -->
     <string name="schedule_event_detail_setting">스케줄 세팅</string>

@@ -43,6 +43,7 @@ public class MonthView extends View {
 
     private int mDaySize;
     private int mLunarTextSize;
+    private int[] mHolidays;
 
     private boolean mIsShowLunar;
     private boolean mIsShowHint;
@@ -134,7 +135,7 @@ public class MonthView extends View {
         }
         mSelYear = year;
         mSelMonth = month;
-
+        mHolidays = CalendarUtils.getInstance(getContext()).getHolidays(mSelYear, mSelMonth  + 1);
         Log.d(TAG, "mSel Year/Month --> " + mSelYear + "-" + mSelMonth);
 
 
