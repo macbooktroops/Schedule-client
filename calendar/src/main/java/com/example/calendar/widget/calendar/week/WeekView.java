@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -15,11 +16,11 @@ import android.view.View;
 
 import com.example.calendar.R;
 import com.example.calendar.widget.calendar.CalendarUtils;
+import com.example.common.data.ScheduleDB;
 
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
-import java.util.jar.Attributes;
 
 /**
  * 18-06-03
@@ -28,6 +29,7 @@ import java.util.jar.Attributes;
 public class WeekView extends View {
 
     static final String TAG = WeekView.class.getSimpleName();
+    private static final int NUM_COLUMNS = 7;
 
     private int mNormalDayColor;
     private int mSelectDayColor;
@@ -62,6 +64,7 @@ public class WeekView extends View {
     private int mcolumnSize, mRowSize, mSelectCircleSize;
 
     private OnWeekClickListener mOnWeekClickListener;
+    private String mHolidayOrLunarText[];
 
 
     public WeekView(Context context, DateTime dateTime) {
@@ -79,6 +82,11 @@ public class WeekView extends View {
     public WeekView(Context context, TypedArray array, AttributeSet attrs, int defStyleAttrs, DateTime dateTime) {
         super(context, attrs, defStyleAttrs);
         initAttrs(array, dateTime);
+        initPaint();
+        initWeek();
+        initGestureDetector();
+
+
     }
 
     //주 뷰 기본 색상설정
@@ -134,7 +142,6 @@ public class WeekView extends View {
         //holidays --> mHolidays
         System.arraycopy(holidays, row * 7, mHolidays, 0, mHolidays.length);
 
-        initPaint();
     }
 
     //WeekView paint
@@ -153,7 +160,6 @@ public class WeekView extends View {
         mLunarPaint.setTextSize(mLunarTextSize * mDisplayMetrics.scaledDensity);
         mLunarPaint.setColor(mLunarTextColor);
 
-        initWeek();
     }
 
     private void initWeek() {
@@ -195,7 +201,6 @@ public class WeekView extends View {
         initTaskHint(mStartDate);
         initTaskHint(endDate);
 
-        initGestureDetector();
     }
 
     //터치 이벤트 설정
@@ -216,6 +221,85 @@ public class WeekView extends View {
         });
     }
 
+    //그리기
+    @Override
+    protected void onDraw(Canvas canvas) {
+        initSize();
+
+        clearData();
+
+        int selected = drawThisWeek(canvas);
+        
+    }
+
+
+    //초반 사이즈
+    private void initSize() {
+        mcolumnSize = getWidth() / NUM_COLUMNS;
+        mRowSize = getHeight();
+        mSelectCircleSize = (int) (mcolumnSize / 3.2);
+        while (mSelectCircleSize > mRowSize / 2) {
+            mSelectCircleSize = (int) (mSelectCircleSize / 1.3);
+        }
+
+    }
+
+    private void clearData() {
+        mHolidayOrLunarText = new String[7];
+    }
+
+    //이번 Week 그리기
+    private int drawThisWeek(Canvas canvas) {
+        int selected = 0;
+        for (int i = 0; i < 7; i++) {
+            DateTime date = mStartDate.plusDays(i);
+            int day = date.getDayOfMonth();
+            String dayString = String.valueOf(day);
+            int startX = (int) (mcolumnSize * i + (mcolumnSize - mPaint.measureText(dayString)) / 2);
+            int startY = (int) (mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
+            if (day == mSelDay) {
+                int startRecX = mcolumnSize * i;
+                int endRecX = startRecX + mcolumnSize;
+                if (date.getYear() == mCurrYear && date.getMonthOfYear() - 1 == mCurrMonth && day == mCurrDay) {
+                    mPaint.setColor(mSelectBGTodayColor);
+                } else {
+                    mPaint.setColor(mSelectBGColor);
+                }
+                canvas.drawCircle((startRecX + endRecX) / 2, mRowSize / 2, mSelectCircleSize, mPaint);
+            }
+            if (day == mSelDay) {
+                selected = i;
+                mPaint.setColor(mSelectDayColor);
+            } else if (date.getYear() == mCurrYear && date.getMonthOfYear() - 1 == mCurrMonth && day == mCurrDay && day != mSelDay && mCurrYear == mSelYear) {
+                mPaint.setColor(mCurrentDayColor);
+            } else {
+                mPaint.setColor(mNormalDayColor);
+            }
+            canvas.drawText(dayString, startX, startY, mPaint);
+            mHolidayOrLunarText[i] = CalendarUtils.getHolidayFromSolar(date.getYear(), date.getMonthOfYear() - 1, day);
+        }
+        return selected;
+    }
+
+
+
+
+
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        if (heightMode == MeasureSpec.AT_MOST) {
+            heightSize = mDisplayMetrics.densityDpi * 200;
+        }
+        if (widthMode == MeasureSpec.AT_MOST) {
+            widthSize = mDisplayMetrics.densityDpi * 300;
+        }
+        setMeasuredDimension(widthSize, heightSize);
+    }
     //클릭시 좌표
     private void doClickAction(int x, int y) {
         if (y > getHeight()) {
@@ -248,7 +332,10 @@ public class WeekView extends View {
     //데이터베이스에서 도트 프롬프트 데이터 가져 오기
     private void initTaskHint(DateTime date) {
         if (mIsShowHint) {
-//            ScheduleDa
+            ScheduleDB db  = ScheduleDB.getInstance(getContext());
+            if (CalendarUtils.getInstance(getContext()).getTaskHints(date.getYear(), date.getMonthOfYear() -1).size() == 0)
+                CalendarUtils.getInstance(getContext()).addTaskHints(date.getYear(), date.getMonthOfYear() -1, db.getTaskHintByMonth(mSelYear, mSelMonth));
+
         }
     }
 
