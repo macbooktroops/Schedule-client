@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerInside"
         android:background="@color/colorTranslate"
-        android:src="@drawable/clock"/>
+        android:src="@drawable/btn_clock"/>
 
     <EditText
         android:id="@+id/etInputContent"
@@ -39,5 +39,5 @@
         android:scaleType="centerInside"
         android:id="@+id/ibMainOK"
         android:background="@color/colorTranslate"
-        android:src="@drawable/ok"/>
+        android:src="@drawable/btn_ok"/>
 </LinearLayout>
