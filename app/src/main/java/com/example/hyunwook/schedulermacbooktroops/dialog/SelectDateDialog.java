@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -21,7 +20,7 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.hyunwook.schedulermacbooktroops.utils.DateUtils.*;
+import static com.example.hyunwook.schedulermacbooktroops.utils.DateUtils.date2TimeStamp;
 
 /**
  * 18-06-11
@@ -59,7 +58,9 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
         findViewById(R.id.tvConfirm).setOnClickListener(this);
 
         tvDate = (TextView) findViewById(R.id.tvDate); //스케줄 달력 월표시
-        monthCalendar = (MonthCalendarView) findViewById(R.id.monthCalendar);
+        monthCalendar = (MonthCalendarView) findViewById(R.id.sMonthCalendar);
+
+        Log.d(TAG, "monthCalendar ->" + monthCalendar);
         monthCalendar.setOnCalendarClickListener(this);
 
         etTime = (EditText) findViewById(R.id.etTime);
