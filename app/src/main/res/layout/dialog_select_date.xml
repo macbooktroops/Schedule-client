@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/small_week_bar_height"
             app:week_text_color="@color/color_small_calendar_text"
-            app:week_text_size="@integer/calendar_text_size"/>
+            app:week_text_size="@integer/small_calendar_text_size"/>
 
         <com.example.calendar.widget.calendar.month.MonthCalendarView
             android:id="@+id/sMonthCalendar"

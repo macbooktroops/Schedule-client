@@ -100,7 +100,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linearMenuNoCategory"
@@ -154,6 +153,7 @@
             android:paddingTop="@dimen/space_16dp"
             android:text="@string/menu_add_event_set"
             android:textColor="@color/menu_item_text_color"/>
+        </LinearLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
