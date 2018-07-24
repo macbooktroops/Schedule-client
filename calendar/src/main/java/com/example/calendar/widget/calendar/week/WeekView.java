@@ -216,6 +216,7 @@ public class WeekView extends View {
             }
 
             //살짝 터치
+            @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 doClickAction((int) e.getX(), (int) e.getY());
                 return true;

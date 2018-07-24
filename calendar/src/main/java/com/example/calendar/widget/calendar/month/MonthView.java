@@ -209,7 +209,7 @@ public class MonthView extends View {
         drawNextMonth(canvas);
 
         drawHintCircle(canvas);
-        drawHoliday(canvas);
+//        drawHoliday(canvas);
 
     }
 
@@ -325,7 +325,7 @@ public class MonthView extends View {
                 selectedPoint[0] = row;
                 selectedPoint[1] = col;
 
-                mPaint.setColor(mSelectBGColor);
+                mPaint.setColor(mSelectDayColor);
                 //day가 현재날짜랑 같을 경우?
             } else if (dayString.equals(String.valueOf(mCurrDay)) && mCurrDay != mSelDay && mCurrMonth == mSelMonth && mCurrYear == mSelYear) {
                 mPaint.setColor(mCurrentDayColor);

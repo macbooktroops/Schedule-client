@@ -38,6 +38,8 @@ public class WeekBarView extends View {
     public WeekBarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
+        initPaint();
+
     }
 
 
@@ -46,14 +48,13 @@ public class WeekBarView extends View {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.WeekBarView);
 
         //날짜 표시 색깔
-        mWeekTextColor = array.getColor(R.styleable.WeekBarView_week_text_color, Color.parseColor("#d817b5"));
+        mWeekTextColor = array.getColor(R.styleable.WeekBarView_week_text_color, Color.parseColor("#4588E3"));
 
         mWeekSize = array.getInteger(R.styleable.WeekBarView_week_text_size, 13);
         mWeekString = context.getResources().getStringArray(R.array.calendar_week); //Sun~Saturday
 
         array.recycle();
 
-        initPaint();
     }
 
     //그리기
