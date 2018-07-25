@@ -50,7 +50,11 @@ public class NoSlideDrawerLayout extends DrawerLayout {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             Log.d(TAG, "ACTION DOWN");
             int width = vMenu.getWidth();
+
+            //slide가 넘는곳이 터치되거나, 그안이 터치될경우.
             mCanMove = ev.getX() >= width || ev.getX() < 15;
+            Log.d(TAG, "width --> " +width);
+            Log.d(TAG, "ev.getx --> " +ev.getX());
         }
 
         try {

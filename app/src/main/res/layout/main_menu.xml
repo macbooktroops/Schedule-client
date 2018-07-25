@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/action_bar_height"
         android:paddingLeft="@dimen/space_20dp"
-        android:text="스케줄 메뉴"
+        android:text="MacBookTroops"
         android:textColor="@color/colorWrite"
         android:textSize="@dimen/text_size_20sp"
         android:id="@+id/tvMenuTitle"/>
