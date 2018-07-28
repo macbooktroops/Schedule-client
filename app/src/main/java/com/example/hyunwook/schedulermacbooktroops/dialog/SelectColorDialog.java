@@ -2,6 +2,7 @@ package com.example.hyunwook.schedulermacbooktroops.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -15,6 +16,7 @@ import com.example.hyunwook.schedulermacbooktroops.R;
  */
 public class SelectColorDialog extends Dialog implements View.OnClickListener {
 
+    static final String TAG = SelectColorDialog.class.getSimpleName();
     private OnSelectColorListener mOnSelectColorListener;
 
     private int mColor;
@@ -87,6 +89,7 @@ public class SelectColorDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.tvConfirm:
                 if (mOnSelectColorListener != null) {
+                    Log.d(TAG, "mColor -->" + mColor);
                     mOnSelectColorListener.onSelectColor(mColor);
                 }
 

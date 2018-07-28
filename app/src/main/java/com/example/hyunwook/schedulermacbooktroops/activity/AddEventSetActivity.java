@@ -3,6 +3,7 @@ package com.example.hyunwook.schedulermacbooktroops.activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
     public static int ADD_EVENT_SET_FINISH = 2;
     public static String EVENT_SET_OBJ = "event.set.obj";
 
-
+    static final String TAG = AddEventSetActivity.class.getSimpleName();
     private int mColor = 0;
     @Override
     protected void bindView() {
@@ -58,7 +59,9 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tvFinish:
                 addEventSet();
+                break;
             case R.id.rlEventSetColor:
+                Log.d(TAG, "rlEventSetColor ---");
                 showSelectColorDialog();
                 break;
         }
@@ -66,9 +69,9 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
 
     //스케줄 분류 중요도 색상 다이얼로그
     private void showSelectColorDialog() {
-        if (mSelectColorDialog == null) {
+        if (mSelectColorDialog == null)
             mSelectColorDialog = new SelectColorDialog(this, this);
-        }
+
 
         mSelectColorDialog.show();
     }
