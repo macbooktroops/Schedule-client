@@ -126,7 +126,7 @@ public class ScheduleLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         monthCalendar = (MonthCalendarView) findViewById(R.id.monthCalendar);
-//        weekCalendar = (WeekCalendarView) findViewById(R.id.weekCalendar);
+        weekCalendar = (WeekCalendarView) findViewById(R.id.weekCalendar);
 
         rlMonthCalendar = (RelativeLayout) findViewById(R.id.rlMonthCalendar);
 
@@ -178,16 +178,17 @@ public class ScheduleLayout extends FrameLayout {
 
             Log.d(TAG, "month calendar click listener -->" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay +"/" +year + "/" +month + "/" + day);
             int weeks = CalendarUtils.getWeeksAgo(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, year, month, day);
-
+            //year,month, day 클릭된 날짜.
             Log.d(TAG, "Week -->" + weeks);
             resetCurrentSelectDate(year, month, day);
 
-//            int position = weekCalendar.getCurrentItem() + weeks;
-//            if (weeks != 0) {
-//                weekCalendar.setCurrentItem(position, false);
-//            }
+            int position = weekCalendar.getCurrentItem() + weeks;
+            if (weeks != 0) {
+                weekCalendar.setCurrentItem(position, false);
+            }
+            Log.d(TAG, "Month Position ->" + position);
 //
-//            resetWeekView(position);
+            resetWeekView(position);
 //            weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
         }
 

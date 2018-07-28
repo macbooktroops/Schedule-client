@@ -47,7 +47,7 @@
                         app:month_show_lunar="true"
                         app:month_show_task_hint="false"/>
                 </RelativeLayout>
-<!--
+
                 <com.example.calendar.widget.calendar.week.WeekCalendarView
                     android:id="@+id/weekCalendar"
                     android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                     app:week_show_holiday_hint="true"
                     app:week_show_lunar="true"
                     app:week_show_task_hint="false"/>
-                -->
+
             </RelativeLayout>
             
             <RelativeLayout

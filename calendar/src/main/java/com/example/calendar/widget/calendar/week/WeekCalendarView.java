@@ -64,7 +64,7 @@ public class WeekCalendarView extends ViewPager implements OnWeekClickListener {
         @Override
         public void onPageSelected(final int position) {
             WeekView weekView = mWeekAdapter.getViews().get(position);
-            Log.d(TAG, "onPageSelected -->" + weekView.getSelectYear() + "/" + weekView.getSelectMonth() + "/" + weekView.getSelectDay());
+//            Log.d(TAG, "onPageSelected -->" + weekView.getSelectYear() + "/" + weekView.getSelectMonth() + "/" + weekView.getSelectDay());
             if (weekView != null) {
                 if (mOnCalendarClickListener != null) {
                     mOnCalendarClickListener.onPageChange(weekView.getSelectYear(), weekView.getSelectMonth(), weekView.getSelectDay());
