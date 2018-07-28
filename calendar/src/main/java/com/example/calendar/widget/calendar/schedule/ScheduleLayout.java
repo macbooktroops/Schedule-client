@@ -126,7 +126,7 @@ public class ScheduleLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         monthCalendar = (MonthCalendarView) findViewById(R.id.monthCalendar);
-        weekCalendar = (WeekCalendarView) findViewById(R.id.weekCalendar);
+//        weekCalendar = (WeekCalendarView) findViewById(R.id.weekCalendar);
 
         rlMonthCalendar = (RelativeLayout) findViewById(R.id.rlMonthCalendar);
 
@@ -139,7 +139,7 @@ public class ScheduleLayout extends FrameLayout {
     //binding
     private void bindingMonthAndWeekCalendar() {
         monthCalendar.setOnCalendarClickListener(mMonthCalendarClickListener);
-        weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
+//        weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
 
         //view init
         Calendar calendar = Calendar.getInstance();
@@ -150,7 +150,7 @@ public class ScheduleLayout extends FrameLayout {
         //mDefaultView == 0
         if (mDefaultView == DEFAULT_MONTH) {
             Log.d(TAG, "binding mDefaultView is DEFAULT_MONTH");
-            weekCalendar.setVisibility(INVISIBLE);
+//            weekCalendar.setVisibility(INVISIBLE);
             mState = ScheduleState.OPEN;
 
             if (!mCurrentRowsIsSix) {
@@ -174,7 +174,7 @@ public class ScheduleLayout extends FrameLayout {
         @Override
         public void onClickDate(int year, int month, int day) {
             Log.d(TAG, "onCLickDate MonthCalendarView..");
-            weekCalendar.setOnCalendarClickListener(null); //week는 클릭안되게.
+//            weekCalendar.setOnCalendarClickListener(null); //week는 클릭안되게.
 
             Log.d(TAG, "month calendar click listener -->" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay +"/" +year + "/" +month + "/" + day);
             int weeks = CalendarUtils.getWeeksAgo(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, year, month, day);
@@ -182,13 +182,13 @@ public class ScheduleLayout extends FrameLayout {
             Log.d(TAG, "Week -->" + weeks);
             resetCurrentSelectDate(year, month, day);
 
-            int position = weekCalendar.getCurrentItem() + weeks;
-            if (weeks != 0) {
-                weekCalendar.setCurrentItem(position, false);
-            }
-
-            resetWeekView(position);
-            weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
+//            int position = weekCalendar.getCurrentItem() + weeks;
+//            if (weeks != 0) {
+//                weekCalendar.setCurrentItem(position, false);
+//            }
+//
+//            resetWeekView(position);
+//            weekCalendar.setOnCalendarClickListener(mWeekCalendarClickListener);
         }
 
         @Override
@@ -398,7 +398,7 @@ public class ScheduleLayout extends FrameLayout {
     private void transferEvent(MotionEvent event) {
          if (mState == ScheduleState.CLOSE) {
              monthCalendar.setVisibility(VISIBLE);
-             weekCalendar.setVisibility(INVISIBLE);
+//             weekCalendar.setVisibility(INVISIBLE);
              mGestureDetector.onTouchEvent(event);
          } else {
              mGestureDetector.onTouchEvent(event);
@@ -496,13 +496,13 @@ public class ScheduleLayout extends FrameLayout {
                  mState = ScheduleState.CLOSE;
 
                  monthCalendar.setVisibility(INVISIBLE);
-                 weekCalendar.setVisibility(VISIBLE);
+//                 weekCalendar.setVisibility(VISIBLE);
                  rlMonthCalendar.setY((1 - monthCalendar.getCurrentMonthView().getWeekRow()) * mRowSize);
-                 checkWeekCalendar();
+//                 checkWeekCalendar();
              } else {
                  mState = ScheduleState.OPEN;
                  monthCalendar.setVisibility(VISIBLE);
-                 weekCalendar.setVisibility(INVISIBLE);
+//                 weekCalendar.setVisibility(INVISIBLE);
                  rlMonthCalendar.setY(0);
              }
      }

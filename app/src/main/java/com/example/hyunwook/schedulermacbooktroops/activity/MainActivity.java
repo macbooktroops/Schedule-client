@@ -90,12 +90,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     //UI 초기화
     private void initUI() {
-        drawMain.setScrimColor(Color.TRANSPARENT); //drawer 열려있는 동안 색상
+        drawMain.setScrimColor(Color.TRANSPARENT); //drawer 열려있는 동안 색상 메뉴아닌부분 색상 선택.
 
         mMonthText = getResources().getStringArray(R.array.calendar_month); //월 배열
         linearDate.setVisibility(View.VISIBLE); //뷰 보여짐
         tvTitle.setVisibility(View.GONE); //뷰 보여지지않음.
-        tvTitleMonth.setText(mMonthText[Calendar.getInstance().get(Calendar.MONTH)]);
+        tvTitleMonth.setText(mMonthText[Calendar.getInstance().get(Calendar.MONTH)]); //오늘월
         Log.d(TAG, "mMonthText -->" + mMonthText[Calendar.getInstance().get(Calendar.MONTH)]);
 
         tvTitleDay.setText(getString(R.string.calendar_today));
@@ -109,6 +109,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+    //after execute bindView()
     @Override
     protected void initData() {
         super.initData();
@@ -126,7 +127,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         rvEventSetList.setLayoutManager(manager);
 
-        //item view가 추가/삭제/이동 할때 animation
+        /**
+         * DefaultItemAnimator는 item들의
+         * 추가/삭제/이동 이벤트에 대한 기본적인 animation을 제공하는 클래스
+         * RecyclerView는 이를 기본적인 ItemAnimator로 사용
+         */
         DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setSupportsChangeAnimations(false); //비활성화
 
@@ -145,10 +150,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (mScheduleFragment == null) {
             //get Instance ScheduleFragment...
             Log.d(TAG, "goSchedule instance");
-            mScheduleFragment = ScheduleFragment.getInstance();
+            mScheduleFragment = ScheduleFragment.getInstance(); //singleton
             ft.add(R.id.frameContainer, mScheduleFragment);
         }
 
+        //ScheduleFragment show일때는 EventSetFragment hide.
         if (mEventSetFragment != null) {
             ft.hide(mEventSetFragment);
         }

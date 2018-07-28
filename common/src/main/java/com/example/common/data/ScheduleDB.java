@@ -112,7 +112,7 @@ public class ScheduleDB {
 
     public void removeScheduleByEventSetId(int id) {
         SQLiteDatabase db = mHelper.getWritableDatabase(); //쓰기 가능
-        db.delete(ScheDBConfig.SCHEDULE_TABLE_NAME, String.format("%s=", ScheDBConfig.SCHEDULE_EVENT_SET_ID), new String[]{String.valueOf(id)});
+        db.delete(ScheDBConfig.SCHEDULE_TABLE_NAME, String.format("%s=?", ScheDBConfig.SCHEDULE_EVENT_SET_ID), new String[]{String.valueOf(id)});
         db.close();
         mHelper.close();
     }
