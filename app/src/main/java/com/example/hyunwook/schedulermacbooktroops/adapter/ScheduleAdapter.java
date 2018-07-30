@@ -192,6 +192,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 new RemoveScheduleTask(mContext, new OnTaskFinishedListener<Boolean>() {
                     @Override
                     public void onTaskFinished(Boolean data) {
+                        Log.d(TAG, "RemoveScheduleTask -----");
                         //작업이 끝나면
                         if (data) {
                             removeItem(schedule);
