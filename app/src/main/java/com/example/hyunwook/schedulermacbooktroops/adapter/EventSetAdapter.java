@@ -34,6 +34,13 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
         mEventSets = eventSets;
     }
 
+    /**
+     * http://i5on9i.blogspot.com/2015/03/baseadapter-recyclerviewadapter.html
+     * onCreateViewHolder 는 정말 새롭게 생성될 때에만 불린다
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @Override
     public EventSetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new EventSetViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_event_set, parent, false));
@@ -83,7 +90,7 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
                             removeItem(position);
                         }
                     }
-                }, eventSet.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }, eventSet.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); //병렬처리
             }
         }).show();
     }

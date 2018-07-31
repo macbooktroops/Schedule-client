@@ -64,7 +64,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     public static EventSetFragment getInstance(EventSet eventSet) {
         EventSetFragment fragment = new EventSetFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(EVENT_SET_OBJ, eventSet);
+        bundle.putSerializable(EVENT_SET_OBJ, eventSet); //객체 넘기기
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -132,6 +132,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         itemAnimator.setSupportsChangeAnimations(false);
 
         rvScheduleList.setItemAnimator(itemAnimator);
+
+        //스케줄 어댑터 설정
         mScheduleAdapter = new ScheduleAdapter(mActivity, this);
         rvScheduleList.setAdapter(mScheduleAdapter);
 

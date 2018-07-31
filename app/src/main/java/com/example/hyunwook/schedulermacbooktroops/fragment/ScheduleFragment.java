@@ -280,6 +280,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     }
 
     public int getCurrentCalendarPosition() {
+        Log.d(TAG, "getCurrentCalendar -->" + scheduleLayout.getMonthCalendar().getCurrentItem());
         return scheduleLayout.getMonthCalendar().getCurrentItem();
     }
 }

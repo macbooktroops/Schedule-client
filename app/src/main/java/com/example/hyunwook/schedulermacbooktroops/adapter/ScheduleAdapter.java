@@ -57,13 +57,14 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     //Data array setting.
     private void initData() {
-        mSchedules =  new ArrayList<>();
-        mFinishSchedules = new ArrayList<>();
+        mSchedules =  new ArrayList<>(); //진행중인 스케줄
+        mFinishSchedules = new ArrayList<>(); //완료된 스케줄
     }
 
     //ViewHolder생성
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreate state -->" + viewType);
         if (viewType == SCHEDULE_TYPE) {
             Log.d(TAG, "SCHEDULE_TYPE");
             return new ScheduleViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_schedule, parent, false));

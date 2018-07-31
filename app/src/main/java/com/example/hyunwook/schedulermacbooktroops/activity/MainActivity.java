@@ -186,8 +186,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             ft.add(R.id.frameContainer, mEventSetFragment);
         }
 
-        ft.hide(mScheduleFragment);
-        ft.show(mEventSetFragment);
+        ft.hide(mScheduleFragment); //스케줄 은 숨기고.
+        ft.show(mEventSetFragment); //스케줄 항목 프래그로.
         ft.commit();
 
         Log.d(TAG, "gotoEventSet getName ->" + eventSet.getName());
