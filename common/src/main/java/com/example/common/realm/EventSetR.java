@@ -6,6 +6,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * 18-08-02
  * EventSet 관련 DB use Realm
+ * https://realm.io/kr/docs/get-started/installation/mac/   macOS Realm browser
  */
 public class EventSetR extends RealmObject {
 
