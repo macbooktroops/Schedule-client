@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.EventSetR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.AddEventSetActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.SelectEventSetAdapter;
@@ -18,12 +19,14 @@ import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetTas
 
 import java.util.List;
 
+import io.realm.RealmResults;
+
 /**
  * 18-07-01
  * 스케줄 이벤트 설정 다이얼로그
  * DetailActivity
  */
-public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSet>> {
+public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>> {
 
     private Context mContext;
     private OnSelectEventSetListener mOnSelectEventSetListener;
@@ -34,7 +37,8 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     private ListView lvEvent;
     private SelectEventSetAdapter mSelectEventSetAdapter;
 
-    private List<EventSet> mEventSets;
+//    private List<EventSet> mEventSets;
+    RealmResults<EventSetR> mEventSets;
 
     public SelectEventSetDialog(Context context, OnSelectEventSetListener onSelectEventSetListener, int id) {
         super(context, R.style.DialogFullScreen);
@@ -87,17 +91,17 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     }
 
     //이벤트 추가
-    public void addEventSet(EventSet eventSet) {
+    public void addEventSet(EventSetR eventSet) {
         mEventSets.add(eventSet);
         mSelectEventSetAdapter.notifyDataSetChanged();
     }
 
     //작업이 끝나면
     @Override
-    public void onTaskFinished(List<EventSet> data) {
+    public void onTaskFinished(RealmResults<EventSetR> data) {
         mEventSets = data;
 
-        EventSet eventSet = new EventSet();
+        EventSetR eventSet = new EventSetR();
         eventSet.setName(getContext().getString(R.string.menu_no_category));
         mEventSets.add(0, eventSet);
 
@@ -115,6 +119,7 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
 
 
     public interface OnSelectEventSetListener {
-        void onSelectEventSet(EventSet eventSet);
+        void onSelectEventSet(EventSetR eventSet);
+//        void onSelectEventSet(EventSet eventSet);
     }
 }
