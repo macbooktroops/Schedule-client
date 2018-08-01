@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'realm-android'
+
 android {
 //    compileSdkVersion 27
     compileSdkVersion compile_sdk_version
