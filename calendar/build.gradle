@@ -32,8 +32,6 @@ dependencies {
     implementation "com.android.support:design:27.1.1"
 
     //realm
-    implementation 'com.uphyca:stetho_realm:2.1.0'
-    implementation 'com.facebook.stetho:stetho:1.5.0'
 
     //permission
     implementation 'gun0912.ted:tedpermission:2.1.1'
