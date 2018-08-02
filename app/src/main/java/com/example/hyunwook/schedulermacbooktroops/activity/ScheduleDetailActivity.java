@@ -13,6 +13,7 @@ import com.example.common.base.app.BaseActivity;
 import com.example.common.bean.EventSet;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.ScheduleR;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.dialog.InputLocationDialog;
@@ -43,7 +44,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private TextView tvEventSet, tvTime, tvLocation;
     private Map<Integer, EventSet> mEventSetsMap;
 
-    private Schedule mSchedule;
+    private ScheduleR mSchedule;
     public static String SCHEDULE_OBJ = "schedle.obj";
     public static String CALENDAR_POSITION = "calendar.position";
 
@@ -79,7 +80,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     protected void initData() {
         super.initData();
         mEventSetsMap = new HashMap<>();
-        mSchedule = (Schedule)getIntent().getSerializableExtra(SCHEDULE_OBJ);
+        mSchedule = (ScheduleR)getIntent().getSerializableExtra(SCHEDULE_OBJ);
         mPosition = getIntent().getIntExtra(CALENDAR_POSITION, -1);
 
         new LoadEventSetMapTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

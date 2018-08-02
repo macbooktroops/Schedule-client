@@ -11,6 +11,8 @@ import io.realm.annotations.PrimaryKey;
 public class EventSetR extends RealmObject {
 
     @PrimaryKey
+    private int seq;
+
     private int id;
 
     private String name;
@@ -18,6 +20,13 @@ public class EventSetR extends RealmObject {
     private int icon;
     private boolean isChecked;
 
+    public int getSeq() {
+        return seq;
+    }
+
+    public void setSeq(int seq) {
+        this.seq = seq;
+    }
     public int getId() {
         return id;
     }

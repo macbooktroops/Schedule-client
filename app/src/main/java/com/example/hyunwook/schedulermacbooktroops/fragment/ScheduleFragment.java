@@ -20,6 +20,7 @@ import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.ScheduleR;
 import com.example.common.util.DeviceUtils;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
@@ -43,13 +44,15 @@ import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleTas
 import java.util.Calendar;
 import java.util.List;
 
+import io.realm.Realm;
+
 /**
  * 18-05-25
  * 스케줄 작성 메인화면 하단뷰
  */
 
 public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener, View.OnClickListener,
-        SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<Schedule>> {
+        SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<ScheduleR>> {
 
     private ScheduleLayout scheduleLayout;
 
@@ -61,6 +64,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     private ScheduleAdapter mScheduleAdapter;
 
     private long mTime;
+
+    Realm realm;
 
     static final String TAG = ScheduleFragment.class.getSimpleName();
 //    private ScheduleAdapter
@@ -84,6 +89,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
         rlNoTask = searchViewById(R.id.rlNoTask);
         scheduleLayout.setOnCalendarClickListener(this);
+
+        realm = Realm.getDefaultInstance();
 
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
@@ -129,14 +136,14 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 //시간 설정이 가능한 다이얼로그?
                 break;
             case R.id.ibMainOK:
-                addSchedule();
+                addSchedule(realm);
                 break;
         }
     }
 
     //스케줄 추가
-    private void addSchedule() {
-        String content = etInputContent.getText().toString();
+    private void addSchedule(Realm realm) {
+        final String content = etInputContent.getText().toString();
 
         if (TextUtils.isEmpty(content)) {
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_content_is_no_null);
@@ -144,28 +151,54 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             Log.d(TAG, "Try save");
             closeSoftInput();
 
-            Schedule schedule = new Schedule();
-            schedule.setTitle(content);
-            schedule.setState(0);
-            schedule.setTime(mTime);
-            schedule.setYear(mCurrentSelectYear);
-            schedule.setMonth(mCurrentSelectMonth);
-            schedule.setDay(mCurrentSelectDay);
+            //Realm create Transaction
+            realm.executeTransaction
+                    (new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
 
-            new AddScheduleTask(mActivity, new OnTaskFinishedListener<Schedule>() {
-                @Override
-                public void onTaskFinished(Schedule data) {
-                    if (data != null) {
-                        mScheduleAdapter.insertItem(data);
-                        etInputContent.getText().clear();
-                        rlNoTask.setVisibility(View.GONE);
-                        mTime = 0;
-                        updateTaskHintUi(mScheduleAdapter.getItemCount() -2);
-                    }
-                }
-            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-    }
+                            //increase primary key "id?
+                            Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                            int nextId;
+
+                            if (currentIdNum == null) {
+                                nextId = 0;
+                            } else {
+                                nextId = currentIdNum.intValue() + 1;
+                            }
+                            ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                            Log.d(TAG, "content schedule ==>" + content);
+                            //                      Schedule schedule = new Schedule();
+                            schedule.setTitle(content);
+                            schedule.setState(0);
+                            schedule.setTime(mTime);
+                            schedule.setYear(mCurrentSelectYear);
+                            schedule.setMonth(mCurrentSelectMonth);
+                            schedule.setDay(mCurrentSelectDay);
+
+                            Log.d(TAG, "try AddScheduleTask ===");
+                            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                                @Override
+                                public void onTaskFinished(ScheduleR data) {
+                                    if (data != null) {
+                                        Log.d(TAG, "data result -> " + data.getTitle());
+                                        mScheduleAdapter.insertItem(data);
+                                        etInputContent.getText().clear();
+                                        rlNoTask.setVisibility(View.GONE);
+                                        mTime = 0;
+                                        updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+                                    }
+                                }
+                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        }
+
+                    });
+                 }
+            }
+
+
+
 
     private void closeSoftInput() {
         etInputContent.clearFocus();
@@ -263,7 +296,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     }
 
     @Override
-    public void onTaskFinished(List<Schedule> data) {
+    public void onTaskFinished(List<ScheduleR> data) {
         Log.d(TAG, "ScheduleFragment onTaskFinished --> " + data);
         mScheduleAdapter.changeAllData(data);
 

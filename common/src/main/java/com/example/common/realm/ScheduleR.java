@@ -10,7 +10,10 @@ import io.realm.annotations.PrimaryKey;
  */
 public class ScheduleR extends RealmObject {
 
+
     @PrimaryKey
+    private int seq;
+
     private int id;
 
     private int color;
@@ -24,6 +27,14 @@ public class ScheduleR extends RealmObject {
     private int month;
     private int day;
     private int eventSetId;
+
+    public int getSeq() {
+        return seq;
+    }
+
+    public void setSeq(int seq) {
+        this.seq = seq;
+    }
 
     public int getId() {
         return id;

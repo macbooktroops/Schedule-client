@@ -22,6 +22,7 @@ import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.ScheduleR;
 import com.example.common.util.DeviceUtils;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
@@ -38,7 +39,7 @@ import java.util.List;
  * 스케줄 목록을 보고자 할때 표시되는 프레그먼트
  *
  */
-public class EventSetFragment extends BaseFragment implements View.OnClickListener, SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<Schedule>> {
+public class EventSetFragment extends BaseFragment implements View.OnClickListener, SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<ScheduleR>> {
 
     static final String TAG = EventSetFragment.class.getSimpleName();
     private ScheduleRecyclerView rvScheduleList;
@@ -190,7 +191,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             closeSoftInput();
 
             //스케줄 저장
-            Schedule schedule = new Schedule();
+            ScheduleR schedule = new ScheduleR();
             schedule.setTitle(content);
             schedule.setState(0);
             schedule.setColor(mEventSet.getColor());
@@ -200,9 +201,9 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             schedule.setMonth(mCurrentSelectMonth);
             schedule.setDay(mCurrentSelectDay);
 
-            new AddScheduleTask(mActivity, new OnTaskFinishedListener<Schedule>() {
+            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                 @Override
-                public void onTaskFinished(Schedule data) {
+                public void onTaskFinished(ScheduleR data) {
                     if (data != null) {
                         mScheduleAdapter.insertItem(data);
                         etInput.getText().clear();
@@ -231,7 +232,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onTaskFinished(List<Schedule> data) {
+    public void onTaskFinished(List<ScheduleR> data) {
         mScheduleAdapter.changeAllData(data);
         rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
     }

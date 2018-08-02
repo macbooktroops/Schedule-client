@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.common.bean.Schedule;
+import com.example.common.realm.ScheduleR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ScheduleDB {
         return new ScheduleDB(context);
     }
 
-    public int addSchedule(Schedule schedule) {
+    public int addSchedule(ScheduleR schedule) {
         // 읽고 쓰기가 가능하게 DB 열기
         SQLiteDatabase db = mHelper.getWritableDatabase();
 
@@ -89,7 +90,7 @@ public class ScheduleDB {
     }
 
     //업데이트
-    public boolean updateSchedule(Schedule schedule) {
+    public boolean updateSchedule(ScheduleR schedule) {
         SQLiteDatabase db = mHelper.getWritableDatabase(); //읽고 쓰기
         ContentValues values = new ContentValues();
         values.put(ScheDBConfig.SCHEDULE_TITLE, schedule.getTitle());
@@ -119,18 +120,18 @@ public class ScheduleDB {
 
 
     //해당되는 연월일에 스케줄 얻기
-    public List<Schedule> getScheduleByDate(int year, int month, int day) {
-        List<Schedule> schedules = new ArrayList<>();
+    public List<ScheduleR> getScheduleByDate(int year, int month, int day) {
+        List<ScheduleR> schedules = new ArrayList<>();
         SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기
         Cursor cursor = db.query(ScheDBConfig.SCHEDULE_TABLE_NAME, null,
                 String.format("%s=? and %s=? and %s=?", ScheDBConfig.SCHEDULE_YEAR,
                         ScheDBConfig.SCHEDULE_MONTH, ScheDBConfig.SCHEDULE_DAY),
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)}, null, null, null);
 
-        Schedule schedule;
+        ScheduleR schedule;
 
         while (cursor.moveToNext()) {
-            schedule = new Schedule();
+            schedule = new ScheduleR();
             schedule.setId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_ID)));
             schedule.setColor(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_COLOR)));
             schedule.setTitle(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_TITLE)));
@@ -152,17 +153,17 @@ public class ScheduleDB {
     }
 
     //id에 따른 스케줄 정보얻기.
-    public List<Schedule> getScheduleByEventSetId(int id) {
-        List<Schedule> schedules = new ArrayList<>();
+    public List<ScheduleR> getScheduleByEventSetId(int id) {
+        List<ScheduleR> schedules = new ArrayList<>();
 
         SQLiteDatabase db = mHelper.getReadableDatabase(); //쓰기만 허용
         Cursor cursor = db.query(ScheDBConfig.SCHEDULE_TABLE_NAME, null,
                 String.format("%s=?", ScheDBConfig.SCHEDULE_EVENT_SET_ID), new String[]{String.valueOf(id)}, null, null, null);
 
-        Schedule schedule;
+        ScheduleR schedule;
 
         while (cursor.moveToNext()) { //자료있을때까지 계속.
-            schedule = new Schedule();
+            schedule = new ScheduleR();
             schedule.setId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_ID)));
             schedule.setColor(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_COLOR)));
             schedule.setTitle(cursor.getString(cursor.getColumnIndex(ScheDBConfig.SCHEDULE_TITLE)));

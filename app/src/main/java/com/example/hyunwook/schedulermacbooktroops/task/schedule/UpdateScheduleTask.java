@@ -6,15 +6,17 @@ import com.example.common.base.task.BaseAsyncTask;
 import com.example.common.bean.Schedule;
 import com.example.common.data.ScheduleDB;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.ScheduleR;
 
 /**
  * 18-06-27
+ * 업데이트 스케줄
  */
 public class UpdateScheduleTask extends BaseAsyncTask<Boolean> {
 
-    private Schedule mSchedule;
+    private ScheduleR mSchedule;
 
-    public UpdateScheduleTask(Context context, OnTaskFinishedListener<Boolean> onTaskFinishedListener, Schedule schedule) {
+    public UpdateScheduleTask(Context context, OnTaskFinishedListener<Boolean> onTaskFinishedListener, ScheduleR schedule) {
         super(context, onTaskFinishedListener);
         mSchedule = schedule;
     }
