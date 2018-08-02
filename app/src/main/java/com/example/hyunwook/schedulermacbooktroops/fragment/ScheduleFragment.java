@@ -141,6 +141,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         if (TextUtils.isEmpty(content)) {
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_content_is_no_null);
         } else {
+            Log.d(TAG, "Try save");
             closeSoftInput();
 
             Schedule schedule = new Schedule();

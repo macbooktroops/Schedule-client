@@ -14,17 +14,17 @@ import java.util.List;
  * 18-07-02
  * 저장된 이벤트 태스트 얻기
  */
-public class LoadEventSetTask extends BaseAsyncTask<List<EventSetR>> {
+public class LoadEventSetTask extends BaseAsyncTask<List<EventSet>> {
 
     private Context mContext;
 
-    public LoadEventSetTask(Context context, OnTaskFinishedListener<List<EventSetR>> onTaskFinishedListener) {
+    public LoadEventSetTask(Context context, OnTaskFinishedListener<List<EventSet>> onTaskFinishedListener) {
         super(context, onTaskFinishedListener);
         mContext = context;
     }
 
     @Override
-    protected List<EventSetR> doInBackground(Void... params) {
+    protected List<EventSet> doInBackground(Void... params) {
         EventSetDB db = EventSetDB.getInstance(mContext);
         return db.getAllEventSet();
     }

@@ -26,7 +26,7 @@ import io.realm.RealmResults;
  * 스케줄 이벤트 설정 다이얼로그
  * DetailActivity
  */
-public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>> {
+public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSet>> {
 
     private Context mContext;
     private OnSelectEventSetListener mOnSelectEventSetListener;
@@ -37,8 +37,8 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     private ListView lvEvent;
     private SelectEventSetAdapter mSelectEventSetAdapter;
 
-//    private List<EventSet> mEventSets;
-    RealmResults<EventSetR> mEventSets;
+    private List<EventSet> mEventSets;
+//    RealmResults<EventSetR> mEventSets;
 
     public SelectEventSetDialog(Context context, OnSelectEventSetListener onSelectEventSetListener, int id) {
         super(context, R.style.DialogFullScreen);
@@ -91,17 +91,18 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     }
 
     //이벤트 추가
-    public void addEventSet(EventSetR eventSet) {
+    public void addEventSet(EventSet eventSet) {
         mEventSets.add(eventSet);
         mSelectEventSetAdapter.notifyDataSetChanged();
     }
 
     //작업이 끝나면
     @Override
-    public void onTaskFinished(RealmResults<EventSetR> data) {
+//    public void onTaskFinished(RealmResults<EventSetR> data) {
+    public void onTaskFinished(List<EventSet> data) {
         mEventSets = data;
 
-        EventSetR eventSet = new EventSetR();
+        EventSet eventSet = new EventSet();
         eventSet.setName(getContext().getString(R.string.menu_no_category));
         mEventSets.add(0, eventSet);
 
@@ -119,7 +120,7 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
 
 
     public interface OnSelectEventSetListener {
-        void onSelectEventSet(EventSetR eventSet);
+        void onSelectEventSet(EventSet eventSet);
 //        void onSelectEventSet(EventSet eventSet);
     }
 }
