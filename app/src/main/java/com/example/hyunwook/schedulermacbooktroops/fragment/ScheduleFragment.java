@@ -45,6 +45,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 18-05-25
@@ -67,6 +68,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     Realm realm;
 
+    //제대로 저장되었는지 확인 사이즈
+    RealmResults<ScheduleR> resSchedule;
     static final String TAG = ScheduleFragment.class.getSimpleName();
 //    private ScheduleAdapter
 
@@ -152,8 +155,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             closeSoftInput();
 
             //Realm create Transaction
-            realm.executeTransaction
-                    (new Realm.Transaction() {
+            realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
 
@@ -166,7 +168,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 nextId = 0;
                             } else {
                                 nextId = currentIdNum.intValue() + 1;
-                            }
+                            }a
                             ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
                             Log.d(TAG, "content schedule ==>" + content);
                             //                      Schedule schedule = new Schedule();
@@ -178,7 +180,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                             schedule.setDay(mCurrentSelectDay);
 
                             Log.d(TAG, "try AddScheduleTask ===");
-                            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                           /* new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                                 @Override
                                 public void onTaskFinished(ScheduleR data) {
                                     if (data != null) {
@@ -190,11 +192,19 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                         updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
                                     }
                                 }
-                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
+
+                           checkSuccessInsert(realm);
                         }
 
                     });
                  }
+            }
+
+            private void checkSuccessInsert(Realm realm) {
+                resSchedule = realm.where(ScheduleR.class).findAll();
+
+                Log.d(TAG, "check Size --->" +resSchedule.size());
             }
 
 
