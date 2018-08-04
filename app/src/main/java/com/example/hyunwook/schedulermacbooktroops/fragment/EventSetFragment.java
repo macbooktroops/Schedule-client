@@ -22,6 +22,7 @@ import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.EventSetR;
 import com.example.common.realm.ScheduleR;
 import com.example.common.util.DeviceUtils;
 import com.example.common.util.ToastUtils;
@@ -33,6 +34,8 @@ import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask
 
 import java.util.Calendar;
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * 18-06-19
@@ -57,6 +60,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
     private long mTime;
     public static String EVENT_SET_OBJ = "event.set.obj";
+
+    Realm realm;
     /**
      * http://milkissboy.tistory.com/34
      * @param eventSet
@@ -81,6 +86,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         rvScheduleList = searchViewById(R.id.rvScheduleList);
         rlNoTask = searchViewById(R.id.rlNoTask);
         etInput = searchViewById(R.id.etInputContent);
+
+        realm = Realm.getDefaultInstance();
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
         initBottomInputBar();
@@ -162,7 +169,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                 showSelectDateDialog();
                 break;
             case R.id.ibMainOK:
-                addSchedule();
+                addSchedule(realm);
                 break;
         }
     }
@@ -183,40 +190,47 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     }
 
     //ok버튼 클릭 시 스케줄 등록
-    private void addSchedule() {
-        String content = etInput.getText().toString();
+    private void addSchedule(Realm realm) {
+        final String content = etInput.getText().toString();
         if (TextUtils.isEmpty(content)) {
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_null);
         } else {
             closeSoftInput();
 
-            
+            realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
 
-            //스케줄 저장
-            ScheduleR schedule = new ScheduleR();
-            schedule.setTitle(content);
-            schedule.setState(0);
-            schedule.setColor(mEventSet.getColor());
-            schedule.setEventSetId(mEventSet.getId());
-            schedule.setTime(mTime);
-            schedule.setYear(mCurrentSelectYear);
-            schedule.setMonth(mCurrentSelectMonth);
-            schedule.setDay(mCurrentSelectDay);
+                        Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
-            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
-                @Override
-                public void onTaskFinished(ScheduleR data) {
-                    Log.d(TAG, "EventSetFragment add");
+                        int nextId;
 
-                    if (data != null) {
-                        mScheduleAdapter.insertItem(data);
+                        if (currentIdNum == null) {
+                            nextId = 0;
+                        } else {
+                            nextId = currentIdNum.intValue() + 1;
+                        }
+                        //스케줄 저장
+                        ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                        Log.d(TAG, "eventFragment content ==>" + content);
+                        schedule.setTitle(content);
+                        schedule.setState(0);
+                        schedule.setColor(mEventSet.getColor());
+                        schedule.setEventSetId(mEventSet.getId());
+                        schedule.setTime(mTime);
+                        schedule.setYear(mCurrentSelectYear);
+                        schedule.setMonth(mCurrentSelectMonth);
+                        schedule.setDay(mCurrentSelectDay);
+
+                        Log.d(TAG, "EventSetFragment add");
+
+                        mScheduleAdapter.insertItem(schedule);
                         etInput.getText().clear();
                         rlNoTask.setVisibility(View.GONE);
                         mTime = 0;
 
                     }
-                }
-            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            });
         }
 
     }
@@ -237,6 +251,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onTaskFinished(List<ScheduleR> data) {
+        Log.d(TAG, "Event Task Finish");
         mScheduleAdapter.changeAllData(data);
         rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
     }

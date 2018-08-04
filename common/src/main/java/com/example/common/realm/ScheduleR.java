@@ -28,6 +28,7 @@ public class ScheduleR extends RealmObject {
     private int day;
     private int eventSetId;
 
+
     public int getSeq() {
         return seq;
     }

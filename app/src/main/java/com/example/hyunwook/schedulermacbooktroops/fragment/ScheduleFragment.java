@@ -20,6 +20,7 @@ import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.RealmArrayList;
 import com.example.common.realm.ScheduleR;
 import com.example.common.util.DeviceUtils;
 import com.example.common.util.ToastUtils;
@@ -38,9 +39,11 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleTask;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -71,6 +74,9 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     //제대로 저장되었는지 확인 사이즈
     RealmResults<ScheduleR> resSchedule;
     static final String TAG = ScheduleFragment.class.getSimpleName();
+
+    //Realm 정의 ArrayList
+    ArrayList<RealmArrayList> arrSchedule;
 //    private ScheduleAdapter
 
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
@@ -154,8 +160,18 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             Log.d(TAG, "Try save");
             closeSoftInput();
 
+            arrSchedule = new ArrayList<RealmArrayList>();
+            arrSchedule.add(new RealmArrayList(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay));
+//            ScheduleR schedule = new ScheduleR(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+            new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                @Override
+                public void onTaskFinished(ScheduleR data) {
+                    Log.d(TAG, "finish add ScheduleFragment ===");
+
+                }
+            }, arrSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             //Realm create Transaction
-            realm.executeTransaction(new Realm.Transaction() {
+            /*realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
 
@@ -188,7 +204,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                             mTime = 0;
                             updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
 //                            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
-                             /*   @Override
+                             *//*   @Override
                                 public void onTaskFinished(ScheduleR data) {
                                     if (data != null) {
                                         Log.d(TAG, "data result -> " + data.getTitle());
@@ -198,13 +214,13 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                         mTime = 0;
                                         updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
                                     }
-                                }*/
+                                }*//*
 //                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 //                           checkSuccessInsert(r/alm);
                         }
 
-                    });
+                    });*/
                 Log.d(TAG, "finish add realm");
 
                  }
