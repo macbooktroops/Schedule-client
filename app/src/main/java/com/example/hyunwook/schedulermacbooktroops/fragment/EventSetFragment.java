@@ -190,6 +190,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         } else {
             closeSoftInput();
 
+            
+
             //스케줄 저장
             ScheduleR schedule = new ScheduleR();
             schedule.setTitle(content);
@@ -204,6 +206,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                 @Override
                 public void onTaskFinished(ScheduleR data) {
+                    Log.d(TAG, "EventSetFragment add");
+
                     if (data != null) {
                         mScheduleAdapter.insertItem(data);
                         etInput.getText().clear();

@@ -3,7 +3,6 @@ package com.example.hyunwook.schedulermacbooktroops.task.schedule;
 import android.content.Context;
 
 import com.example.common.base.task.BaseAsyncTask;
-import com.example.common.bean.Schedule;
 import com.example.common.data.ScheduleDB;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.ScheduleR;

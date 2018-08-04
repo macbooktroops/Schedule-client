@@ -168,20 +168,27 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 nextId = 0;
                             } else {
                                 nextId = currentIdNum.intValue() + 1;
-                            }a
+                            }
                             ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
                             Log.d(TAG, "content schedule ==>" + content);
                             //                      Schedule schedule = new Schedule();
                             schedule.setTitle(content);
                             schedule.setState(0);
+
+                            Log.d(TAG, "mTime");
                             schedule.setTime(mTime);
                             schedule.setYear(mCurrentSelectYear);
                             schedule.setMonth(mCurrentSelectMonth);
                             schedule.setDay(mCurrentSelectDay);
 
                             Log.d(TAG, "try AddScheduleTask ===");
-                           /* new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
-                                @Override
+                            mScheduleAdapter.insertItem(schedule);
+                            etInputContent.getText().clear();
+                            rlNoTask.setVisibility(View.GONE);
+                            mTime = 0;
+                            updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+//                            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                             /*   @Override
                                 public void onTaskFinished(ScheduleR data) {
                                     if (data != null) {
                                         Log.d(TAG, "data result -> " + data.getTitle());
@@ -191,13 +198,15 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                         mTime = 0;
                                         updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
                                     }
-                                }
-                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
+                                }*/
+//                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-                           checkSuccessInsert(realm);
+//                           checkSuccessInsert(r/alm);
                         }
 
                     });
+                Log.d(TAG, "finish add realm");
+
                  }
             }
 
