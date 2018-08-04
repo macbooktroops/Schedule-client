@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.common.base.task.BaseAsyncTask;
+import com.example.common.data.ScheduleRealm;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.RealmArrayList;
 import com.example.common.realm.ScheduleR;
@@ -28,6 +29,7 @@ public class AddScheduleRTask extends BaseAsyncTask<ScheduleR> {
 //    public AddScheduleRTask(Context context, OnTaskFinishedListener<ScheduleR> onTaskFinishedListener, ScheduleR schedule) {
     public AddScheduleRTask(Context context, OnTaskFinishedListener<ScheduleR> onTaskFinishedListener, ArrayList arr) {
         super(context, onTaskFinishedListener);
+
 //        mSchedule = schedule;
 
         resArr = arr;
@@ -38,10 +40,20 @@ public class AddScheduleRTask extends BaseAsyncTask<ScheduleR> {
     //AsyncTask 실행
     @Override
     protected ScheduleR doInBackground(Void... params) {
-//        if (mSchedule)
-        return null;
-    }
 
+        if (resArr != null) {
+            Log.d(TAG, "resArr doInBackground");
+            ScheduleRealm sr = ScheduleRealm.getInstance(mContext);
+            sr.addSchedule(resArr);
+
+            /*if (id != 0) {
+              mSchedule.setId(id);*/
+            return mSchedule;
+        } else {
+//        if (mSchedule)
+            return null;
+        }
+    }
 
 
 }

@@ -90,6 +90,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final ScheduleR schedule = mSchedules.get(position);
             final ScheduleViewHolder viewHolder = (ScheduleViewHolder) holder;
 
+            Log.d(TAG, "Schedule bind --> " +schedule.getTitle());
             viewHolder.vScheduleHintBlock.setBackgroundResource(CalUtils.getScheduleBlockView(schedule.getColor()));;
             viewHolder.tvScheduleTitle.setText(schedule.getTitle());
 

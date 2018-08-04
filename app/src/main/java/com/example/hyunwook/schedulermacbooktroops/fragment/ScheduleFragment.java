@@ -69,8 +69,6 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     private long mTime;
 
-    Realm realm;
-
     //제대로 저장되었는지 확인 사이즈
     RealmResults<ScheduleR> resSchedule;
     static final String TAG = ScheduleFragment.class.getSimpleName();
@@ -79,6 +77,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     ArrayList<RealmArrayList> arrSchedule;
 //    private ScheduleAdapter
 
+    Realm realm;
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
 
     public static ScheduleFragment getInstance() {
@@ -100,7 +99,6 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         scheduleLayout.setOnCalendarClickListener(this);
 
         realm = Realm.getDefaultInstance();
-
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
         initScheduleList();
@@ -145,13 +143,13 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 //시간 설정이 가능한 다이얼로그?
                 break;
             case R.id.ibMainOK:
-                addSchedule(realm);
+                addSchedule();
                 break;
         }
     }
 
     //스케줄 추가
-    private void addSchedule(Realm realm) {
+    private void addSchedule() {
         final String content = etInputContent.getText().toString();
 
         if (TextUtils.isEmpty(content)) {
@@ -166,43 +164,49 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                 @Override
                 public void onTaskFinished(ScheduleR data) {
-                    Log.d(TAG, "finish add ScheduleFragment ===");
-
+                    Log.d(TAG, "success task");
+//                    if (data != null) {
+//                        Log.d(TAG, "finish add ScheduleFragment === " + data);
+                        mScheduleAdapter.insertItem(data);
+                        etInputContent.getText().clear();
+                        rlNoTask.setVisibility(View.GONE);
+                        mTime = 0;
+                        updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+//                    }
                 }
             }, arrSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            //Realm create Transaction
-            /*realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
+           /* realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
 
-                            //increase primary key "id?
-                            Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+                    //increase primary key "id?
+                    Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
-                            int nextId;
+                    int nextId;
 
-                            if (currentIdNum == null) {
-                                nextId = 0;
-                            } else {
-                                nextId = currentIdNum.intValue() + 1;
-                            }
-                            ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-                            Log.d(TAG, "content schedule ==>" + content);
-                            //                      Schedule schedule = new Schedule();
-                            schedule.setTitle(content);
-                            schedule.setState(0);
+                    if (currentIdNum == null) {
+                        nextId = 0;
+                    } else {
+                        nextId = currentIdNum.intValue() + 1;
+                    }
+                    ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                    Log.d(TAG, "content schedule ==>" + content);
+                    //                      Schedule schedule = new Schedule();
+                    schedule.setTitle(content);
+                    schedule.setState(0);
 
-                            Log.d(TAG, "mTime");
-                            schedule.setTime(mTime);
-                            schedule.setYear(mCurrentSelectYear);
-                            schedule.setMonth(mCurrentSelectMonth);
-                            schedule.setDay(mCurrentSelectDay);
+                    Log.d(TAG, "mTime");
+                    schedule.setTime(mTime);
+                    schedule.setYear(mCurrentSelectYear);
+                    schedule.setMonth(mCurrentSelectMonth);
+                    schedule.setDay(mCurrentSelectDay);
 
-                            Log.d(TAG, "try AddScheduleTask ===");
-                            mScheduleAdapter.insertItem(schedule);
-                            etInputContent.getText().clear();
-                            rlNoTask.setVisibility(View.GONE);
-                            mTime = 0;
-                            updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+                    Log.d(TAG, "try AddScheduleTask ===");
+                    mScheduleAdapter.insertItem(schedule);
+                    etInputContent.getText().clear();
+                    rlNoTask.setVisibility(View.GONE);
+                    mTime = 0;
+                    updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
 //                            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                              *//*   @Override
                                 public void onTaskFinished(ScheduleR data) {
@@ -214,24 +218,20 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                         mTime = 0;
                                         updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
                                     }
-                                }*//*
+                                }*//**//*
 //                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 //                           checkSuccessInsert(r/alm);
                         }
 
-                    });*/
-                Log.d(TAG, "finish add realm");
+                    });*//*
+                    Log.d(TAG, "finish add realm");
 
-                 }
-            }
-
-            private void checkSuccessInsert(Realm realm) {
-                resSchedule = realm.where(ScheduleR.class).findAll();
-
-                Log.d(TAG, "check Size --->" +resSchedule.size());
-            }
-
+                }
+            });*/
+            //Realm create Transaction
+        }
+    }
 
 
 
