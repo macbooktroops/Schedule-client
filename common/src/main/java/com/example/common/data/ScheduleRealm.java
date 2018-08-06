@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
+import com.example.common.bean.Schedule;
 import com.example.common.realm.RealmArrayList;
 import com.example.common.realm.ScheduleR;
 
@@ -22,17 +23,25 @@ public class ScheduleRealm {
 
     Realm realm;
 
-    private ScheduleRealm(Context context) {
+    ArrayList<RealmArrayList> resultArr;
+    ScheduleR schedule;
+
+    private ScheduleRealm(Context context, ScheduleR schedule) {
         realm = Realm.getDefaultInstance();
         this.context = context;
+        this.schedule = schedule;
+        Log.d(TAG, "Schedule contsructor --->" + schedule);
     }
 
-    public static ScheduleRealm getInstance(Context context) {
-        return new ScheduleRealm(context);
+    public static ScheduleRealm getInstance(Context context, ScheduleR schedule) {
+        return new ScheduleRealm(context, schedule);
     }
 
     //insert schedule
-    public void addSchedule(final ArrayList<RealmArrayList> realmArr) {
+//    public void addSchedule(final ArrayList<RealmArrayList> realmArr) {
+
+    public int addSchedule() {
+//        resultArr = realmArr;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -47,17 +56,17 @@ public class ScheduleRealm {
                 } else {
                     nextId = currentIdNum.intValue() + 1;
                 }
-                ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-                Log.d(TAG, "content schedule ==>" + realmArr.get(0).getContent());
+                schedule = realm.createObject(ScheduleR.class, nextId);
+                Log.d(TAG, "content schedule ==>" + schedule.getTitle());
                 //                      Schedule schedule = new Schedule();
-                schedule.setTitle(realmArr.get(0).getContent());
-                schedule.setState(realmArr.get(0).getState());
+                schedule.setTitle(resultArr.get(0).getContent());
+                schedule.setState(resultArr.get(0).getState());
 
                 Log.d(TAG, "add schedule Realms");
-                schedule.setTime(realmArr.get(0).getTime());
-                schedule.setYear(realmArr.get(0).getYear());
-                schedule.setMonth(realmArr.get(0).getMonth());
-                schedule.setDay(realmArr.get(0).getDay());
+                schedule.setTime(resultArr.get(0).getTime());
+                schedule.setYear(resultArr.get(0).getYear());
+                schedule.setMonth(resultArr.get(0).getMonth());
+                schedule.setDay(resultArr.get(0).getDay());
 
                 Log.d(TAG, "try AddScheduleTask ===");
             }

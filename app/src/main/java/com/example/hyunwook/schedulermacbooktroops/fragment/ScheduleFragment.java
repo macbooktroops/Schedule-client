@@ -75,6 +75,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     //Realm 정의 ArrayList
     ArrayList<RealmArrayList> arrSchedule;
+
+
 //    private ScheduleAdapter
 
     Realm realm;
@@ -158,13 +160,13 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             Log.d(TAG, "Try save");
             closeSoftInput();
 
-            arrSchedule = new ArrayList<RealmArrayList>();
-            arrSchedule.add(new RealmArrayList(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay));
-//            ScheduleR schedule = new ScheduleR(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
+//            arrSchedule = new ArrayList<RealmArrayList>();
+//            arrSchedule.add(new RealmArrayList(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay));
+            ScheduleR schedule = new ScheduleR(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
             new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                 @Override
                 public void onTaskFinished(ScheduleR data) {
-                    Log.d(TAG, "success task");
+                    Log.d(TAG, "success task -->" + data);
 //                    if (data != null) {
 //                        Log.d(TAG, "finish add ScheduleFragment === " + data);
                         mScheduleAdapter.insertItem(data);
@@ -174,8 +176,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                         updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
 //                    }
                 }
-            }, arrSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-           /* realm.executeTransaction(new Realm.Transaction() {
+            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+          /*  realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
 
@@ -218,18 +220,20 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                         mTime = 0;
                                         updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
                                     }
-                                }*//**//*
+                                }*//**//**//**//*
 //                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 //                           checkSuccessInsert(r/alm);
                         }
 
-                    });*//*
+                    });*//**//*
                     Log.d(TAG, "finish add realm");
 
                 }
+            });*//*
+                    //Realm create Transaction
+                }
             });*/
-            //Realm create Transaction
         }
     }
 

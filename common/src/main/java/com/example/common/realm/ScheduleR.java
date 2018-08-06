@@ -29,6 +29,15 @@ public class ScheduleR extends RealmObject {
     private int eventSetId;
 
 
+    public ScheduleR(String content, int state, long time, int year, int month, int day) {
+        this.title = content;
+        this.state = state;
+        this.time = time;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+
+    }
     public int getSeq() {
         return seq;
     }

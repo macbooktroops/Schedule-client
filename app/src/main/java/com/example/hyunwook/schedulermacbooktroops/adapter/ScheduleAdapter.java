@@ -233,6 +233,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     //추가
     public void insertItem(ScheduleR schedule) {
+        Log.d(TAG, "schedule ==>" + schedule.getTitle();
         mSchedules.add(schedule);
         notifyItemInserted(mSchedules.size() -1);
     }
