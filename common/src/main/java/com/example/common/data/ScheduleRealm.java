@@ -26,21 +26,20 @@ public class ScheduleRealm {
     ArrayList<RealmArrayList> resultArr;
     ScheduleR schedule;
 
-    private ScheduleRealm(Context context, ScheduleR schedule) {
+    private ScheduleRealm(Context context) {
         realm = Realm.getDefaultInstance();
         this.context = context;
-        this.schedule = schedule;
         Log.d(TAG, "Schedule contsructor --->" + schedule);
     }
 
-    public static ScheduleRealm getInstance(Context context, ScheduleR schedule) {
-        return new ScheduleRealm(context, schedule);
+    public static ScheduleRealm getInstance(Context context) {
+        return new ScheduleRealm(context);
     }
 
     //insert schedule
 //    public void addSchedule(final ArrayList<RealmArrayList> realmArr) {
 
-    public int addSchedule() {
+    public void addSchedule() {
 //        resultArr = realmArr;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -59,14 +58,14 @@ public class ScheduleRealm {
                 schedule = realm.createObject(ScheduleR.class, nextId);
                 Log.d(TAG, "content schedule ==>" + schedule.getTitle());
                 //                      Schedule schedule = new Schedule();
-                schedule.setTitle(resultArr.get(0).getContent());
-                schedule.setState(resultArr.get(0).getState());
+                schedule.setTitle(schedule.getTitle());
+                schedule.setState(schedule.getState());
 
                 Log.d(TAG, "add schedule Realms");
-                schedule.setTime(resultArr.get(0).getTime());
-                schedule.setYear(resultArr.get(0).getYear());
-                schedule.setMonth(resultArr.get(0).getMonth());
-                schedule.setDay(resultArr.get(0).getDay());
+                schedule.setTime(schedule.getTime());
+                schedule.setYear(schedule.getYear());
+                schedule.setMonth(schedule.getMonth());
+                schedule.setDay(schedule.getDay());
 
                 Log.d(TAG, "try AddScheduleTask ===");
             }

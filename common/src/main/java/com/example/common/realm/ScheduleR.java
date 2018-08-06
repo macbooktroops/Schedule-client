@@ -1,5 +1,7 @@
 package com.example.common.realm;
 
+import com.example.common.bean.Schedule;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -29,7 +31,7 @@ public class ScheduleR extends RealmObject {
     private int eventSetId;
 
 
-    public ScheduleR(String content, int state, long time, int year, int month, int day) {
+   /* public ScheduleR(String content, int state, long time, int year, int month, int day) {
         this.title = content;
         this.state = state;
         this.time = time;
@@ -38,6 +40,8 @@ public class ScheduleR extends RealmObject {
         this.day = day;
 
     }
+
+*/
     public int getSeq() {
         return seq;
     }

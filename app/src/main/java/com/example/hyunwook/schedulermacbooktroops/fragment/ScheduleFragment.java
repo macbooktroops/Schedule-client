@@ -19,6 +19,7 @@ import com.example.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.Schedule;
+import com.example.common.data.ScheduleRealm;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.RealmArrayList;
 import com.example.common.realm.ScheduleR;
@@ -157,31 +158,13 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         if (TextUtils.isEmpty(content)) {
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_content_is_no_null);
         } else {
-            Log.d(TAG, "Try save");
             closeSoftInput();
 
-//            arrSchedule = new ArrayList<RealmArrayList>();
-//            arrSchedule.add(new RealmArrayList(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay));
-            ScheduleR schedule = new ScheduleR(content, 0, mTime, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
-            new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
-                @Override
-                public void onTaskFinished(ScheduleR data) {
-                    Log.d(TAG, "success task -->" + data);
-//                    if (data != null) {
-//                        Log.d(TAG, "finish add ScheduleFragment === " + data);
-                        mScheduleAdapter.insertItem(data);
-                        etInputContent.getText().clear();
-                        rlNoTask.setVisibility(View.GONE);
-                        mTime = 0;
-                        updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-//                    }
-                }
-            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-          /*  realm.executeTransaction(new Realm.Transaction() {
+            realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
+                    Log.d(TAG, "Try save");
 
-                    //increase primary key "id?
                     Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
                     int nextId;
@@ -191,49 +174,31 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     } else {
                         nextId = currentIdNum.intValue() + 1;
                     }
-                    ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-                    Log.d(TAG, "content schedule ==>" + content);
-                    //                      Schedule schedule = new Schedule();
-                    schedule.setTitle(content);
-                    schedule.setState(0);
 
-                    Log.d(TAG, "mTime");
-                    schedule.setTime(mTime);
-                    schedule.setYear(mCurrentSelectYear);
-                    schedule.setMonth(mCurrentSelectMonth);
-                    schedule.setDay(mCurrentSelectDay);
+                    ScheduleR scheduleR = realm.createObject(ScheduleR.class, nextId);
+                    scheduleR.setTitle(content);
+                    scheduleR.setState(0);
+                    scheduleR.setTime(mTime);
+                    scheduleR.setYear(mCurrentSelectYear);
+                    scheduleR.setMonth(mCurrentSelectMonth);
+                    scheduleR.setDay(mCurrentSelectDay);
 
-                    Log.d(TAG, "try AddScheduleTask ===");
-                    mScheduleAdapter.insertItem(schedule);
-                    etInputContent.getText().clear();
-                    rlNoTask.setVisibility(View.GONE);
-                    mTime = 0;
-                    updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-//                            new AddScheduleTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
-                             *//*   @Override
-                                public void onTaskFinished(ScheduleR data) {
-                                    if (data != null) {
-                                        Log.d(TAG, "data result -> " + data.getTitle());
-                                        mScheduleAdapter.insertItem(data);
-                                        etInputContent.getText().clear();
-                                        rlNoTask.setVisibility(View.GONE);
-                                        mTime = 0;
-                                        updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-                                    }
-                                }*//**//**//**//*
-//                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-//                           checkSuccessInsert(r/alm);
+                    new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                        @Override
+                        public void onTaskFinished(ScheduleR data) {
+                            Log.d(TAG, "AddScheduleTask finish ->" + data);
+                            if (data != null) {
+                                mScheduleAdapter.insertItem(data);
+                                etInputContent.getText().clear();
+                                rlNoTask.setVisibility(View.GONE);
+                                mTime = 0;
+                                updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+                            }
                         }
-
-                    });*//**//*
-                    Log.d(TAG, "finish add realm");
-
+                    }, scheduleR).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
-            });*//*
-                    //Realm create Transaction
-                }
-            });*/
+            });
+
         }
     }
 
@@ -254,7 +219,6 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         //병렬로 작업을 실행하는 데 사용할 수있는 실행
         new LoadScheduleTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
-
     //현재 년월일로 세팅
     private void setCurrentSelectDate(int year, int month, int day) {
         mCurrentSelectYear = year;

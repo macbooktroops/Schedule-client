@@ -40,23 +40,26 @@ public class AddScheduleRTask extends BaseAsyncTask<ScheduleR> {
     //AsyncTask 실행
     @Override
     protected ScheduleR doInBackground(Void... params) {
-        Log.d(TAG, "mSchedule =======" + mSchedule);
+//        Log.d(TAG, "mSchedule =======" + mSchedule);
 
         if (mSchedule != null) {
             Log.d(TAG, "resArr doInBackground");
-            ScheduleRealm sr = ScheduleRealm.getInstance(mContext, mSchedule);
+//            ScheduleRealm sr = ScheduleRealm.getInstance(mContext);
 
-            int id = sr.addSchedule();
+//            sr.addSchedule();
 //            sr.addSchedule(resArr);
-
-            /*if (id != 0) {
-              mSchedule.setId(id);*/
-            return mSchedule;
-        } else {
+/*
+            if (id != 0) {
+                mSchedule.setId(id);*/
+           /* } else {
 //        if (mSchedule)
-            return null;
+                return null;
+            }
+        } else {
+            return null;*/
         }
+        return mSchedule;
     }
-
+//    }
 
 }
