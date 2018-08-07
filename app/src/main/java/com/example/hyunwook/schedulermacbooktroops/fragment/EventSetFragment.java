@@ -30,6 +30,7 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.GetScheduleTask;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 
 import java.util.Calendar;
@@ -169,7 +170,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                 showSelectDateDialog();
                 break;
             case R.id.ibMainOK:
-                addSchedule(realm);
+                addSchedule();
                 break;
         }
     }
@@ -190,7 +191,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     }
 
     //ok버튼 클릭 시 스케줄 등록
-    private void addSchedule(Realm realm) {
+    private void addSchedule() {
         final String content = etInput.getText().toString();
         if (TextUtils.isEmpty(content)) {
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_null);
@@ -200,6 +201,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
+                        Log.d(TAG, "addSchedule EventSetFragment");
 
                         Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
@@ -222,12 +224,22 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                         schedule.setMonth(mCurrentSelectMonth);
                         schedule.setDay(mCurrentSelectDay);
 
-                        Log.d(TAG, "EventSetFragment add");
+                        new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                            @Override
+                            public void onTaskFinished(ScheduleR data) {
+                                Log.d(TAG, "EventSetFragment add" + data);
 
-                        mScheduleAdapter.insertItem(schedule);
-                        etInput.getText().clear();
-                        rlNoTask.setVisibility(View.GONE);
-                        mTime = 0;
+                                if (data != null) {
+                                    mScheduleAdapter.insertItem(data);
+                                    etInput.getText().clear();
+                                    rlNoTask.setVisibility(View.GONE);
+                                    mTime = 0;
+                                }
+                            }
+                        }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
+
 
                     }
             });
@@ -244,7 +256,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onSelectDate(int year, int month, int day, long time, int position) {
-        setCurrentSelectDate(year, month, day);
+//        Log.d(TAG, "onSelectData -->" +month);
+        setCurrentSelectDate(year, month + 1, day);
         mTime = time;
         mPosition = position;
     }
