@@ -76,6 +76,7 @@
 
     <string name="event_set_delete_this_event_set">삭제하시겠어요?</string>
 
+    <string name="human_time_format">a hh:mm:ss</string>
 
 </resources>
 

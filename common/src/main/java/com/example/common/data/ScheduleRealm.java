@@ -39,7 +39,7 @@ public class ScheduleRealm {
     //insert schedule
 //    public void addSchedule(final ArrayList<RealmArrayList> realmArr) {
 
-    public void addSchedule() {
+   /* public void addSchedule() {
 //        resultArr = realmArr;
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -71,6 +71,6 @@ public class ScheduleRealm {
             }
         });
 
-    }
+    }*/
 }
 

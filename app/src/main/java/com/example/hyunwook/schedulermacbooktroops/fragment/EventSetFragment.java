@@ -33,6 +33,7 @@ import com.example.hyunwook.schedulermacbooktroops.task.eventset.GetScheduleTask
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -60,6 +61,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
     private long mTime;
+
+    //realm 에 time을 보기 편하게 변환
+    private String HUMAN_TIME_FORMAT = "";
+    private String resultTime;
     public static String EVENT_SET_OBJ = "event.set.obj";
 
     Realm realm;
@@ -88,6 +93,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         rlNoTask = searchViewById(R.id.rlNoTask);
         etInput = searchViewById(R.id.etInputContent);
 
+        HUMAN_TIME_FORMAT = getString(R.string.human_time_format);
         realm = Realm.getDefaultInstance();
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
@@ -258,7 +264,12 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     public void onSelectDate(int year, int month, int day, long time, int position) {
 //        Log.d(TAG, "onSelectData -->" +month);
         setCurrentSelectDate(year, month + 1, day);
+
         mTime = time;
+
+        SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
+        resultTime = sdf.format(mTime);
+
         mPosition = position;
     }
 
