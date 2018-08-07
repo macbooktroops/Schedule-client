@@ -180,7 +180,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     scheduleR.setState(0);
                     scheduleR.setTime(mTime);
                     scheduleR.setYear(mCurrentSelectYear);
-                    scheduleR.setMonth(mCurrentSelectMonth);
+                    scheduleR.setMonth(mCurrentSelectMonth + 1);
                     scheduleR.setDay(mCurrentSelectDay);
 
                     new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
