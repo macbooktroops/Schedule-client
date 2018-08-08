@@ -1,5 +1,6 @@
 package com.example.hyunwook.schedulermacbooktroops.fragment;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.example.common.realm.ScheduleR;
 import com.example.common.util.DeviceUtils;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.GetScheduleTask;
@@ -44,7 +46,9 @@ import io.realm.Realm;
  * 스케줄 목록을 보고자 할때 표시되는 프레그먼트
  *
  */
-public class EventSetFragment extends BaseFragment implements View.OnClickListener, SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<ScheduleR>> {
+public class EventSetFragment extends BaseFragment implements View.OnClickListener,
+        ScheduleAdapter.ScheduleEvent,
+        SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<ScheduleR>> {
 
     static final String TAG = EventSetFragment.class.getSimpleName();
     private ScheduleRecyclerView rvScheduleList;
@@ -280,5 +284,17 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         Log.d(TAG, "Event Task Finish");
         mScheduleAdapter.changeAllData(data);
         rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onClick() {
+        startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
+//                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
+                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION,  -1));
+    }
+
+    @Override
+    public void onReset() {
+
     }
 }

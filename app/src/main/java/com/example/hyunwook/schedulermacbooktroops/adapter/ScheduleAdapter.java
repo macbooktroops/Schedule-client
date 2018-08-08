@@ -41,7 +41,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int SCHEDULE_BOTTOM = 4;
 
     private Context mContext;
-    private BaseFragment mBaseFragment;
+    private ScheduleEvent mEvent;
 
     static final String TAG = ScheduleAdapter.class.getSimpleName();
 
@@ -50,9 +50,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private boolean mIsShowFinishTask = false;
 
-    public ScheduleAdapter(Context context, BaseFragment baseFragment) {
+    public ScheduleAdapter(Context context, ScheduleEvent event) {
         mContext = context;
-        mBaseFragment = baseFragment;
+        mEvent = event;
         initData();
     }
 
@@ -123,16 +123,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mBaseFragment instanceof ScheduleFragment) {
-                        mContext.startActivity(new Intent(mContext, ScheduleDetailActivity.class)
-//                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
-                                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION, ((ScheduleFragment) mBaseFragment).getCurrentCalendarPosition()));
-
-                    } else {
-                        mContext.startActivity(new Intent(mContext, ScheduleDetailActivity.class)
-//                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
-                                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION,  -1));
-                    }
+                    mEvent.onClick();
                 }
             });
         } else if (holder instanceof ScheduleFinishViewHolder) {
@@ -199,9 +190,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         //작업이 끝나면
                         if (data) {
                             removeItem(schedule);
-                            if (mBaseFragment instanceof ScheduleFragment) {
-                                ((ScheduleFragment) mBaseFragment).resetScheduleList();
-                            }
+                            mEvent.onReset();
                         }
                     }
                 }, schedule.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -355,7 +344,8 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-
-
-
+    public interface ScheduleEvent {
+        void onClick();
+        void onReset();
+    }
 }

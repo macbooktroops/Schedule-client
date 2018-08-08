@@ -1,5 +1,6 @@
 package com.example.hyunwook.schedulermacbooktroops.fragment;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,6 +39,7 @@ import android.widget.RelativeLayout;
 import com.example.common.base.app.BaseFragment;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
+import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
@@ -57,7 +59,8 @@ import io.realm.RealmResults;
  * 스케줄 작성 메인화면 하단뷰
  */
 
-public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener, View.OnClickListener,
+public class ScheduleFragment extends BaseFragment implements OnCalendarClickListener,
+        View.OnClickListener, ScheduleAdapter.ScheduleEvent,
         SelectDateDialog.OnSelectDateListener, OnTaskFinishedListener<List<ScheduleR>> {
 
     private ScheduleLayout scheduleLayout;
@@ -331,5 +334,17 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     public int getCurrentCalendarPosition() {
         Log.d(TAG, "getCurrentCalendar -->" + scheduleLayout.getMonthCalendar().getCurrentItem());
         return scheduleLayout.getMonthCalendar().getCurrentItem();
+    }
+
+    @Override
+    public void onClick() {
+        startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
+//                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
+                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION, getCurrentCalendarPosition()));
+    }
+
+    @Override
+    public void onReset() {
+        resetScheduleList();
     }
 }
