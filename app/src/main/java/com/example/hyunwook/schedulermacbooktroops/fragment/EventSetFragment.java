@@ -226,6 +226,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                         schedule.setColor(mEventSet.getColor());
                         schedule.setEventSetId(mEventSet.getId());
                         schedule.setTime(mTime);
+                        schedule.sethTime(resultTime);
                         schedule.setYear(mCurrentSelectYear);
                         schedule.setMonth(mCurrentSelectMonth);
                         schedule.setDay(mCurrentSelectDay);
@@ -270,6 +271,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
         resultTime = sdf.format(mTime);
 
+        Log.d(TAG, "mTime -->" + mTime + "--" + resultTime);
         mPosition = position;
     }
 

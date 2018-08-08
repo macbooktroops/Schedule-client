@@ -2,6 +2,8 @@ package com.example.common.realm;
 
 import com.example.common.bean.Schedule;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -29,6 +31,7 @@ public class ScheduleR extends RealmObject {
     private int month;
     private int day;
     private int eventSetId;
+    private String hTime;
 
 
    /* public ScheduleR(String content, int state, long time, int year, int month, int day) {
@@ -122,6 +125,13 @@ public class ScheduleR extends RealmObject {
         this.time = time;
     }
 
+    public String gethTime() {
+        return hTime;
+    }
+
+    public void sethTime(String hTime) {
+        this.hTime = hTime;
+    }
     public int getDay() {
         return day;
     }

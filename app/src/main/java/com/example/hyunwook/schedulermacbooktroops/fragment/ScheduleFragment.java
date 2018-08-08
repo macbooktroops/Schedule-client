@@ -44,6 +44,7 @@ import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTas
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleTask;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -76,7 +77,9 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     //Realm 정의 ArrayList
     ArrayList<RealmArrayList> arrSchedule;
+    private String HUMAN_TIME_FORMAT = "";
 
+    private String resultTime;
 
 //    private ScheduleAdapter
 
@@ -102,6 +105,9 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         scheduleLayout.setOnCalendarClickListener(this);
 
         realm = Realm.getDefaultInstance();
+
+        HUMAN_TIME_FORMAT = getString(R.string.human_time_format);
+
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
         initScheduleList();
@@ -175,13 +181,14 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                         nextId = currentIdNum.intValue() + 1;
                     }
 
-                    ScheduleR scheduleR = realm.createObject(ScheduleR.class, nextId);
-                    scheduleR.setTitle(content);
-                    scheduleR.setState(0);
-                    scheduleR.setTime(mTime);
-                    scheduleR.setYear(mCurrentSelectYear);
-                    scheduleR.setMonth(mCurrentSelectMonth + 1);
-                    scheduleR.setDay(mCurrentSelectDay);
+                    ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                    schedule.setTitle(content);
+                    schedule.setState(0);
+                    schedule.setTime(mTime);
+                    schedule.sethTime(resultTime);
+                    schedule.setYear(mCurrentSelectYear);
+                    schedule.setMonth(mCurrentSelectMonth + 1);
+                    schedule.setDay(mCurrentSelectDay);
 
                     new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                         @Override
@@ -195,7 +202,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
                             }
                         }
-                    }, scheduleR).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             });
 
@@ -296,6 +303,11 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
             }
         }, 100);
         mTime = time;
+
+        SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
+        resultTime = sdf.format(mTime);
+
+
     }
 
     @Override
