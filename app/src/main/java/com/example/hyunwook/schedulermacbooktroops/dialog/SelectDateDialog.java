@@ -185,6 +185,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                 }
             }
 
+            Log.d(TAG, "mCurrentSelect ==> " +mCurrentSelectYear);
             mOnSelectDateListener.onSelectDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, time, monthCalendar.getCurrentItem());
         }
     }
