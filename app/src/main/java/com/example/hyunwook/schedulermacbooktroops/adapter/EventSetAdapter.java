@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * 스케줄 항목 이저장되는 Adapter
  */
-public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventSetViewHolder>{
+public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventSetViewHolder> {
 
 
     private Context mContext;
@@ -37,13 +37,15 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
     /**
      * http://i5on9i.blogspot.com/2015/03/baseadapter-recyclerviewadapter.html
      * onCreateViewHolder 는 정말 새롭게 생성될 때에만 불린다
+     *
      * @param parent
      * @param viewType
      * @return
      */
     @Override
     public EventSetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new EventSetViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_event_set, parent, false));
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event_set, parent, false);
+        return new EventSetViewHolder(view);
     }
 
     @Override
@@ -52,26 +54,8 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
     }
 
     @Override
-    public void onBindViewHolder(EventSetViewHolder holder, final int position) {
-        final EventSet eventSet = mEventSets.get(position);
-        holder.sdvEventSet.close(false);
-        holder.tvEventSetName.setText(eventSet.getName()); //name
-        holder.vEventSetColor.setBackgroundResource(CalUtils.getEventSetColor(eventSet.getColor()));
-        holder.ibEventSetDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //휴지통 삭제버튼 클릭 시
-                showDeleteEventSetDialog(eventSet, position);
-            }
-        });
-
-        holder.sdvEventSet.setOnContentClickListener(new SlideDeleteView.OnContentClickListener() {
-            @Override
-            public void onContentClick() {
-                gotoEventSetFragment(eventSet); //해당 스케줄 분류 프레그먼트로.
-            }
-        });
-
+    public void onBindViewHolder(EventSetViewHolder holder, int position) {
+        holder.bind(position);
     }
 
     private void showDeleteEventSetDialog(final EventSet eventSet, final int position) {
@@ -116,27 +100,61 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
 
     public void insertItem(EventSet eventSet) {
         mEventSets.add(eventSet);
-        notifyItemInserted(mEventSets.size() -1);
-
+        notifyItemInserted(mEventSets.size() - 1);
         //리스트 맨끝에 데이터 추가
     }
 
-   //ViewHolder 추가
-    protected class EventSetViewHolder extends RecyclerView.ViewHolder {
+    //ViewHolder 추가
+    class EventSetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+            SlideDeleteView.OnContentClickListener {
 
         private SlideDeleteView sdvEventSet;
         private View vEventSetColor;
         private TextView tvEventSetName;
         private ImageButton ibEventSetDelete;
 
-        public EventSetViewHolder(View itemView) {
+        EventSetViewHolder(View itemView) {
             super(itemView);
 
-            sdvEventSet = (SlideDeleteView) itemView.findViewById(R.id.sdvEventSet);
+            sdvEventSet = itemView.findViewById(R.id.sdvEventSet);
             vEventSetColor = itemView.findViewById(R.id.vEventSetColor);
-            tvEventSetName = (TextView) itemView.findViewById(R.id.tvEventSetName);
-            ibEventSetDelete = (ImageButton) itemView.findViewById(R.id.ibEventSetDelete);
+            tvEventSetName = itemView.findViewById(R.id.tvEventSetName);
+            ibEventSetDelete = itemView.findViewById(R.id.ibEventSetDelete);
         }
 
-   }
+        void bind(int position) {
+            EventSet eventSet = mEventSets.get(position);
+            if (eventSet != null) {
+                sdvEventSet.close(false);
+
+                tvEventSetName.setText(eventSet.getName());
+                vEventSetColor.setBackgroundResource(CalUtils.getEventSetColor(eventSet.getColor()));
+
+                ibEventSetDelete.setTag(position);
+                ibEventSetDelete.setOnClickListener(this);
+
+                sdvEventSet.setTag(position);
+                sdvEventSet.setOnContentClickListener(this);
+            }
+        }
+
+        @Override
+        public void onClick(View view) {
+            //휴지통 삭제버튼 클릭 시
+            int position = (int) view.getTag();
+            EventSet eventSet = mEventSets.get(position);
+
+            if (view.getId() == R.id.ibEventSetDelete) {
+                showDeleteEventSetDialog(eventSet, position);
+            }
+        }
+
+        @Override
+        public void onContentClick() {
+            // 해당 스케줄 분류 프레그먼트로.
+            int position = (int) sdvEventSet.getTag();
+            EventSet eventSet = mEventSets.get(position);
+            gotoEventSetFragment(eventSet);
+        }
+    }
 }
