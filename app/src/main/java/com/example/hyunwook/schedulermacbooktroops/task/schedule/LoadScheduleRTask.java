@@ -1,0 +1,57 @@
+package com.example.hyunwook.schedulermacbooktroops.task.schedule;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.example.common.base.task.BaseAsyncTask;
+import com.example.common.data.ScheduleRealm;
+import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.ScheduleR;
+
+import java.util.List;
+
+import io.realm.Realm;
+
+/**
+ * 18-08-09
+ * Realm 스케줄 리스트 얻기 AsyncTask
+ * 해당 연월일 기준으로 스케줄 검색
+ */
+public class LoadScheduleRTask extends BaseAsyncTask<List<ScheduleR>> {
+
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+
+    Realm realm;
+
+    List<ScheduleR> resSchedule;
+
+    static final String TAG = LoadScheduleRTask.class.getSimpleName();
+
+    public LoadScheduleRTask(Context context, OnTaskFinishedListener<List<ScheduleR>> onTaskFinishedListener,
+                             int year, int month, int day) {
+        super(context, onTaskFinishedListener);
+
+
+        mYear = year;
+        mMonth = month;
+        mDay = day;
+        Log.d(TAG, "Load -->" + year + "--" + month + "--"+ day);
+        realm = Realm.getDefaultInstance();
+
+    }
+
+    //작업 중
+    @Override
+    protected List<ScheduleR> doInBackground(Void... params) {
+//        ScheduleRealm
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Log.d(TAG, "doInBackground");
+            }
+        });
+        return resSchedule;
+    }
+}

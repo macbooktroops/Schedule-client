@@ -44,6 +44,7 @@ import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleTask;
 
 import java.text.SimpleDateFormat;
@@ -227,7 +228,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     //스케줄 리스트 리셋
     public void resetScheduleList() {
         //병렬로 작업을 실행하는 데 사용할 수있는 실행
-        new LoadScheduleTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        new LoadScheduleTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadScheduleRTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay);
     }
     //현재 년월일로 세팅
     private void setCurrentSelectDate(int year, int month, int day) {
