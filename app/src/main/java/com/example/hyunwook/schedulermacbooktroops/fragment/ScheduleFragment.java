@@ -229,7 +229,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     public void resetScheduleList() {
         //병렬로 작업을 실행하는 데 사용할 수있는 실행
 //        new LoadScheduleTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        new LoadScheduleRTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay);
+        new LoadScheduleRTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
     //현재 년월일로 세팅
     private void setCurrentSelectDate(int year, int month, int day) {
@@ -318,11 +318,11 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     @Override
     public void onTaskFinished(List<ScheduleR> data) {
         Log.d(TAG, "ScheduleFragment onTaskFinished --> " + data);
-        mScheduleAdapter.changeAllData(data);
+//        mScheduleAdapter.changeAllData(data);
 
         //스케줄이 하나도 없으면 이미지.
-        rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
-        updateTaskHintUi(data.size());
+//        rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
+//        updateTaskHintUi(data.size());
     }
 
     private void updateTaskHintUi(int size) {

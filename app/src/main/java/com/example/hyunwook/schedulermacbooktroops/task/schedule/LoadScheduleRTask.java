@@ -11,6 +11,7 @@ import com.example.common.realm.ScheduleR;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 18-08-09
@@ -38,18 +39,25 @@ public class LoadScheduleRTask extends BaseAsyncTask<List<ScheduleR>> {
         mMonth = month;
         mDay = day;
         Log.d(TAG, "Load -->" + year + "--" + month + "--"+ day);
-        realm = Realm.getDefaultInstance();
-
+//
     }
 
     //작업 중
     @Override
     protected List<ScheduleR> doInBackground(Void... params) {
+        Log.d(TAG, "doIn Load");
 //        ScheduleRealm
+        realm = Realm.getDefaultInstance();
+
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 Log.d(TAG, "doInBackground");
+                RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                        .equalTo("year", mYear)
+                        .equalTo("month", mMonth)
+                        .equalTo("day", mDay).findAll();
+                Log.d(TAG, "Check size --> " + scheduleR.size());
             }
         });
         return resSchedule;
