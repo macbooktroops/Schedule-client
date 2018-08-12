@@ -107,6 +107,7 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
     public void insertItem(EventSetR eventSet) {
         mEventSets.add(eventSet);
         notifyItemInserted(mEventSets.size() - 1);
+        Log.d("insertData", "mevent -->" + mEventSets.get(mEventSets.size() - 1).getName());
         //리스트 맨끝에 데이터 추가
     }
 
