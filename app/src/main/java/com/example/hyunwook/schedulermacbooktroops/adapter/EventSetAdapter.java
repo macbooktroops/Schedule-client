@@ -20,6 +20,9 @@ import com.example.hyunwook.schedulermacbooktroops.widget.SlideDeleteView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * 스케줄 항목 이저장되는 Adapter
  */
@@ -105,21 +108,21 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
     }
 
     //ViewHolder 추가
-    class EventSetViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-            SlideDeleteView.OnContentClickListener {
+    class EventSetViewHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener, SlideDeleteView.OnContentClickListener {
 
-        private SlideDeleteView sdvEventSet;
-        private View vEventSetColor;
-        private TextView tvEventSetName;
-        private ImageButton ibEventSetDelete;
+        @BindView(R.id.sdvEventSet)
+        SlideDeleteView sdvEventSet;
+        @BindView(R.id.vEventSetColor)
+        View vEventSetColor;
+        @BindView(R.id.tvEventSetName)
+        TextView tvEventSetName;
+        @BindView(R.id.ibEventSetDelete)
+        ImageButton ibEventSetDelete;
 
         EventSetViewHolder(View itemView) {
             super(itemView);
-
-            sdvEventSet = itemView.findViewById(R.id.sdvEventSet);
-            vEventSetColor = itemView.findViewById(R.id.vEventSetColor);
-            tvEventSetName = itemView.findViewById(R.id.tvEventSetName);
-            ibEventSetDelete = itemView.findViewById(R.id.ibEventSetDelete);
+            ButterKnife.bind(this, itemView);
         }
 
         void bind(int position) {
