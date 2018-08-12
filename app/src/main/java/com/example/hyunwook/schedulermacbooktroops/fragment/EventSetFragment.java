@@ -57,7 +57,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     private ScheduleAdapter mScheduleAdapter;
 
-    private EventSet mEventSet;
+    private EventSetR mEventSet;
 
     private SelectDateDialog mSelectDateDialog;
 
@@ -162,7 +162,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void initData() {
         super.initData();
-        mEventSet = (EventSet) getArguments().getSerializable(EVENT_SET_OBJ);
+        mEventSet = (EventSetR) getArguments().getSerializable(EVENT_SET_OBJ);
 
     }
 

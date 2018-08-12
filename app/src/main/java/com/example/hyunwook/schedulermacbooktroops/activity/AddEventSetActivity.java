@@ -25,7 +25,7 @@ import io.realm.Realm;
  * 18-06-19
  * 스케줄 분류 추가 액티비티
  */
-public class AddEventSetActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<EventSet>, SelectColorDialog.OnSelectColorListener {
+public class AddEventSetActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<EventSetR>, SelectColorDialog.OnSelectColorListener {
 
     private EditText etEventSetName;
     private View vEventSetColor;
@@ -132,8 +132,9 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
 
     //작업이 끝났다고 전달
     @Override
-    public void onTaskFinished(EventSet data) {
-        setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data));
+    public void onTaskFinished(EventSetR data) {
+//        setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data));
+        setResult(ADD_EVENT_SET_FINISH, new Intent(EVENT_SET_OBJ));
         finish();
     }
 
