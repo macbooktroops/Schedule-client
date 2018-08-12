@@ -11,11 +11,15 @@ import android.widget.TextView;
 import com.example.common.base.app.BaseActivity;
 import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.EventSetR;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectColorDialog;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.AddEventSetRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.AddEventSetTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
+
+import io.realm.Realm;
 
 /**
  * 18-06-19
@@ -33,10 +37,15 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
 
     static final String TAG = AddEventSetActivity.class.getSimpleName();
     private int mColor = 0;
+
+    Realm realm;
+
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_add_event_set);
 
+
+        realm = Realm.getDefaultInstance();
         TextView tvTitle = searchViewById(R.id.tvTitle);
         tvTitle.setText(getString(R.string.menu_add_event_set));
 
@@ -78,15 +87,45 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
 
     //스케줄 분류 항목 추가
     private void addEventSet() {
-        String name = etEventSetName.getText().toString();
+        final String name = etEventSetName.getText().toString();
 
         if (TextUtils.isEmpty(name)) {
             ToastUtils.showShortToast(this, R.string.event_set_name_is_not_null);
         } else {
-            EventSet eventSet = new EventSet();
+
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Log.d(TAG, "Try Event Set");
+                    Number currentIdNum = realm.where(EventSetR.class).max("seq");
+
+                    int nextId;
+
+                    if (currentIdNum == null) {
+                        nextId = 0;
+                    } else {
+                        nextId = currentIdNum.intValue() + 1;
+                    }
+
+                    EventSetR eventSet = realm.createObject(EventSetR.class, nextId);
+                    eventSet.setName(name);
+                    eventSet.setColor(mColor);
+                    new AddEventSetRTask(getApplicationContext(), new OnTaskFinishedListener<EventSetR>() {
+                        @Override
+                        public void onTaskFinished(EventSetR data) {
+                            Log.d(TAG, "AddEventSetRTask task finish");
+//                            setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data));
+                            setResult(ADD_EVENT_SET_FINISH, new Intent(EVENT_SET_OBJ));
+                            finish();
+                        }
+                    }, eventSet).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
+            });
+
+            /*EventSet eventSet = new EventSet();
             eventSet.setName(name);
             eventSet.setColor(mColor);
-            new AddEventSetTask(this, this, eventSet).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new AddEventSetTask(this, this, eventSet).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
         }
     }
 

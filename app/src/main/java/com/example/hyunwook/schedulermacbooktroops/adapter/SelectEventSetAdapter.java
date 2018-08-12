@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.common.bean.EventSet;
+import com.example.common.realm.EventSetR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 
 import java.util.List;
@@ -23,10 +24,10 @@ import java.util.List;
 public class SelectEventSetAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<EventSet> mEventSets;
+    private List<EventSetR> mEventSets;
     private int mSelectPosition;
 
-    public SelectEventSetAdapter(Context context, List<EventSet> eventSets, int selectPosition) {
+    public SelectEventSetAdapter(Context context, List<EventSetR> eventSets, int selectPosition) {
         mContext = context;
         mEventSets = eventSets;
         mSelectPosition = selectPosition;
@@ -51,7 +52,7 @@ public class SelectEventSetAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        EventSet eventSet = mEventSets.get(position);
+        EventSetR eventSet = mEventSets.get(position);
 
         if (convertView == null) {
             holder = new ViewHolder();

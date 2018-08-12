@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.common.bean.EventSet;
+import com.example.common.realm.EventSetR;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,14 +42,14 @@ public class EventSetDB {
         return row > 0 ? getLastEventSetId() : 0;
     }
     //EventSet 저장된 정보를 Map 추가.
-    public Map<Integer, EventSet> getAllEventSetMap() {
-        Map<Integer, EventSet> eventSets = new HashMap<>();
+    public Map<Integer, EventSetR> getAllEventSetMap() {
+        Map<Integer, EventSetR> eventSets = new HashMap<>();
         SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기
         Cursor cursor = db.query(ScheDBConfig.EVENT_SET_TABLE_NAME, null, null, null, null, null, null);
-        EventSet eventSet;
+        EventSetR eventSet;
 
         while (cursor.moveToNext()) {
-            eventSet = new EventSet();
+            eventSet = new EventSetR();
             eventSet.setId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_ID)));
             eventSet.setName(cursor.getString(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_NAME)));
             eventSet.setColor(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_COLOR)));
@@ -63,16 +64,16 @@ public class EventSetDB {
 
 
     //EventSet 저장된 정보얻기
-    public List<EventSet> getAllEventSet() {
-        List<EventSet> eventSets = new ArrayList<>();
+    public List<EventSetR> getAllEventSet() {
+        List<EventSetR> eventSets = new ArrayList<>();
         SQLiteDatabase db = mHelper.getReadableDatabase(); //읽기
 
         Cursor cursor = db.query(ScheDBConfig.EVENT_SET_TABLE_NAME, null, null, null, null, null, null);
-        EventSet eventSet;
+        EventSetR eventSet;
 
         //저장된 이벤트 셋 모두 얻
         while (cursor.moveToNext()) {
-            eventSet = new EventSet();
+            eventSet = new EventSetR();
             eventSet.setId(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_ID)));
             eventSet.setName(cursor.getString(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_NAME)));
             eventSet.setColor(cursor.getInt(cursor.getColumnIndex(ScheDBConfig.EVENT_SET_COLOR)));

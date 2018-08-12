@@ -77,10 +77,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
      * @param eventSet
      * @return
      */
-    public static EventSetFragment getInstance(EventSet eventSet) {
+    public static EventSetFragment getInstance(EventSetR eventSet) {
         EventSetFragment fragment = new EventSetFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(EVENT_SET_OBJ, eventSet); //객체 넘기기
+//        bundle.putSerializable(EVENT_SET_OBJ, eventSet); //객체 넘기기
         fragment.setArguments(bundle);
         return fragment;
     }

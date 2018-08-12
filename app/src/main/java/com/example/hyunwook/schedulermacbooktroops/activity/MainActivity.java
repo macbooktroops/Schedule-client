@@ -25,6 +25,7 @@ import com.example.common.base.app.BaseActivity;
 import com.example.common.base.app.BaseFragment;
 import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
+import com.example.common.realm.EventSetR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
@@ -36,12 +37,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
+import io.realm.Realm;
+
 /**
  * 18-05-24
  * Main
  *
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSet>> {
+public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>> {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -49,10 +52,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private String[] mMonthText;
 
-    private List<EventSet> mEventSets;
+    private List<EventSetR> mEventSets;
 
     private BaseFragment mScheduleFragment, mEventSetFragment;
-    private EventSet mCurrentEventSet;
+    private EventSetR mCurrentEventSet;
 
     static final String TAG = MainActivity.class.getSimpleName();
 
@@ -62,6 +65,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private RecyclerView rvEventSetList;
     private AddEventSetBroadcastReceiver mAddEventSetBroadcastReceiver;
+
+    Realm realm;
 
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
     public static int ADD_EVENT_SET_CODE = 1;
@@ -75,6 +80,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         tvTitleDay = searchViewById(R.id.tvTitleDay);
         tvTitle = searchViewById(R.id.tvTitle);
         rvEventSetList = searchViewById(R.id.rvEventSetList);
+
+        realm = Realm.getDefaultInstance();
         //각각 클릭 리스너 적용
         searchViewById(R.id.imgBtnMain).setOnClickListener(this);
         searchViewById(R.id.linearMenuSchedule).setOnClickListener(this);
@@ -172,7 +179,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     //goto eventset fragment
     //스케줄 작성 된 프레그먼트로.
-    public void gotoEventSetFragment(EventSet eventSet) {
+    public void gotoEventSetFragment(EventSetR eventSet) {
         Log.d(TAG, "gotoEventSetFragment");
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
@@ -219,7 +226,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
 
             case R.id.linearMenuNoCategory:
-                mCurrentEventSet = new EventSet();
+                mCurrentEventSet = new EventSetR();
                 mCurrentEventSet.setName(getString(R.string.menu_schedule_category));
                 gotoEventSetFragment(mCurrentEventSet);
                 break;
@@ -240,10 +247,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         if (requestCode == ADD_EVENT_SET_CODE) {
             if (resultCode == AddEventSetActivity.ADD_EVENT_SET_FINISH) {
-                EventSet eventSet = (EventSet) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
-                if (eventSet != null) {
-                    mEventSetAdapter.insertItem(eventSet);
-                }
+                Log.d(TAG, "check onActivityResult");
+                //최근 EventSetR에 추가된 데이터를 어댑터에 추가
+
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        Log.d(TAG, "get realm test ---");
+                        long seq = realm.where(EventSetR.class).max("seq").longValue();
+
+
+                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", seq).findFirst();
+                        Log.d(TAG, "eventSetR --->" + eventSetR.getName());
+
+                        if (eventSetR != null) {
+                            mEventSetAdapter.insertItem(eventSetR);
+                        }
+                    }
+                });
+//                EventSet eventSet = (EventSet) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
+//                if (eventSet != null) {
+//                    mEventSetAdapter.insertItem(eventSet);
+//                }
+//            }
             }
         }
     }
@@ -315,7 +341,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void onTaskFinished(List<EventSet> data) {
+    public void onTaskFinished(List<EventSetR> data) {
         mEventSetAdapter.changeAllData(data);
     }
 
@@ -325,11 +351,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ADD_EVENT_SET_ACTION.equals(intent.getAction())) {
-                EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
+                Log.d(TAG, "AddEventSetBroadcastReceiver ----");
+             /*   EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
                 if (eventSet != null) {
                     mEventSetAdapter.insertItem(eventSet);
-                }
+                }*/
 
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        Log.d(TAG, "get realm test receiver ---");
+                        long seq = realm.where(EventSetR.class).max("seq").longValue();
+
+
+                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", seq).findFirst();
+                        Log.d(TAG, "eventSetR receiver--->" + eventSetR.getName());
+
+                        if (eventSetR != null) {
+                            mEventSetAdapter.insertItem(eventSetR);
+                        }
+                    }
+                });
                 }
             }
         }

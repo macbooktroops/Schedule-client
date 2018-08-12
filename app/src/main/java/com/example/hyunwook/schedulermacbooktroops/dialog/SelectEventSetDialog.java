@@ -26,7 +26,7 @@ import io.realm.RealmResults;
  * 스케줄 이벤트 설정 다이얼로그
  * DetailActivity
  */
-public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSet>> {
+public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>> {
 
     private Context mContext;
     private OnSelectEventSetListener mOnSelectEventSetListener;
@@ -37,7 +37,7 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     private ListView lvEvent;
     private SelectEventSetAdapter mSelectEventSetAdapter;
 
-    private List<EventSet> mEventSets;
+    private List<EventSetR> mEventSets;
 //    RealmResults<EventSetR> mEventSets;
 
     public SelectEventSetDialog(Context context, OnSelectEventSetListener onSelectEventSetListener, int id) {
@@ -91,7 +91,7 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     }
 
     //이벤트 추가
-    public void addEventSet(EventSet eventSet) {
+    public void addEventSet(EventSetR eventSet) {
         mEventSets.add(eventSet);
         mSelectEventSetAdapter.notifyDataSetChanged();
     }
@@ -99,10 +99,10 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     //작업이 끝나면
     @Override
 //    public void onTaskFinished(RealmResults<EventSetR> data) {
-    public void onTaskFinished(List<EventSet> data) {
+    public void onTaskFinished(List<EventSetR> data) {
         mEventSets = data;
 
-        EventSet eventSet = new EventSet();
+        EventSetR eventSet = new EventSetR();
         eventSet.setName(getContext().getString(R.string.menu_no_category));
         mEventSets.add(0, eventSet);
 
@@ -120,7 +120,7 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
 
 
     public interface OnSelectEventSetListener {
-        void onSelectEventSet(EventSet eventSet);
+        void onSelectEventSet(EventSetR eventSet);
 //        void onSelectEventSet(EventSet eventSet);
     }
 }
