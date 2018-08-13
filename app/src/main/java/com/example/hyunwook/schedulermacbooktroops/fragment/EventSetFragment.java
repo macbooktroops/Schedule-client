@@ -31,6 +31,7 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.GetScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.GetScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
@@ -169,8 +170,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void bindData() {
         super.bindData();
-        Log.d(TAG, "mEventSet -->" + mEventSet.getId());
-        new GetScheduleTask(mActivity, this, mEventSet.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Log.d(TAG, "mEventSet -->" + mEventSet.getSeq());
+        new GetScheduleRTask(mActivity, this, mEventSet.getSeq()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
