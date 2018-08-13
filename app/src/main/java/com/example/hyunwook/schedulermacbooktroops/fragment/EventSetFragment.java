@@ -163,6 +163,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void initData() {
         super.initData();
+        Log.d(TAG, "mEvent init -->" + mEventSet);
         mEventSet = (EventSetR) getArguments().getSerializable(EVENT_SET_OBJ);
 
     }
@@ -170,7 +171,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void bindData() {
         super.bindData();
-        Log.d(TAG, "mEventSet -->" + mEventSet.getSeq());
+        Log.d(TAG, "mEventSet -->" + mEventSet);
         new GetScheduleRTask(mActivity, this, mEventSet.getSeq()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
