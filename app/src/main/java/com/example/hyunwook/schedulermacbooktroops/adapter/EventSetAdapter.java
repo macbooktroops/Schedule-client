@@ -60,8 +60,27 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
     }
 
     @Override
-    public void onBindViewHolder(EventSetViewHolder holder, int position) {
-        holder.bind(position);
+    public void onBindViewHolder(EventSetViewHolder holder, final int position) {
+//        holder.bind(position);
+        final EventSetR eventSet = mEventSets.get(position);
+        holder.sdvEventSet.close(false);
+        holder.tvEventSetName.setText(eventSet.getName()); //name
+        holder.vEventSetColor.setBackgroundResource(CalUtils.getEventSetColor(eventSet.getColor()));
+        holder.ibEventSetDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //휴지통 삭제버튼 클릭 시
+                showDeleteEventSetDialog(eventSet, position);
+            }
+        });
+
+        holder.sdvEventSet.setOnContentClickListener(new SlideDeleteView.OnContentClickListener() {
+            @Override
+            public void onContentClick() {
+                gotoEventSetFragment(eventSet); //해당 스케줄 분류 프레그먼트로.
+            }
+        });
+
     }
 
     private void showDeleteEventSetDialog(final EventSetR eventSet, final int position) {
