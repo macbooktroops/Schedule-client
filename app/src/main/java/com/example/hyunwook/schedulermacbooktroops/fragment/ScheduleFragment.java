@@ -90,6 +90,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     Realm realm;
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
 
+    List<ScheduleR> schedule;
+
     public static ScheduleFragment getInstance() {
         return new ScheduleFragment();
     }
@@ -315,14 +317,38 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     }
 
+    /**
+     *  Realm access from incorrect thread. Realm objects can only be accessed on the thread they were created.
+     *  문제로 인해 asynctask가 끝난후 Realm Transaction 실행
+     * @param data
+     */
     @Override
-    public void onTaskFinished(List<ScheduleR> data) {
-        Log.d(TAG, "ScheduleFragment onTaskFinished --> " + data);
-//        mScheduleAdapter.changeAllData(data);
+    public void onTaskFinished(final List<ScheduleR> data) {
+//        realm = Realm.getDefaultInstance();
 
-        //스케줄이 하나도 없으면 이미지.
-//        rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
-//        updateTaskHintUi(data.size());
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                Log.d(TAG, "getScheduleByDate ------ " + mCurrentSelectYear + "--" + mCurrentSelectMonth +1 + "--" + mCurrentSelectDay);
+                RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                        .equalTo("year", mCurrentSelectYear)
+                        .equalTo("month", mCurrentSelectMonth +1)
+                        .equalTo("day", mCurrentSelectDay).findAll();
+                Log.d(TAG, "check size ->" +scheduleR.size());
+
+                schedule = data;
+                Log.d(TAG, "ScheduleFragment onTaskFinished --> " + scheduleR);
+                mScheduleAdapter.changeAllData(scheduleR);
+
+                //스케줄이 하나도 없으면 이미지.
+                rlNoTask.setVisibility(scheduleR.size() == 0 ? View.VISIBLE : View.GONE);
+                updateTaskHintUi(scheduleR.size());
+
+
+            }
+        });
+
     }
 
     private void updateTaskHintUi(int size) {

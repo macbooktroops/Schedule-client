@@ -9,8 +9,10 @@ import com.example.common.realm.RealmArrayList;
 import com.example.common.realm.ScheduleR;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 18-08-04
@@ -35,6 +37,7 @@ public class ScheduleRealm {
     public static ScheduleRealm getInstance(Context context) {
         return new ScheduleRealm(context);
     }
+
 
     //insert schedule
 //    public void addSchedule(final ArrayList<RealmArrayList> realmArr) {

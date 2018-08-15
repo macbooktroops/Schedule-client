@@ -244,7 +244,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (schedule.getState() == 2) {
                 mFinishSchedules.add(schedule);
             } else {
-//                mSchedules.add(schedule);
+                mSchedules.add(schedule);
             }
         }
         notifyDataSetChanged();

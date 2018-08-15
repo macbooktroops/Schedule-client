@@ -47,7 +47,7 @@ public class LoadScheduleRTask extends BaseAsyncTask<List<ScheduleR>> {
     protected List<ScheduleR> doInBackground(Void... params) {
         Log.d(TAG, "doIn Load");
 //        ScheduleRealm
-        realm = Realm.getDefaultInstance();
+        /*realm = Realm.getDefaultInstance();
 
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -58,8 +58,16 @@ public class LoadScheduleRTask extends BaseAsyncTask<List<ScheduleR>> {
                         .equalTo("month", mMonth)
                         .equalTo("day", mDay).findAll();
                 Log.d(TAG, "Check size --> " + scheduleR.size());
+
+                resSchedule = scheduleR;
             }
-        });
+        });*/
+
+        Log.d(TAG, "resSchedule -->" + resSchedule);
         return resSchedule;
+
+//       Log.d(TAG, "doInLoad");
+//       ScheduleRealm sr = ScheduleRealm.getInstance(mContext);
+//       return sr.getScheduleByDate(mYear, mMonth, mDay);
     }
 }
