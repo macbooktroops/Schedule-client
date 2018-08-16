@@ -37,10 +37,12 @@ import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTas
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 18-06-19
@@ -67,12 +69,18 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
     private long mTime;
 
+    RealmResults<ScheduleR> resEmp;
+    List<ScheduleR> resList = new ArrayList<>();
+
+
     //realm 에 time을 보기 편하게 변환
     private String HUMAN_TIME_FORMAT = "";
     private String resultTime;
     public static String EVENT_SET_OBJ = "event.set.obj";
 
     Realm realm;
+
+    static EventSetR resultEvent; //EVENT_SET_OBJ
     /**
      * http://milkissboy.tistory.com/34
      * @param eventSet
@@ -80,9 +88,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
      */
     public static EventSetFragment getInstance(EventSetR eventSet) {
         EventSetFragment fragment = new EventSetFragment();
-        Bundle bundle = new Bundle();
-//        bundle.putSerializable(EVENT_SET_OBJ, eventSet); //객체 넘기기
-        fragment.setArguments(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.put(EVENT_SET_OBJ, eventSet); //객체 넘기기
+//        fragment.setArguments(bundle);
+        resultEvent = eventSet;
         return fragment;
     }
 
@@ -164,15 +173,16 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     protected void initData() {
         super.initData();
         Log.d(TAG, "mEvent init -->" + mEventSet);
-        mEventSet = (EventSetR) getArguments().getSerializable(EVENT_SET_OBJ);
+//        mEventSet = (EventSetR) getArguments().getSerializable(EVENT_SET_OBJ);
+        mEventSet = resultEvent;
 
     }
 
     @Override
     protected void bindData() {
         super.bindData();
-        Log.d(TAG, "mEventSet -->" + mEventSet);
-        new GetScheduleRTask(mActivity, this, mEventSet.getSeq()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Log.d(TAG, "mEventSet -->" + mEventSet.getId());
+        new GetScheduleRTask(mActivity, this, mEventSet.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -283,7 +293,37 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onTaskFinished(List<ScheduleR> data) {
-        Log.d(TAG, "Event Task Finish");
+        Log.d(TAG, "Event Task Finish -->" + resultEvent.getId());
+
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Log.d(TAG, "get realm");
+                resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", resultEvent.getId()).findAll();
+                Log.d(TAG, "resEmp Get -->" +  resEmp.size());
+
+                resList.addAll(resEmp);   //resList에 해당 스케줄 항목인 스케줄들을 추가.
+                for (ScheduleR sd : resList) {
+                    int id = sd.getId();
+                    int color = sd.getColor();
+                    String title = sd.getTitle();
+                    String desc = sd.getDesc();
+                    String location = sd.getLocation();
+                    int state = sd.getState();
+                    int year = sd.getYear();
+                    int month = sd.getMonth();
+                    int day = sd.getDay();
+                    long time = sd.getTime();
+                    int eventId = sd.getEventSetId();
+                    String hTime = sd.gethTime();
+
+
+                }
+
+            }
+        });
+        Log.d(TAG, "resList -->" + resList);
         mScheduleAdapter.changeAllData(data);
         rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
     }

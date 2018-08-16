@@ -318,7 +318,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     }
 
     /**
-     *  Realm access from incorrect thread. Realm objects can only be accessed on the thread they were created.
+     *
      *  문제로 인해 asynctask가 끝난후 Realm Transaction 실행
      * @param data
      */

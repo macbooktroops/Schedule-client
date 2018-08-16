@@ -38,7 +38,7 @@ public class GetScheduleRTask extends BaseAsyncTask<List<ScheduleR>>{
     protected List<ScheduleR> doInBackground(Void... params) {
         Log.d(TAG, "check GetScheduleRTask --> " + mSeq);
 
-        realm = Realm.getDefaultInstance();
+        /*realm = Realm.getDefaultInstance();
 
         realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -48,14 +48,14 @@ public class GetScheduleRTask extends BaseAsyncTask<List<ScheduleR>>{
                 Log.d(TAG, "resEmp Get -->" +  resEmp.size());
 
                 resList.addAll(resEmp);   //resList에 해당 스케줄 항목인 스케줄들을 추가.
-/*
+*//*
                 for (ScheduleR sd : resList) {
                     String id = sd.getId();
-                }*/
+                }*//*
 
             }
         });
-        Log.d(TAG, "resList -->" + resList);
+        Log.d(TAG, "resList -->" + resList);*/
 
         return resList;
     }
