@@ -23,6 +23,7 @@ import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectEventSetDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetMapTask;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRMapTask;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.utils.DateUtils;
@@ -156,20 +157,36 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     //확인 버튼
     private void confirm() {
-        if (etTitle.getText().length() != 0) {
-            mSchedule.setTitle(etTitle.getText().toString());
-            mSchedule.setDesc(etDesc.getText().toString());
 
-            new UpdateScheduleTask(this, new OnTaskFinishedListener<Boolean>() {
-                @Override
-                public void onTaskFinished(Boolean data) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Log.d(TAG, "confirm");
+                if (etTitle.getText().length() != 0) {
+                    mSchedule.setTitle(etTitle.getText().toString());
+                    mSchedule.setDesc(etDesc.getText().toString());
+//                    mSchedule.setEventSetId();
                     setResult(UPDATE_SCHEDULE_FINISH);
-                    finish();
+//                    Log.d(TAG, "mSchedule Check title --->" + mSchedule.getTitle());
+//                    Log.d(TAG, "mSchedule Check Desc --->" + mSchedule.getDesc());
+//                    Log.d(TAG, "mschedule check seq --->" + mSchedule.getSeq());
+
+//                    ScheduleR schedule = realm.where(Schedule.)
+                  /*  new UpdateScheduleRTask(getApplicationContext(), new OnTaskFinishedListener<Boolean>() {
+                        @Override
+                        public void onTaskFinished(Boolean data) {
+                            setResult(UPDATE_SCHEDULE_FINISH);
+                            finish();
+                        }
+                    }, mSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
+                } else {
+                    ToastUtils.showShortToast(getApplicationContext(), R.string.schedule_input_content_is_no_null);
                 }
-            }, mSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            ToastUtils.showShortToast(this, R.string.schedule_input_content_is_no_null);
-        }
+            }
+        });
+
+        finish();
+
     }
 
     @Override
@@ -299,13 +316,21 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     }
     //스케줄 목록다이얼로그 클릭
    @Override
-    public void onSelectEventSet(EventSetR eventSet) {
-        mSchedule.setColor(eventSet.getColor());
-        mSchedule.setEventSetId(eventSet.getId());
+    public void onSelectEventSet(final EventSetR eventSet) {
+        Log.d(TAG, "eventSet onSelectEventSet -->" + eventSet.getName());
 
-        vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
-        tvEventSet.setText(eventSet.getName());
-        ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mSchedule.setColor(eventSet.getColor());
+                mSchedule.setEventSetId(eventSet.getId());
+
+                vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
+                tvEventSet.setText(eventSet.getName());
+                ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
+            }
+        });
+
     }
 
     //디테일 한 날짜/시간 설정 완료 클릭

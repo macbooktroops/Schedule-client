@@ -117,6 +117,7 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
+                Log.d(TAG, "selectevent test");
                 RealmResults<EventSetR> eventSetR = realm.where(EventSetR.class).findAll();
 
                 List<EventSetR> resList = new ArrayList<>();
@@ -126,21 +127,21 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
 
             }
         });
-//        mEventSets = resultEvent;
+        mEventSets = resultEvent;
 
         EventSetR eventSet = new EventSetR();
         eventSet.setName(getContext().getString(R.string.menu_no_category));
         resultEvent.add(0, eventSet);
 
         int position = 0;
-        for (int i = 0; i < resultEvent.size(); i++) {
-            if (resultEvent.get(i).getId() == mId) {
+        for (int i = 0; i < mEventSets.size(); i++) {
+            if (mEventSets.get(i).getId() == mId) {
                 position = i;
                 break;
             }
         }
 
-        mSelectEventSetAdapter = new SelectEventSetAdapter(mContext, resultEvent, position);
+        mSelectEventSetAdapter = new SelectEventSetAdapter(mContext, mEventSets, position);
         lvEvent.setAdapter(mSelectEventSetAdapter);
     }
 
