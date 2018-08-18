@@ -334,7 +334,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onClick() {
+    public void onClick(ScheduleR schedule) {
         startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
 //                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
                 .putExtra(ScheduleDetailActivity.CALENDAR_POSITION,  -1));

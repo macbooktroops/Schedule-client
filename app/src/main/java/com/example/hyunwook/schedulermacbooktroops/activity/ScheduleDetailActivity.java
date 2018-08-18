@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 18-06-29
@@ -51,7 +52,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private Map<Integer, EventSetR> mEventSetsMap;
 
     private ScheduleR mSchedule;
-    public static String SCHEDULE_OBJ = "schedle.obj";
+    public static String SCHEDULE_OBJ = "schedule.obj";
     public static String CALENDAR_POSITION = "calendar.position";
 
     private int mPosition = -1;
@@ -61,6 +62,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private InputLocationDialog mInputLocationDialog;
 
     Realm realm;
+
+    //선택된 스케줄 Primary 데이터
+    int curScheduleSeq;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
@@ -91,7 +95,24 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     protected void initData() {
         super.initData();
         mEventSetsMap = new HashMap<>();
-        mSchedule = (ScheduleR)getIntent().getSerializableExtra(SCHEDULE_OBJ);
+//        mSchedule = (ScheduleR)getIntent().getSerializableExtra(SCHEDULE_OBJ);
+
+        curScheduleSeq = (int) getIntent().getSerializableExtra(SCHEDULE_OBJ);
+//        Log.d(TAG, "mSchedule Result ->" + curScheduleSeq);
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+//                Log.d(TAG, "find Schedule Data =====>"+ curScheduleSeq);
+                ScheduleR resScheduleR = realm.where(ScheduleR.class)
+                        .equalTo("seq", curScheduleSeq).findFirst();
+
+//                Log.d(TAG, "check data --->" + resScheduleR.getTitle());
+
+                 mSchedule = resScheduleR;
+            }
+        });
+
         mPosition = getIntent().getIntExtra(CALENDAR_POSITION, -1);
 
         new LoadEventSetMapTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

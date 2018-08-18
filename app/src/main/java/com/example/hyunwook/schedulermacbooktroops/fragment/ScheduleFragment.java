@@ -2,6 +2,7 @@ package com.example.hyunwook.schedulermacbooktroops.fragment;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -365,9 +366,12 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     }
 
     @Override
-    public void onClick() {
+    public void onClick(ScheduleR schedule) {
+        Log.d(TAG," schedule onClick --->" + schedule.getSeq());
+
         startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
-//                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
+                //https://stackoverflow.com/questions/40648380/how-to-pass-data-via-intent-in-realm
+                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule.getSeq()) //primary key seq
                 .putExtra(ScheduleDetailActivity.CALENDAR_POSITION, getCurrentCalendarPosition()));
     }
 

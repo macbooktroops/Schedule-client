@@ -123,7 +123,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mEvent.onClick();
+                    mEvent.onClick(schedule);
                 }
             });
         } else if (holder instanceof ScheduleFinishViewHolder) {
@@ -345,7 +345,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public interface ScheduleEvent {
-        void onClick();
+        void onClick(ScheduleR schedule);
         void onReset();
     }
 }
