@@ -291,6 +291,11 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         mPosition = position;
     }
 
+    /**
+     * data 대신 resultEvent 값을 받아 처리해야함.
+     *
+     * @param data
+     */
     @Override
     public void onTaskFinished(List<ScheduleR> data) {
         Log.d(TAG, "Event Task Finish -->" + resultEvent.getId());
@@ -304,7 +309,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                 Log.d(TAG, "resEmp Get -->" +  resEmp.size());
 
                 resList.addAll(resEmp);   //resList에 해당 스케줄 항목인 스케줄들을 추가.
-                for (ScheduleR sd : resList) {
+            /*    for (ScheduleR sd : resList) {
                     int id = sd.getId();
                     int color = sd.getColor();
                     String title = sd.getTitle();
@@ -319,13 +324,13 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                     String hTime = sd.gethTime();
 
 
-                }
+                }*/
 
             }
         });
         Log.d(TAG, "resList -->" + resList);
-        mScheduleAdapter.changeAllData(data);
-        rlNoTask.setVisibility(data.size() == 0 ? View.VISIBLE : View.GONE);
+        mScheduleAdapter.changeAllData(resList);
+        rlNoTask.setVisibility(resList.size() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
