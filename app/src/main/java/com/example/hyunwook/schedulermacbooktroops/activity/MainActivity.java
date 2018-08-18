@@ -30,6 +30,7 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetTask;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 18-05-24
@@ -67,6 +69,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private AddEventSetBroadcastReceiver mAddEventSetBroadcastReceiver;
 
     Realm realm;
+
+    List<EventSetR> resultEvent;
+
 
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
     public static int ADD_EVENT_SET_CODE = 1;
@@ -121,7 +126,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void initData() {
         super.initData();
         resetMainTitleDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
-        new LoadEventSetTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadEventSetRTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     //RecyclerView 설정
@@ -342,7 +347,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onTaskFinished(List<EventSetR> data) {
-        mEventSetAdapter.changeAllData(data);
+//        realm = Realm.getDefaultInstance();
+
+        resultEvent = new ArrayList<>();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<EventSetR> eventSetR = realm.where(EventSetR.class).findAll();
+
+                List<EventSetR> resList = new ArrayList<>();
+                resList.addAll(eventSetR);
+
+                resultEvent = resList;
+
+            }
+        });
+
+        mEventSetAdapter.changeAllData(resultEvent);
     }
 
     //메뉴 계획 항목 추가 리시버

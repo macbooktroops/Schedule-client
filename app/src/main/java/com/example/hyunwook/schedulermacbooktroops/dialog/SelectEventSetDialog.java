@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,10 +16,13 @@ import com.example.common.realm.EventSetR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.AddEventSetActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.SelectEventSetAdapter;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
@@ -27,6 +31,9 @@ import io.realm.RealmResults;
  * DetailActivity
  */
 public class SelectEventSetDialog extends Dialog implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>> {
+    List<EventSetR> resultEvent;
+
+    static final String TAG = SelectEventSetDialog.class.getSimpleName();
 
     private Context mContext;
     private OnSelectEventSetListener mOnSelectEventSetListener;
@@ -39,6 +46,8 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
 
     private List<EventSetR> mEventSets;
 //    RealmResults<EventSetR> mEventSets;
+
+    Realm realm;
 
     public SelectEventSetDialog(Context context, OnSelectEventSetListener onSelectEventSetListener, int id) {
         super(context, R.style.DialogFullScreen);
@@ -56,13 +65,16 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
         findViewById(R.id.tvAddEventSet).setOnClickListener(this);
 
         lvEvent = (ListView) findViewById(R.id.lvEventSets);
+
+        realm = Realm.getDefaultInstance();
+
         initData();
 
     }
 
     //저장된 이벤트 얻기
     private void initData() {
-        new LoadEventSetTask(getContext(), this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadEventSetRTask(getContext(), this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         lvEvent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,21 +112,35 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
     @Override
 //    public void onTaskFinished(RealmResults<EventSetR> data) {
     public void onTaskFinished(List<EventSetR> data) {
-        mEventSets = data;
+
+        resultEvent = new ArrayList<>();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<EventSetR> eventSetR = realm.where(EventSetR.class).findAll();
+
+                List<EventSetR> resList = new ArrayList<>();
+                resList.addAll(eventSetR);
+
+                resultEvent = resList;
+
+            }
+        });
+//        mEventSets = resultEvent;
 
         EventSetR eventSet = new EventSetR();
         eventSet.setName(getContext().getString(R.string.menu_no_category));
-        mEventSets.add(0, eventSet);
+        resultEvent.add(0, eventSet);
 
         int position = 0;
-        for (int i = 0; i < mEventSets.size(); i++) {
-            if (mEventSets.get(i).getId() == mId) {
+        for (int i = 0; i < resultEvent.size(); i++) {
+            if (resultEvent.get(i).getId() == mId) {
                 position = i;
                 break;
             }
         }
 
-        mSelectEventSetAdapter = new SelectEventSetAdapter(mContext, mEventSets, position);
+        mSelectEventSetAdapter = new SelectEventSetAdapter(mContext, resultEvent, position);
         lvEvent.setAdapter(mSelectEventSetAdapter);
     }
 
