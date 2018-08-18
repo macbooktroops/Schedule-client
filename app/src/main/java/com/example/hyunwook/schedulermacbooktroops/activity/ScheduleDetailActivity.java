@@ -22,6 +22,7 @@ import com.example.hyunwook.schedulermacbooktroops.dialog.InputLocationDialog;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectEventSetDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetMapTask;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRMapTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.utils.DateUtils;
@@ -115,7 +116,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
         mPosition = getIntent().getIntExtra(CALENDAR_POSITION, -1);
 
-        new LoadEventSetMapTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//        new LoadEventSetMapTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadEventSetRMapTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -172,13 +174,16 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onTaskFinished(Map<Integer, EventSetR> data) {
+        Log.d(TAG, "onTask eventDetail --> "+ data.size());
         mEventSetsMap = data;
         EventSetR eventSet = new EventSetR();
         eventSet.setName(getString(R.string.menu_no_category));
 
-        mEventSetsMap.put(eventSet.getId(), eventSet);
+        mEventSetsMap.put(eventSet.getSeq(), eventSet);
 
         EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
+        Log.d(TAG, "mschedule --->" + mSchedule.getEventSetId());
+        Log.d(TAG, "current ->" + current.getName() + "--" + current.getSeq());
         if (current != null) {
             tvEventSet.setText(current.getName());
 

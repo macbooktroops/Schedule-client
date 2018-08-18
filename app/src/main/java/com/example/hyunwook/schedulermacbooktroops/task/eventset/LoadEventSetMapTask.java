@@ -10,11 +10,6 @@ import com.example.common.realm.EventSetR;
 
 import java.util.Map;
 
-/**
- * 18-08-18
- * ScheduleDetailActivity 에서 스케줄 항목 조회 AsyncTask
- * use Realm.
- */
 public class LoadEventSetMapTask extends BaseAsyncTask<Map<Integer, EventSetR>> {
 
     private Context mContext;
