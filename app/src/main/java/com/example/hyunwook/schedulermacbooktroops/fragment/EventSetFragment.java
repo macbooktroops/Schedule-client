@@ -335,8 +335,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onClick(ScheduleR schedule) {
+
+        Log.d(TAG, "schedule fragment -->" + schedule.getSeq());
         startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
-//                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule)
+                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule.getSeq()) //primary key seq
                 .putExtra(ScheduleDetailActivity.CALENDAR_POSITION,  -1));
     }
 
