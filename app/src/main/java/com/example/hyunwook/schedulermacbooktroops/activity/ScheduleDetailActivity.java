@@ -107,6 +107,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         curScheduleSeq = (int) getIntent().getSerializableExtra(SCHEDULE_OBJ);
 //        Log.d(TAG, "mSchedule Result ->" + curScheduleSeq);
 
+        /**
+         * 스케줄 클릭 시 seq 값을 받아서 스케줄 세팅.
+         */
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -198,11 +201,13 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     public void onTaskFinished(Map<Integer, EventSetR> data) {
         Log.d(TAG, "onTask eventDetail --> "+ data.size());
         mEventSetsMap = data;
+
         EventSetR eventSet = new EventSetR();
         eventSet.setName(getString(R.string.menu_no_category));
 
         mEventSetsMap.put(eventSet.getSeq(), eventSet);
 
+//        EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
         EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
         Log.d(TAG, "mschedule --->" + mSchedule.getEventSetId());
         Log.d(TAG, "current ->" + current.getName() + "--" + current.getSeq());
@@ -215,6 +220,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     //이벤트 설정 레이아웃클릭
     private void showSelectEventSetDialog() {
         if (mSelectEventSetDialog == null) {
+            Log.d(TAG, "mSchedule eventset dialog -->" + mSchedule.getEventSetId());
             mSelectEventSetDialog = new SelectEventSetDialog(this, this, mSchedule.getEventSetId());
         }
         mSelectEventSetDialog.show();
@@ -238,12 +244,14 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     }
 
     private void setScheduleData() {
+        Log.d(TAG, "set eventid ==>" + mSchedule.getEventSetId());
         vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));//색상 설정
         ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon); //설정한 이벤트셋이 있다면.
         etTitle.setText(mSchedule.getTitle());
         etDesc.setText(mSchedule.getDesc()); //자세한 내용
         EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
 
+        Log.d(TAG, "SetSchedule Data -->"+ current);
         if (current != null) {
             tvEventSet.setText(current.getName()); //스케줄 이름
         }
@@ -335,7 +343,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             @Override
             public void execute(Realm realm) {
                 mSchedule.setColor(eventSet.getColor());
-                mSchedule.setEventSetId(eventSet.getId());
+                mSchedule.setEventSetId(eventSet.getSeq());
 
                 vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
                 tvEventSet.setText(eventSet.getName());

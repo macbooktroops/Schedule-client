@@ -96,9 +96,9 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    Log.d(TAG, "Try Event Set");
-                    Number currentIdNum = realm.where(EventSetR.class).max("seq");
 
+                    Number currentIdNum = realm.where(EventSetR.class).max("seq");
+                    Log.d(TAG, "Try Event Set --->" + currentIdNum);
                     int nextId;
 
                     if (currentIdNum == null) {

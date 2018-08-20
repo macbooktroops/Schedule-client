@@ -75,7 +75,7 @@ public class LoadEventSetRMapTask extends BaseAsyncTask<Map<Integer, EventSetR>>
 //
                     Log.d(TAG, "eventSetR ----> " +eventSetR.getSeq() +"--" + eventSetR.getName() + "-- "  + eventSetR.getColor() + "--" + eventSetR.getIcon());
 
-                    resultEventSet.put(seq, eventSetR);
+                    resultEventSet.put(eventSetR.getSeq(), eventSetR);
                 }
 
                 Log.d(TAG, "resultEventSet data size -->" + resultEventSet.size());

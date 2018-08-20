@@ -46,7 +46,7 @@ public class SelectEventSetAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return mEventSets.get(position).getId();
+        return mEventSets.get(position).getSeq();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class SelectEventSetAdapter extends BaseAdapter {
 
         holder.tvEvent.setText(eventSet.getName());
         //설정한 이미지라면 그 이미지 표시.
-        holder.ivEvent.setImageResource(eventSet.getId() == 0 ?  R.mipmap.ic_select_event_set_category : R.mipmap.ic_select_event_set_icon);
+        holder.ivEvent.setImageResource(eventSet.getSeq() == 0 ?  R.mipmap.ic_select_event_set_category : R.mipmap.ic_select_event_set_icon);
         holder.rbEvent.setChecked(position == mSelectPosition);
         return convertView;
     }

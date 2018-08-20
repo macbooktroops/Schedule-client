@@ -131,11 +131,11 @@ public class SelectEventSetDialog extends Dialog implements View.OnClickListener
 
         EventSetR eventSet = new EventSetR();
         eventSet.setName(getContext().getString(R.string.menu_no_category));
-        resultEvent.add(0, eventSet);
+        mEventSets.add(0, eventSet);
 
         int position = 0;
         for (int i = 0; i < mEventSets.size(); i++) {
-            if (mEventSets.get(i).getId() == mId) {
+            if (mEventSets.get(i).getSeq() == mId) {
                 position = i;
                 break;
             }
