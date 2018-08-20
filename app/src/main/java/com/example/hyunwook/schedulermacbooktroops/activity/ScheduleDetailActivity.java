@@ -28,6 +28,7 @@ import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleT
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.utils.DateUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     Realm realm;
 
+    //realm 에 time을 보기 편하게 변환
+    private String HUMAN_TIME_FORMAT = "";
+    private String resultTime;
     //선택된 스케줄 Primary 데이터
     int curScheduleSeq;
     @Override
@@ -84,6 +88,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
         etTitle = searchViewById(R.id.etScheduleTitle);
         etDesc = searchViewById(R.id.etScheduleDesc);
+        HUMAN_TIME_FORMAT = getString(R.string.human_time_format);
 
         tvEventSet = searchViewById(R.id.tvScheduleEventSet);
         tvTime = searchViewById(R.id.tvScheduleTime);
@@ -342,14 +347,26 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     //디테일 한 날짜/시간 설정 완료 클릭
     @Override
-    public void onSelectDate(int year, int month, int day, long time, int position) {
-        mSchedule.setYear(year);
-        mSchedule.setMonth(month);
-        mSchedule.setDay(day);
-        mSchedule.setTime(time);
-        mPosition = position;
+    public void onSelectDate(final int year, final int month, final int day, final long time, final int position) {
 
-        resetDateTimeUi();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mSchedule.setYear(year);
+                mSchedule.setMonth(month);
+                mSchedule.setDay(day);
+                mSchedule.setTime(time);
+
+                SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
+                resultTime = sdf.format(time);
+
+                mSchedule.sethTime(resultTime);
+                mPosition = position;
+
+                resetDateTimeUi();
+            }
+        });
+
     }
 
 }
