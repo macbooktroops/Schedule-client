@@ -2,7 +2,6 @@ package com.example.hyunwook.schedulermacbooktroops.fragment;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,8 +19,6 @@ import android.widget.RelativeLayout;
 
 import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
-import com.example.common.bean.EventSet;
-import com.example.common.bean.Schedule;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.EventSetR;
 import com.example.common.realm.ScheduleR;
@@ -32,9 +29,7 @@ import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivi
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.GetScheduleRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.eventset.GetScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -181,8 +176,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void bindData() {
         super.bindData();
-        Log.d(TAG, "mEventSet -->" + mEventSet.getId());
-        new GetScheduleRTask(mActivity, this, mEventSet.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Log.d(TAG, "mEventSet -->" + mEventSet.getSeq());
+        new GetScheduleRTask(mActivity, this, mEventSet.getSeq()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
