@@ -305,14 +305,21 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     //위치 설정 다이얼로그 완료 버튼클릭
     @Override
-    public void onLocationBack(String text) {
-        mSchedule.setLocation(text);
+    public void onLocationBack(final String text) {
 
-        if (TextUtils.isEmpty(mSchedule.getLocation())) {
-            tvLocation.setText(R.string.click_here_select_location);
-        } else {
-            tvLocation.setText(mSchedule.getLocation());
-        }
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                mSchedule.setLocation(text);
+
+                if (TextUtils.isEmpty(mSchedule.getLocation())) {
+                    tvLocation.setText(R.string.click_here_select_location);
+                } else {
+                    tvLocation.setText(mSchedule.getLocation());
+                }
+            }
+        });
+
     }
     //스케줄 목록다이얼로그 클릭
    @Override
