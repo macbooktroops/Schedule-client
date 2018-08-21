@@ -27,18 +27,20 @@ public class UpdateScheduleRTask extends BaseAsyncTask<Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
 
-    /*    realm = Realm.getDefaultInstance();
+        realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 if (mSchedule != null) {
 
-                    Log.d(TAG, "mSchedule Check title --->" + mSchedule.getTitle());
-                    Log.d(TAG, "mSchedule Check Desc --->" + mSchedule.getDesc());
+//                    Log.d(TAG, "mSchedule Check title --->" + mSchedule.getTitle());
+                    Log.d(TAG, "mSchedule Check Desc --->" + mSchedule.getTitle());
+                    Log.d(TAG, "mSchedule Check state --->" + mSchedule.getState());
+
                 }
 
             }
-        });*/
+        });
 
         return true;
     }

@@ -22,12 +22,15 @@ import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivi
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleTask;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * 18-06-16
@@ -49,8 +52,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<ScheduleR> mFinishSchedules; //끝난 스케줄
 
     private boolean mIsShowFinishTask = false;
+    Realm realm;
 
     public ScheduleAdapter(Context context, ScheduleEvent event) {
+        realm = Realm.getDefaultInstance();
         mContext = context;
         mEvent = event;
         initData();
@@ -115,6 +120,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.tvScheduleState.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG, "change schedule --> " +schedule.getTitle());
                     changeScheduleState(schedule);
                 }
             });
@@ -251,30 +257,30 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
    //스케줄 상태 변경
     private void changeScheduleState(final ScheduleR schedule) {
-        switch (schedule.getState()) {
-            //start --> finish
-            case 0:
-                schedule.setState(1); //0 --> 1
-                new UpdateScheduleTask(mContext, new OnTaskFinishedListener<Boolean>() {
-                    @Override
-                    public void onTaskFinished(Boolean data) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                switch (schedule.getState()) {
+                    //start --> finish
+                    case 0:
+                        Log.d(TAG, "change schedule -->" + schedule.getTitle());
+                        schedule.setState(1); //0 --> 1
+
                         changeScheduleItem(schedule);
-                    }
-                }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                break;
-            case 1:
-                //finish -> real finish
-                schedule.setState(2);
-                new UpdateScheduleTask(mContext, new OnTaskFinishedListener<Boolean>() {
-                    @Override
-                    public void onTaskFinished(Boolean data) {
+
+                        break;
+                    case 1:
+                        //finish -> real finish
+                        Log.d(TAG, "change schedule finish -->" + schedule.getTitle());
+                        schedule.setState(2);
                         mSchedules.remove(schedule);
                         mFinishSchedules.add(schedule);
                         notifyDataSetChanged();
-                    }
-                }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                break;
-        }
+
+                        break;
+                }
+            }
+        });
     }
 
 
