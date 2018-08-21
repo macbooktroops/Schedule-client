@@ -21,6 +21,7 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
+import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
@@ -153,6 +154,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //finish 상태에서 다시 클릭 시 삭제.
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    Log.d(TAG, "delete schedule");
                     showDeleteScheduleDialog(schedule);
                 }
             });
@@ -189,17 +191,25 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onConfirm() {
                 //확인버튼
-                new RemoveScheduleTask(mContext, new OnTaskFinishedListener<Boolean>() {
+                Log.d(TAG, "schedule seq -->" + schedule.getSeq());
+                new RemoveScheduleRTask(mContext, new OnTaskFinishedListener<Boolean>() {
+
                     @Override
-                    public void onTaskFinished(Boolean data) {
+                    public void onTaskFinished(final Boolean data) {
                         Log.d(TAG, "RemoveScheduleTask -----");
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                Log.d(TAG, "execute realm remove");
+                                if (data) {
+                                    removeItem(schedule);
+                                    mEvent.onReset();
+                                }
+                            }
+                        });
                         //작업이 끝나면
-                        if (data) {
-                            removeItem(schedule);
-                            mEvent.onReset();
-                        }
                     }
-                }, schedule.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }, schedule.getSeq()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         }).show();
     }
@@ -219,6 +229,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void removeItem(ScheduleR schedule) {
+        Log.d(TAG,"removeItem -->" + schedule.getTitle());
         if (mSchedules.remove(schedule)) {
             notifyDataSetChanged(); //reupdate.
         } else if (mFinishSchedules.remove(schedule)) {
