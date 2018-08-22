@@ -225,7 +225,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     //스케줄 작성 전 시작 시간을 적을 수 있는 다이얼로그.
     private void showSelectDateDialog() {
-         new SelectDateDialog(mActivity, this, mCurrentSelectDay, mCurrentSelectMonth, mCurrentSelectDay,
+//        Log.d(TAG, "mCurrent all -->" + mCurrentSelectYear)
+         new SelectDateDialog(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay,
                  scheduleLayout.getMonthCalendar().getCurrentItem()).show();
     }
     //스케줄 리스트 리셋

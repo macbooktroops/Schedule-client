@@ -166,8 +166,9 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                 Matcher timeFormat2 = timePattern2.matcher(text);
 
                 if (timeFormat1.matches() || timeFormat2.matches()) {
-                    time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, text),
+                    time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay, text),
                             "yyyy-MM-dd HH:mm");
+                    Log.d(TAG, "all match ->" + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay + "--" +time);
 
                 } else {
                     Pattern hourPattern1 = Pattern.compile("[0-9][0-9]");
@@ -177,15 +178,16 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                     Matcher hourFormat2 = hourPattern2.matcher(text);
 
                     if (hourFormat1.matches() || hourFormat2.matches()) {
-                        time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, text),
+                        time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay, text),
                                 "yyyy-MM-dd HH");
+                        Log.d(TAG, "little match --> " + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay + "--"  + time);
                     } else {
                         time = 0;
                     }
                 }
             }
 
-            Log.d(TAG, "mCurrentSelect ==> " +mCurrentSelectYear);
+            Log.d(TAG, "mCurrentSelect ==> " +mCurrentSelectYear + "-----" + time);
             mOnSelectDateListener.onSelectDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, time, monthCalendar.getCurrentItem());
         }
     }
