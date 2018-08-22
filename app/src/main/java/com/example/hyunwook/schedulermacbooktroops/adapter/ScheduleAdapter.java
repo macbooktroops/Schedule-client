@@ -1,11 +1,7 @@
 package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.text.style.StrikethroughSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +9,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.common.base.app.BaseFragment;
-import com.example.common.bean.Schedule;
-import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
-import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
-import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
-import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.schedule.RemoveScheduleTask;
-import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.schedule.UpdateScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
 
@@ -53,6 +40,12 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<ScheduleR> mFinishSchedules; //끝난 스케줄
 
     private boolean mIsShowFinishTask = false;
+
+    /**
+     * Object is no longer managed by Realm. Has it been delete? 회피하기위해
+     * 복사본 생성
+     */
+    ScheduleR remSchedule;
     Realm realm;
 
     public ScheduleAdapter(Context context, ScheduleEvent event) {
@@ -191,25 +184,42 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onConfirm() {
                 //확인버튼
-                Log.d(TAG, "schedule seq -->" + schedule.getSeq());
-                new RemoveScheduleRTask(mContext, new OnTaskFinishedListener<Boolean>() {
-
+                realm.executeTransaction(new Realm.Transaction() {
                     @Override
-                    public void onTaskFinished(final Boolean data) {
-                        Log.d(TAG, "RemoveScheduleTask -----");
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                Log.d(TAG, "execute realm remove");
-                                if (data) {
-                                    removeItem(schedule);
-                                    mEvent.onReset();
-                                }
+                    public void execute(Realm realm) {
+                        Log.d(TAG, "success delete");
+                                removeItem(schedule);
+                              /*  if (mSchedules.remove(schedule)) {
+                                    notifyDataSetChanged(); //reupdate.
+                                } else if (mFinishSchedules.remove(schedule)) {
+                                    notifyDataSetChanged();
+                                }*/
+                                schedule.deleteFromRealm();
+                                mEvent.onReset();
+
+
                             }
                         });
+                    //}
+
+
+                        //}
+                        //});
                         //작업이 끝나면
+                        //}
+                        //}, schedule)./**/executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+/*
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        schedule.deleteFromRealm();
+                        Log.d(TAG, "delete success.");
+
+                        removeItem(schedule);
+                        mEvent.onReset();
                     }
-                }, schedule.getSeq()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                });*/
+
             }
         }).show();
     }
@@ -229,7 +239,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void removeItem(ScheduleR schedule) {
-        Log.d(TAG,"removeItem -->" + schedule.getTitle());
+        //Log.d(TAG,"removeItem -->" + schedule.getTitle());
         if (mSchedules.remove(schedule)) {
             notifyDataSetChanged(); //reupdate.
         } else if (mFinishSchedules.remove(schedule)) {
