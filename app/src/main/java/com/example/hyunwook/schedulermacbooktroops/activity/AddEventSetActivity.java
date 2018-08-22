@@ -9,14 +9,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.common.base.app.BaseActivity;
-import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.EventSetR;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectColorDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.AddEventSetRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.eventset.AddEventSetTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 
 import io.realm.Realm;
@@ -102,7 +100,7 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
                     int nextId;
 
                     if (currentIdNum == null) {
-                        nextId = 0;
+                        nextId = 1;
                     } else {
                         nextId = currentIdNum.intValue() + 1;
                     }
