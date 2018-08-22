@@ -70,8 +70,8 @@
 
             <ImageView
                 android:id="@+id/ivScheduleEventSetIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="@dimen/space_16dp"
                 android:src="@mipmap/ic_detail_category"/>
 
@@ -109,8 +109,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="@dimen/space_16dp"
                 android:src="@mipmap/ic_detail_clock"/>
 
@@ -148,8 +148,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="@dimen/space_16dp"
                 android:src="@mipmap/ic_detail_location"/>
 
@@ -187,8 +187,8 @@
 
             <ImageView
                 android:id="@+id/ivRemarkIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/schedule_item_size"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
                 android:layout_marginLeft="@dimen/space_16dp"
                 android:src="@mipmap/ic_detail_remarks"/>
 
