@@ -117,9 +117,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                 ScheduleR resScheduleR = realm.where(ScheduleR.class)
                         .equalTo("seq", curScheduleSeq).findFirst();
 
-//                Log.d(TAG, "check data --->" + resScheduleR.getTitle());
+
 
                  mSchedule = resScheduleR;
+                Log.d(TAG, "check data --->" + mSchedule.getTitle());
             }
         });
 
@@ -206,13 +207,17 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         eventSet.setName(getString(R.string.menu_no_category));
 
         mEventSetsMap.put(eventSet.getSeq(), eventSet);
-
+        Log.d(TAG, "eventset result ->" + eventSet.getSeq());
 //        EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
         EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
         Log.d(TAG, "mschedule --->" + mSchedule.getEventSetId());
         Log.d(TAG, "current ->" + current.getName() + "--" + current.getSeq());
+
+        EventSetR titleEvent = realm.where(EventSetR.class).equalTo("seq", mSchedule.getEventSetId()).findFirst();
+
+        Log.d(TAG, "titleEvent --->" + titleEvent.getName());
         if (current != null) {
-            tvEventSet.setText(current.getName());
+            tvEventSet.setText(titleEvent.getName());
 
         }
     }
