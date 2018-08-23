@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
  */
 public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventSetViewHolder> {
 
+    static final String TAG = EventSetAdapter.class.getSimpleName();
 
     private Context mContext;
     private List<EventSetR> mEventSets;
@@ -84,6 +85,7 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
     }
 
     private void showDeleteEventSetDialog(final EventSetR eventSet, final int position) {
+        Log.d(TAG, "showDeleteEvent--");
         new ConfirmDialog(mContext, R.string.event_set_delete_this_event_set, new ConfirmDialog.OnClickListener() {
             @Override
             public void onCancel() {
