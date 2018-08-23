@@ -293,14 +293,14 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
      */
     @Override
     public void onTaskFinished(List<ScheduleR> data) {
-        Log.d(TAG, "Event Task Finish -->" + resultEvent.getId());
+        Log.d(TAG, "Event Task Finish -->" + resultEvent.getSeq());
 
 
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 Log.d(TAG, "get realm");
-                resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", resultEvent.getId()).findAll();
+                resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", resultEvent.getSeq()).findAll();
                 Log.d(TAG, "resEmp Get -->" +  resEmp.size());
 
                 resList.addAll(resEmp);   //resList에 해당 스케줄 항목인 스케줄들을 추가.
