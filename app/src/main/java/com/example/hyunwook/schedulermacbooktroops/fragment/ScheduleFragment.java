@@ -378,6 +378,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     @Override
     public void onReset() {
+        Log.d(TAG, "onReset");
         resetScheduleList();
     }
 }

@@ -23,7 +23,7 @@ import io.realm.Realm;
  * 18-06-19
  * 스케줄 분류 추가 액티비티
  */
-public class AddEventSetActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<EventSetR>, SelectColorDialog.OnSelectColorListener {
+public class AddEventSetActivity extends BaseActivity implements View.OnClickListener,  SelectColorDialog.OnSelectColorListener {
 
     private EditText etEventSetName;
     private View vEventSetColor;
@@ -111,9 +111,13 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
                     new AddEventSetRTask(getApplicationContext(), new OnTaskFinishedListener<EventSetR>() {
                         @Override
                         public void onTaskFinished(EventSetR data) {
-                            Log.d(TAG, "AddEventSetRTask task finish");
-//                            setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data));
-                            setResult(ADD_EVENT_SET_FINISH, new Intent(EVENT_SET_OBJ));
+                            Log.d(TAG, "AddEventSetRTask task finish -->"+data.getName());
+                            /**
+                             * Intent 전달 시
+                             * EventSetR에 seq 전달로 통일.
+                             */
+                            setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data.getSeq()));
+//                            setResult(ADD_EVENT_SET_FINISH, new Intent(EVENT_SET_OBJ));
                             finish();
                         }
                     }, eventSet).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -125,15 +129,6 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
             eventSet.setColor(mColor);
             new AddEventSetTask(this, this, eventSet).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
         }
-    }
-
-
-    //작업이 끝났다고 전달
-    @Override
-    public void onTaskFinished(EventSetR data) {
-//        setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data));
-        setResult(ADD_EVENT_SET_FINISH, new Intent(EVENT_SET_OBJ));
-        finish();
     }
 
     //색깔 선택 다이얼로그에서 Confirm버튼 누르면 호출

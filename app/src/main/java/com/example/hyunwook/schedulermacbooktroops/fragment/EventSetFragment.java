@@ -2,6 +2,7 @@ package com.example.hyunwook.schedulermacbooktroops.fragment;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -83,9 +84,9 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
      */
     public static EventSetFragment getInstance(EventSetR eventSet) {
         EventSetFragment fragment = new EventSetFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.put(EVENT_SET_OBJ, eventSet); //객체 넘기기
-//        fragment.setArguments(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EVENT_SET_OBJ, eventSet.getSeq()); //객체 넘기기
+        fragment.setArguments(bundle);
         resultEvent = eventSet;
         return fragment;
     }
@@ -167,8 +168,18 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void initData() {
         super.initData();
-        Log.d(TAG, "mEvent init -->" + mEventSet);
-//        mEventSet = (EventSetR) getArguments().getSerializable(EVENT_SET_OBJ);
+//        Log.d(TAG, "mEvent init -->" + mEventSet);
+     /*   final int mEventSetId = (int) getArguments().getSerializable(EVENT_SET_OBJ);
+        Log.d(TAG, "mEventSetId -->" + mEventSetId);
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", mEventSetId).findFirst();
+                mEventSet = eventSetR;
+
+                Log.d(TAG, "mEventSet fragment ->" + mEventSet.getName());
+            }
+        });*/
         mEventSet = resultEvent;
 
     }
@@ -293,14 +304,14 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
      */
     @Override
     public void onTaskFinished(List<ScheduleR> data) {
-        Log.d(TAG, "Event Task Finish -->" + resultEvent.getSeq());
+        Log.d(TAG, "Event Task Finish -->" + mEventSet.getSeq());
 
 
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 Log.d(TAG, "get realm");
-                resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", resultEvent.getSeq()).findAll();
+                resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).findAll();
                 Log.d(TAG, "resEmp Get -->" +  resEmp.size());
 
                 resList.addAll(resEmp);   //resList에 해당 스케줄 항목인 스케줄들을 추가.
@@ -325,7 +336,11 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         });
         Log.d(TAG, "resList -->" + resList);
         mScheduleAdapter.changeAllData(resList);
+
         rlNoTask.setVisibility(resList.size() == 0 ? View.VISIBLE : View.GONE);
+
+                resList.clear();
+
     }
 
     @Override

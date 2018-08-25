@@ -1,6 +1,7 @@
 package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.common.base.app.BaseFragment;
 import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
+import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
 
@@ -33,6 +37,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private Context mContext;
     private ScheduleEvent mEvent;
+//    private BaseFragment mBaseFragment;
 
     static final String TAG = ScheduleAdapter.class.getSimpleName();
 
@@ -49,9 +54,11 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     Realm realm;
 
     public ScheduleAdapter(Context context, ScheduleEvent event) {
+//    public ScheduleAdapter(Context context, BaseFragment baseFragment) {
         realm = Realm.getDefaultInstance();
         mContext = context;
         mEvent = event;
+//        mBaseFragment = baseFragment;
         initData();
     }
 
@@ -123,7 +130,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     mEvent.onClick(schedule);
+
                 }
             });
         } else if (holder instanceof ScheduleFinishViewHolder) {

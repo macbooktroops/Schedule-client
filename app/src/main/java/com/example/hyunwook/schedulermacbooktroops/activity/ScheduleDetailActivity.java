@@ -215,10 +215,12 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
         EventSetR titleEvent = realm.where(EventSetR.class).equalTo("seq", mSchedule.getEventSetId()).findFirst();
 
-        Log.d(TAG, "titleEvent --->" + titleEvent.getName());
         if (current != null) {
-            tvEventSet.setText(titleEvent.getName());
-
+            if (current.getName().equals("미정")){
+                tvEventSet.setText("미정");
+            } else {
+                tvEventSet.setText(titleEvent.getName());
+            }
         }
     }
 
@@ -277,23 +279,24 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
         if (requestCode == SelectEventSetDialog.ADD_EVENT_SET_CODE) { //event set dialog에서 추가버튼을 누르고.
             if (resultCode == AddEventSetActivity.ADD_EVENT_SET_FINISH) {
-//                EventSetR eventSet = (EventSet) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ); //작업끝
-                Log.d(TAG, "Schedule Detail activtyResult");
+//                EventSetR eventSet = (EventSetR) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ); //작업끝
+                final int eventSetId = (int) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
+                Log.d(TAG, "Schedule Detail activtyResult --->" + eventSetId);
 
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        Log.d(TAG, "occur execute");
-                        long seq = realm.where(EventSetR.class).max("seq").longValue();
+//                        Log.d(TAG, "occur execute");
+//                        long seq = realm.where(EventSetR.class).max("seq").longValue();
 
-                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", seq).findFirst();
+                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", eventSetId).findFirst();
                         Log.d(TAG, "eventSetR detail -> " +eventSetR.getName());
 
                         if (eventSetR != null) {
                             mSelectEventSetDialog.addEventSet(eventSetR);
                         }
 //                        sendBroadcast(new Intent(MainActivity.ADD_EVENT_SET_ACTION).putExtra(AddEventSetActivity.EVENT_SET_OBJ, eventSetR));
-                        sendBroadcast(new Intent(MainActivity.ADD_EVENT_SET_ACTION));
+                        sendBroadcast(new Intent(MainActivity.ADD_EVENT_SET_ACTION).putExtra(AddEventSetActivity.EVENT_SET_OBJ, eventSetR.getSeq()));
 
                     }
                 });

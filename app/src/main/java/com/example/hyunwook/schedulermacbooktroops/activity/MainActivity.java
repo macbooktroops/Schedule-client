@@ -202,7 +202,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ft.show(mEventSetFragment); //스케줄 항목 프래그로.
         ft.commit();
 
-        Log.d(TAG, "gotoEventSet getName ->" + eventSet.getName());
+        Log.d(TAG, "gotoEventSet getName ->" + eventSet);
         resetTitleText(eventSet.getName());
         drawMain.closeDrawer(Gravity.START);
         mCurrentEventSet = eventSet;
@@ -254,15 +254,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (resultCode == AddEventSetActivity.ADD_EVENT_SET_FINISH) {
                 Log.d(TAG, "check onActivityResult");
                 //최근 EventSetR에 추가된 데이터를 어댑터에 추가
-
+                final int eventSetId = (int) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
+                Log.d(TAG, "EventSetId --->" + eventSetId);
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         Log.d(TAG, "get realm test ---");
-                        long seq = realm.where(EventSetR.class).max("seq").longValue();
-
-
-                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", seq).findFirst();
+                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", eventSetId).findFirst();
                         Log.d(TAG, "eventSetR --->" + eventSetR.getName());
 
                         if (eventSetR != null) {
@@ -270,12 +268,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         }
                     }
                 });
-//                EventSet eventSet = (EventSet) data.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
-//                if (eventSet != null) {
-//                    mEventSetAdapter.insertItem(eventSet);
-//                }
-//            }
             }
+
         }
     }
 
@@ -373,19 +367,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         public void onReceive(Context context, Intent intent) {
             if (ADD_EVENT_SET_ACTION.equals(intent.getAction())) {
                 Log.d(TAG, "AddEventSetBroadcastReceiver ----");
-             /*   EventSet eventSet = (EventSet) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
-                if (eventSet != null) {
-                    mEventSetAdapter.insertItem(eventSet);
-                }*/
+
+                final int eventSetId = (int) intent.getSerializableExtra(AddEventSetActivity.EVENT_SET_OBJ);
 
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         Log.d(TAG, "get realm test receiver ---");
-                        long seq = realm.where(EventSetR.class).max("seq").longValue();
+//                        long seq = realm.where(EventSetR.class).max("seq").longValue();
+                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", eventSetId).findFirst();
 
-
-                        EventSetR eventSetR = realm.where(EventSetR.class).equalTo("seq", seq).findFirst();
                         Log.d(TAG, "eventSetR receiver--->" + eventSetR.getName());
 
                         if (eventSetR != null) {
@@ -393,8 +384,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         }
                     }
                 });
-                }
             }
         }
-
+    }
 }
