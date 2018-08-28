@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.EventSetR;
+import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
-import com.example.hyunwook.schedulermacbooktroops.task.eventset.RemoveEventSetTask;
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.RemoveEventSetRTask;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.SlideDeleteView;
 
@@ -24,6 +24,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 
 /**
@@ -35,8 +37,10 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
 
     private Context mContext;
     private List<EventSetR> mEventSets;
+    Realm realm;
 
     public EventSetAdapter(Context context, List<EventSetR> eventSets) {
+        realm = Realm.getDefaultInstance();
         mContext = context;
         mEventSets = eventSets;
     }
@@ -94,16 +98,37 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
 
             @Override
             public void onConfirm() {
-                new RemoveEventSetTask(mContext, new OnTaskFinishedListener<Boolean>() {
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        Log.d(TAG, "try eventsetAdapter ");
+                        RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                                .equalTo("eventSetId", eventSet.getSeq()).findAll();
+
+                        Log.d(TAG, "remove task schedule ->" + scheduleR.size());
+
+//                        for (int i = 0; i < scheduleR.size(); i++ ) {
+                            for (ScheduleR schedule : scheduleR) {
+                                schedule.setEventSetId(0);
+                            }
+
+                            
+//                            }
+
+                    }
+
+                });
+            }
+        }).show();
+              /*  new RemoveEventSetRTask(mContext, new OnTaskFinishedListener<Boolean>() {
                     @Override
                     public void onTaskFinished(Boolean data) {
                         if (data) {
                             removeItem(position);
                         }
                     }
-                }, eventSet.getId()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); //병렬처리
-            }
-        }).show();
+                }, eventSet.getSeq(), realm).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); //병렬처리*/
+
     }
 
     private void gotoEventSetFragment(EventSetR eventSet) {
