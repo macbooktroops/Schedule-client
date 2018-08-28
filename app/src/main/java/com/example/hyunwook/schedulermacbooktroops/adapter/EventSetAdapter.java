@@ -2,6 +2,7 @@ package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -112,7 +113,11 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
                                 schedule.setEventSetId(0);
                             }
 
-                            
+                        SystemClock.sleep(100);
+
+                            Log.d(TAG, "try delete eventset");
+                            removeItem(position);
+                            eventSet.deleteFromRealm();;
 //                            }
 
                     }
