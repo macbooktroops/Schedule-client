@@ -207,6 +207,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     private void showSelectDateDialog() {
         if (mSelectDateDialog == null) {
             Calendar calendar = Calendar.getInstance();
+            Log.d(TAG, "show Select Event ->" + calendar.get(Calendar.MONTH));
             mSelectDateDialog = new SelectDateDialog(mActivity, this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), mPosition);
         }
 
@@ -286,7 +287,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onSelectDate(int year, int month, int day, long time, int position) {
 //        Log.d(TAG, "onSelectData -->" +month);
-        setCurrentSelectDate(year, month + 1, day);
+        setCurrentSelectDate(year, month, day);
 
         mTime = time;
 

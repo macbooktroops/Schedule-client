@@ -194,7 +194,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     schedule.setTime(mTime);
                     schedule.sethTime(resultTime);
                     schedule.setYear(mCurrentSelectYear);
-                    schedule.setMonth(mCurrentSelectMonth + 1);
+                    schedule.setMonth(mCurrentSelectMonth);
                     schedule.setDay(mCurrentSelectDay);
 
                     new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
@@ -233,7 +233,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     public void resetScheduleList() {
         //병렬로 작업을 실행하는 데 사용할 수있는 실행
 //        new LoadScheduleTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        new LoadScheduleRTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadScheduleRTask(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
     //현재 년월일로 세팅
     private void setCurrentSelectDate(int year, int month, int day) {
@@ -335,7 +335,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 Log.d(TAG, "getScheduleByDate ------ " + mCurrentSelectYear + "--" + mCurrentSelectMonth +1 + "--" + mCurrentSelectDay);
                 RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
                         .equalTo("year", mCurrentSelectYear)
-                        .equalTo("month", mCurrentSelectMonth +1)
+                        .equalTo("month", mCurrentSelectMonth)
                         .equalTo("day", mCurrentSelectDay).findAll();
                 Log.d(TAG, "check size ->" +scheduleR.size());
 

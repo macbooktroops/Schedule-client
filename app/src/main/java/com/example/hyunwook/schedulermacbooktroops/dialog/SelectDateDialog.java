@@ -46,6 +46,8 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
 
         mOnSelectDateListener = onSelectDateListener;
         initView();
+
+        Log.d(TAG, "month constructor -->" + month);
         initDate(year, month, day, position);
     }
 
@@ -166,7 +168,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                 Matcher timeFormat2 = timePattern2.matcher(text);
 
                 if (timeFormat1.matches() || timeFormat2.matches()) {
-                    time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay, text),
+                    time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, text),
                             "yyyy-MM-dd HH:mm");
                     Log.d(TAG, "all match ->" + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay + "--" +time);
 
@@ -178,7 +180,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                     Matcher hourFormat2 = hourPattern2.matcher(text);
 
                     if (hourFormat1.matches() || hourFormat2.matches()) {
-                        time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth + 1, mCurrentSelectDay, text),
+                        time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, text),
                                 "yyyy-MM-dd HH");
                         Log.d(TAG, "little match --> " + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay + "--"  + time);
                     } else {
@@ -205,6 +207,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
 
     //날짜 기본 초기화
     private void initDate(int year, int month, int day, int position) {
+        Log.d(TAG, "initData ==" + month);
         setCurrentSelectDate(year, month, day);
         if (position != -1) {
             monthCalendar.setCurrentItem(position, false);
@@ -228,6 +231,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
 
         Calendar calendar = Calendar.getInstance();
         if (year == calendar.get(Calendar.YEAR)) {
+            Log.d(TAG, "mMonthText month ->" + month);
             tvDate.setText(mMonthText[month]); //오늘연도
         } else {
             tvDate.setText(String.format("%s%s", String.format(getContext().getString(R.string.calendar_year), year),
