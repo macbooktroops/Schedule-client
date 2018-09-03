@@ -168,7 +168,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                 Matcher timeFormat2 = timePattern2.matcher(text);
 
                 if (timeFormat1.matches() || timeFormat2.matches()) {
-                    time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, text),
+                    time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth +1, mCurrentSelectDay, text),
                             "yyyy-MM-dd HH:mm");
                     Log.d(TAG, "all match ->" + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay + "--" +time);
 
@@ -180,7 +180,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                     Matcher hourFormat2 = hourPattern2.matcher(text);
 
                     if (hourFormat1.matches() || hourFormat2.matches()) {
-                        time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay, text),
+                        time = date2TimeStamp(String.format("%s-%s-%s %s", mCurrentSelectYear, mCurrentSelectMonth +1, mCurrentSelectDay, text),
                                 "yyyy-MM-dd HH");
                         Log.d(TAG, "little match --> " + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay + "--"  + time);
                     } else {
@@ -234,6 +234,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
             Log.d(TAG, "mMonthText month ->" + month);
             tvDate.setText(mMonthText[month]); //오늘연도
         } else {
+            Log.d(TAG, "mMonthText else-->" + month);
             tvDate.setText(String.format("%s%s", String.format(getContext().getString(R.string.calendar_year), year),
                     mMonthText[month]));
         }

@@ -238,7 +238,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private void showSelectDateDialog() {
         if (mSelectDateDialog == null) {
             Log.d(TAG, "mSchedule getMonth state ->" + mSchedule.getMonth());
-            mSelectDateDialog = new SelectDateDialog(this, this, mSchedule.getYear(), mSchedule.getMonth(), mSchedule.getDay(), mPosition);
+            mSelectDateDialog = new SelectDateDialog(this, this, mSchedule.getYear(), mSchedule.getMonth() , mSchedule.getDay(), mPosition);
         }
         mSelectDateDialog.show();
     }
@@ -316,7 +316,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private void resetDateTimeUi() {
         if (mSchedule.getTime() == 0) {
             if (mSchedule.getYear() != 0) {
-                tvTime.setText(String.format(getString(R.string.date_format_no_time), mSchedule.getYear(), mSchedule.getMonth() +1, mSchedule.getDay()));
+                tvTime.setText(String.format(getString(R.string.date_format_no_time), mSchedule.getYear(), mSchedule.getMonth() , mSchedule.getDay()));
             } else {
                 tvTime.setText(R.string.click_here_select_date);
             }
