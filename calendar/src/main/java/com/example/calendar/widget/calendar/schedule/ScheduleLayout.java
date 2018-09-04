@@ -19,13 +19,11 @@ import com.example.calendar.widget.calendar.month.MonthCalendarView;
 import com.example.calendar.widget.calendar.month.MonthView;
 import com.example.calendar.widget.calendar.week.WeekCalendarView;
 import com.example.calendar.widget.calendar.week.WeekView;
-import com.example.common.bean.Schedule;
 
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.jar.Attributes;
 
 /**
  * 18-05-25
@@ -499,7 +497,7 @@ public class ScheduleLayout extends FrameLayout {
                  monthCalendar.setVisibility(INVISIBLE);
 //                 weekCalendar.setVisibility(VISIBLE);
                  rlMonthCalendar.setY((1 - monthCalendar.getCurrentMonthView().getWeekRow()) * mRowSize);
-//                 checkWeekCalendar();
+                 checkWeekCalendar();
              } else {
                  mState = ScheduleState.OPEN;
                  monthCalendar.setVisibility(VISIBLE);
