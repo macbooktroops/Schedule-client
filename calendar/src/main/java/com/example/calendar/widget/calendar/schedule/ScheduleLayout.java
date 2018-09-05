@@ -497,7 +497,7 @@ public class ScheduleLayout extends FrameLayout {
                  monthCalendar.setVisibility(INVISIBLE);
 //                 weekCalendar.setVisibility(VISIBLE);
                  rlMonthCalendar.setY((1 - monthCalendar.getCurrentMonthView().getWeekRow()) * mRowSize);
-                 checkWeekCalendar();
+//                 checkWeekCalendar();
              } else {
                  mState = ScheduleState.OPEN;
                  monthCalendar.setVisibility(VISIBLE);
