@@ -48,6 +48,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
         initView();
 
         Log.d(TAG, "month constructor -->" + month);
+
         initDate(year, month, day, position);
     }
 
@@ -196,6 +197,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
 
     @Override
     public void onClickDate(int year, int month, int day) {
+        Log.d(TAG, "onCLickDate ->" + year + "/" + month + "/" + day);
         //click date
         setCurrentSelectDate(year, month, day);
     }
@@ -207,7 +209,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
 
     //날짜 기본 초기화
     private void initDate(int year, int month, int day, int position) {
-        Log.d(TAG, "initData ==" + month);
+        Log.d(TAG, "initData ==" + month + "//" + day);
         setCurrentSelectDate(year, month, day);
         if (position != -1) {
             monthCalendar.setCurrentItem(position, false);
@@ -235,8 +237,18 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
             tvDate.setText(mMonthText[month]); //오늘연도
         } else {
             Log.d(TAG, "mMonthText else-->" + month);
-            tvDate.setText(String.format("%s%s", String.format(getContext().getString(R.string.calendar_year), year),
-                    mMonthText[month]));
+            Log.d(TAG, "day is -> " +day);
+
+            if (day == 0) {
+                Log.d(TAG, "set current time zone");
+                mCurrentSelectYear = calendar.get(Calendar.YEAR);
+                mCurrentSelectMonth = calendar.get(Calendar.MONTH);
+                mCurrentSelectDay = calendar.get(Calendar.DAY_OF_MONTH);
+                Log.d(TAG, "set time -> " + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay);
+            }
+//            tvDate.setText(String.format("%s%s", String.format(getContext().getString(R.string.calendar_year), mCurrentSelectYear),
+//                    mMonthText[mCurrentSelectMonth]));
+            tvDate.setText(mMonthText[mCurrentSelectMonth]);
         }
     }
 
