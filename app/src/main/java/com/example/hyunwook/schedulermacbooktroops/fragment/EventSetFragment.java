@@ -247,7 +247,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                         schedule.setTitle(content);
                         schedule.setState(0);
                         schedule.setColor(mEventSet.getColor());
-                        schedule.setEventSetId(mEventSet.getId());
+                        schedule.setEventSetId(mEventSet.getSeq());
                         schedule.setTime(mTime);
                         schedule.sethTime(resultTime);
                         schedule.setYear(mCurrentSelectYear);

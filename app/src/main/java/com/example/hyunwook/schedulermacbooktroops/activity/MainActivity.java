@@ -190,7 +190,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
 
-        if (mCurrentEventSet != eventSet || eventSet.getId() == 0) {
+//        Log.d(TAG, "eventSet --->" + eventSet.getSeq() + "---" + eventSet.getId());
+        if (mCurrentEventSet != eventSet || eventSet.getSeq() == 0) {
             if (mEventSetFragment != null)
                 ft.remove(mEventSetFragment);
 
