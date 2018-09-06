@@ -238,7 +238,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private void showSelectDateDialog() {
         if (mSelectDateDialog == null) {
             Log.d(TAG, "mSchedule getMonth state ->" + mSchedule.getMonth());
-            mSelectDateDialog = new SelectDateDialog(this, this, mSchedule.getYear(), mSchedule.getMonth() , mSchedule.getDay(), mPosition);
+            mSelectDateDialog = new SelectDateDialog(this, this, mSchedule.getYear(), mSchedule.getMonth() -1, mSchedule.getDay(), mPosition);
         }
         mSelectDateDialog.show();
     }
