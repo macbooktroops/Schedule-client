@@ -38,6 +38,12 @@ import io.realm.RealmResults;
 /**
  * 18-06-29
  * 스케줄을 위치 등등, 자세하게 적을수있는 Activity
+ *
+ * 스케줄 항목, 시간, 위치, 내용 Realm적용 후
+ * 각각 Dialog 확인만 눌러도
+ * Realm 에 바로 저장되는 문제가 있어서,
+ *
+ * 최종 confirm()에서만 Realm Transaction이 실행되도록 수정.
  */
 public class ScheduleDetailActivity extends BaseActivity implements View.OnClickListener,
         OnTaskFinishedListener<Map<Integer, EventSetR>>, SelectEventSetDialog.OnSelectEventSetListener, SelectDateDialog.OnSelectDateListener, InputLocationDialog.OnLocationBackListener {
@@ -65,6 +71,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private InputLocationDialog mInputLocationDialog;
 
     Realm realm;
+
+    String location; //위치
+    int eventColor, eventSetId;
 
     //realm 에 time을 보기 편하게 변환
     private String HUMAN_TIME_FORMAT = "";
@@ -329,7 +338,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     @Override
     public void onLocationBack(final String text) {
 
-        realm.executeTransaction(new Realm.Transaction() {
+      /*  realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 mSchedule.setLocation(text);
@@ -340,7 +349,17 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                     tvLocation.setText(mSchedule.getLocation());
                 }
             }
-        });
+        });*/
+
+      Log.d(TAG, "onLocationBack -> " +text);
+      Log.d(TAG, "mschedule location -> " + mSchedule.getLocation());
+      location = text;
+
+        if (TextUtils.isEmpty(location)) {
+            tvLocation.setText(R.string.click_here_select_location);
+        } else {
+            tvLocation.setText(location);
+        }
 
     }
     //스케줄 목록다이얼로그 클릭
@@ -354,6 +373,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                 mSchedule.setColor(eventSet.getColor());
                 mSchedule.setEventSetId(eventSet.getSeq());
 
+                //색상만 변경.
                 vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
                 tvEventSet.setText(eventSet.getName());
                 ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
@@ -365,7 +385,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     //디테일 한 날짜/시간 설정 완료 클릭
     @Override
     public void onSelectDate(final int year, final int month, final int day, final long time, final int position) {
-
+        Log.d(TAG, "onSelectDate");
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
