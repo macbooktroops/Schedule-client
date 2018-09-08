@@ -73,7 +73,11 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     Realm realm;
 
     String location; //위치
-    int eventColor, eventSetId;
+    int eventColor, eventSetId; //뷰 색상, 스케줄분류 아이디
+    int resYear, resMonth, resDay;
+    long resTime;
+    String resHTime;
+
 
     //realm 에 time을 보기 편하게 변환
     private String HUMAN_TIME_FORMAT = "";
@@ -376,44 +380,62 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         vSchedule.setBackgroundResource(CalUtils.getEventSetColor(eventColor));
         tvEventSet.setText(eventSet.getName());
         ivEventIcon.setImageResource(eventSetId == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
-
-      /*  realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                mSchedule.setColor(eventSet.getColor());
-                mSchedule.setEventSetId(eventSet.getSeq());*/
-
-                //색상만 변경.
-//                vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
-//                tvEventSet.setText(eventSet.getName());
-//                ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
-//            }
-//        });
-
     }
 
     //디테일 한 날짜/시간 설정 완료 클릭
     @Override
     public void onSelectDate(final int year, final int month, final int day, final long time, final int position) {
         Log.d(TAG, "onSelectDate");
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                mSchedule.setYear(year);
-                mSchedule.setMonth(month);
-                mSchedule.setDay(day);
-                mSchedule.setTime(time);
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                mSchedule.setYear(year);
+//                mSchedule.setMonth(month);
+//                mSchedule.setDay(day);
+//                mSchedule.setTime(time);
+//
+//                SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
+//                resultTime = sdf.format(time);
+//
+//                mSchedule.sethTime(resultTime);
+//                mPosition = position;
 
-                SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
-                resultTime = sdf.format(time);
 
-                mSchedule.sethTime(resultTime);
-                mPosition = position;
+        resYear = year;
+        resMonth = month;
+        resDay = day;
+        resTime = time;
 
-                resetDateTimeUi();
+        SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
+        resultTime = sdf.format(time);
+
+        mPosition = position;
+
+        //시간설정을 안하고 연도가 0이 아니면.
+        if (resTime == 0) {
+            if (resYear != 0) {
+                tvTime.setText(String.format(getString(R.string.date_format_no_time), resYear, resMonth, resDay));
+            } else {
+                tvTime.setText(R.string.click_here_select_date);
             }
-        });
-
+        } else {
+            //시간설정을 했다면.
+            tvTime.setText(DateUtils.timeStamp2Date(resTime, getString(R.string.date_format)));
+        }
     }
+   /*     if (mSchedule.getTime() == 0) {
+            if (mSchedule.getYear() != 0) {
+                tvTime.setText(String.format(getString(R.string.date_format_no_time), mSchedule.getYear(), mSchedule.getMonth() , mSchedule.getDay()));
+            } else {
+                tvTime.setText(R.string.click_here_select_date);
+            }
+        } else {
+            tvTime.setText(DateUtils.timeStamp2Date(mSchedule.getTime(), getString(R.string.date_format)));
+        }
+                resetDateTimeUi();
+            }*/
+//        });
+
+//    }
 
 }
