@@ -367,18 +367,28 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     public void onSelectEventSet(final EventSetR eventSet) {
         Log.d(TAG, "eventSet onSelectEventSet -->" + eventSet.getName());
 
-        realm.executeTransaction(new Realm.Transaction() {
+        eventColor = eventSet.getColor();
+        eventSetId = eventSet.getSeq();
+
+        Log.d(TAG, "eventColor -> " +eventSet.getColor());
+        Log.d(TAG, "eventSetId -> " +eventSet.getSeq());
+
+        vSchedule.setBackgroundResource(CalUtils.getEventSetColor(eventColor));
+        tvEventSet.setText(eventSet.getName());
+        ivEventIcon.setImageResource(eventSetId == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
+
+      /*  realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 mSchedule.setColor(eventSet.getColor());
-                mSchedule.setEventSetId(eventSet.getSeq());
+                mSchedule.setEventSetId(eventSet.getSeq());*/
 
                 //색상만 변경.
-                vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
-                tvEventSet.setText(eventSet.getName());
-                ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
-            }
-        });
+//                vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));
+//                tvEventSet.setText(eventSet.getName());
+//                ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon);
+//            }
+//        });
 
     }
 
