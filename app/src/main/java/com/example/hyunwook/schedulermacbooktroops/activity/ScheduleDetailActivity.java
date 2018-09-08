@@ -76,7 +76,6 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     int eventColor, eventSetId; //뷰 색상, 스케줄분류 아이디
     int resYear, resMonth, resDay;
     long resTime;
-    String resHTime;
 
 
     //realm 에 time을 보기 편하게 변환
@@ -187,6 +186,27 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                 if (etTitle.getText().length() != 0) {
                     mSchedule.setTitle(etTitle.getText().toString());
                     mSchedule.setDesc(etDesc.getText().toString());
+
+                    /**
+                     * onSelectEventSet
+                     */
+                    mSchedule.setColor(eventColor);
+                    mSchedule.setEventSetId(eventSetId);
+
+                    /**
+                     * onSelectDate
+                     */
+                    mSchedule.setYear(resYear);
+                    mSchedule.setMonth(resMonth);
+                    mSchedule.setDay(resDay);
+                    mSchedule.setTime(resTime);
+                    mSchedule.sethTime(resultTime);
+
+                    /**
+                     * onLocationBack
+                     */
+                    mSchedule.setLocation(location);
+
 //                    mSchedule.setEventSetId();
                     setResult(UPDATE_SCHEDULE_FINISH);
 //                    Log.d(TAG, "mSchedule Check title --->" + mSchedule.getTitle());
@@ -371,8 +391,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     public void onSelectEventSet(final EventSetR eventSet) {
         Log.d(TAG, "eventSet onSelectEventSet -->" + eventSet.getName());
 
+
         eventColor = eventSet.getColor();
         eventSetId = eventSet.getSeq();
+
 
         Log.d(TAG, "eventColor -> " +eventSet.getColor());
         Log.d(TAG, "eventSetId -> " +eventSet.getSeq());
