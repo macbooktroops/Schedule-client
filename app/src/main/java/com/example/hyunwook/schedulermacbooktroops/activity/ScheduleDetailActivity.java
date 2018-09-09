@@ -187,6 +187,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                     mSchedule.setTitle(etTitle.getText().toString());
                     mSchedule.setDesc(etDesc.getText().toString());
 
+                    Log.d(TAG, "mSchedule getDesc -->" + mSchedule.getDesc());
+
                     /**
                      * onSelectEventSet
                      */
@@ -201,6 +203,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                     mSchedule.setDay(resDay);
                     mSchedule.setTime(resTime);
                     mSchedule.sethTime(resultTime);
+
+                    Log.d(TAG, "mSchedule getDate -->" + mSchedule.getYear() + "/" + mSchedule.getMonth() + "/" + mSchedule.getDay() + "/" + mSchedule.getTime() + "/" + mSchedule.gethTime());
 
                     /**
                      * onLocationBack
@@ -347,14 +351,30 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
 
     private void resetDateTimeUi() {
+        resYear = mSchedule.getYear();
+        resMonth = mSchedule.getMonth();
+        resDay = mSchedule.getDay();
+
+        resTime = mSchedule.getTime();
+        resultTime = mSchedule.gethTime();
         if (mSchedule.getTime() == 0) {
             if (mSchedule.getYear() != 0) {
-                tvTime.setText(String.format(getString(R.string.date_format_no_time), mSchedule.getYear(), mSchedule.getMonth() , mSchedule.getDay()));
+//                Log.d(TAG, "ResetDateTimeUI -->" + mSchedule.getYear() + "/" + mSchedule.getMonth() + "/" + mSchedule.getDay());
+
+
+
+                Log.d(TAG, "ResetDateTimeUI -->" + resYear + "/" + resMonth + "/" + resDay + "/" + resTime + "/" + resultTime);
+
+
+//                tvTime.setText(String.format(getString(R.string.date_format_no_time), mSchedule.getYear(), mSchedule.getMonth() , mSchedule.getDay()));
+                tvTime.setText(String.format(getString(R.string.date_format_no_time), resYear, resMonth, resDay));
             } else {
                 tvTime.setText(R.string.click_here_select_date);
             }
         } else {
-            tvTime.setText(DateUtils.timeStamp2Date(mSchedule.getTime(), getString(R.string.date_format)));
+            Log.d(TAG, "ResetDateTimeUI -->" + resYear + "/" + resMonth + "/" + resDay + "/" + resTime + "/" + resultTime);
+
+            tvTime.setText(DateUtils.timeStamp2Date(resTime, getString(R.string.date_format)));
         }
     }
 
