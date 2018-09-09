@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.calendar.widget.calendar.OnCalendarClickListener;
 import com.example.calendar.widget.calendar.month.MonthCalendarView;
@@ -110,24 +111,34 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
         public void afterTextChanged(Editable s) {
             if (s.length() == 2) {
                 //시만 입력.
-                Log.d(TAG, "s.length -> " + s.length());
-                Integer hour = Integer.parseInt(s.toString());
-                //23 이상 숫자입력불가능.
-                if (hour > 23) {
-                    etTime.removeTextChangedListener(mTextWatcher);
-                    etTime.setText(String.valueOf(s.charAt(0)));
+                Log.d(TAG, "s.length -> " + s.toString());
+                if (isNumber(s.toString())) {
+                    Integer hour = Integer.parseInt(s.toString());
 
-                    etTime.setSelection(etTime.getText().length());
-                    etTime.addTextChangedListener(mTextWatcher);
+                    //23 이상 숫자입력불가능.
+                    if (hour > 23) {
+                        etTime.removeTextChangedListener(mTextWatcher);
+                        etTime.setText(String.valueOf(s.charAt(0)));
+
+                        etTime.setSelection(etTime.getText().length());
+                        etTime.addTextChangedListener(mTextWatcher);
+                    }
+                } else {
+                    Toast.makeText(getContext(), "숫자만 입력하세요.", Toast.LENGTH_LONG).show();
                 }
             } else if (s.length() == 5) {
-                Integer min = Integer.parseInt(String.format("%s%s", s.charAt(3), s.charAt(4)));
-                //59 이상 분입력불가
-                if (min > 59) {
-                    etTime.removeTextChangedListener(mTextWatcher);
-                    etTime.setText(s.toString().substring(0, s.length() -1));
-                    etTime.setSelection(etTime.getText().length());
-                    etTime.addTextChangedListener(mTextWatcher);
+                Log.d(TAG, "s.resultLength -> " + s.toString());
+                if (isNumber(s.toString())) {
+                    Integer min = Integer.parseInt(String.format("%s%s", s.charAt(3), s.charAt(4)));
+                    //59 이상 분입력불가
+                    if (min > 59) {
+                        etTime.removeTextChangedListener(mTextWatcher);
+                        etTime.setText(s.toString().substring(0, s.length() - 1));
+                        etTime.setSelection(etTime.getText().length());
+                        etTime.addTextChangedListener(mTextWatcher);
+                    }
+                } else {
+                    Toast.makeText(getContext(), "숫자만 입력하세요..", Toast.LENGTH_LONG).show();
                 }
             } else if (s.length() > 5) {
                 etTime.removeTextChangedListener(mTextWatcher);
@@ -138,6 +149,9 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
         }
     };
 
+    public boolean isNumber(String str) {
+        return str.matches("[0-9][0-9]");
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -186,6 +200,8 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
                                 "yyyy-MM-dd HH");
                         Log.d(TAG, "little match --> " + mCurrentSelectYear + "--" + mCurrentSelectMonth + "--" + mCurrentSelectDay + "--"  + time);
                     } else {
+                        Log.d(TAG, "not not -->" +  mCurrentSelectYear + mCurrentSelectMonth + mCurrentSelectDay);
+
                         time = 0;
                     }
                 }
