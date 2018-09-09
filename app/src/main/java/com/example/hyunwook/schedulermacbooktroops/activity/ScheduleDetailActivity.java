@@ -302,10 +302,17 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         }
         resetDateTimeUi();
 
+//        location = mSchedule.getLocation();
+
+        Log.d(TAG, "location ->" + location);
         if (TextUtils.isEmpty(mSchedule.getLocation())) {
+            Log.d(TAG, "mSchedule location - >" + mSchedule.getLocation());
             tvLocation.setText(R.string.click_here_select_location);
         } else {
-            tvLocation.setText(mSchedule.getLocation());
+            Log.d(TAG, "mschedule location 2- >" + mSchedule.getLocation());
+            location = mSchedule.getLocation();
+            tvLocation.setText(location);
+
         }
 
 
