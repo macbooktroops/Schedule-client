@@ -66,16 +66,20 @@ public class LoginActivity extends Activity {
 
                     if (checkEmail(loginId)) {
                         Log.d(TAG, "이메일 형식입니다.");
-                        Boolean validation = loginValidation(loginId, loginPw);
+                        if (checkPassWord(loginPw)) {
+                            Boolean validation = loginValidation(loginId, loginPw);
 
-                        if (validation) {
-                            Log.d(TAG, "로그인 성공 ----");
-                            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            mainIntent.putExtra("SuccessLogin", "OK");
-                            startActivity(mainIntent);
-                            finish();
+                            if (validation) {
+                                Log.d(TAG, "로그인 성공 ----");
+                                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                mainIntent.putExtra("SuccessLogin", "OK");
+                                startActivity(mainIntent);
+                                finish();
+                            } else {
+
+                            }
                         } else {
-
+                            Toast.makeText(getApplicationContext(), "소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
                         }
                     } else {
                        Toast.makeText(getApplicationContext(), "이메일 형식이 아닙니다.", Toast.LENGTH_LONG).show();
@@ -195,5 +199,20 @@ public class LoginActivity extends Activity {
         Pattern p = Pattern.compile(mail);
         Matcher m = p.matcher(email);
         return m.matches();
+    }
+
+
+    /**
+     * 패스워드 유효성검사
+     * 특수문자, 숫자, 소문자 입력
+     * 정규식 (영문, 숫자, 특수문자 조합, 4~20자리)
+     */
+    private boolean checkPassWord(String password) {
+        String valiPass =  "^(?=.*\\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z]).{4,20}$";
+        Pattern pattern = Pattern.compile(valiPass);
+
+        Matcher matcher = pattern.matcher(password);
+
+        return matcher.matches();
     }
 }

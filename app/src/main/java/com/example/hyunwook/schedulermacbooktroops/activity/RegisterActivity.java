@@ -54,8 +54,13 @@ public class RegisterActivity extends Activity {
                 }
                 else {
                     if (checkEmail(strEmail)) {
-                        savePreferences();
+//                        savePreferences();
+                        if (checkPassWord(strPw)) {
+                            savePreferences();
 
+                        } else {
+                            Toast.makeText(getApplicationContext(), "소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), "이메일 형식이 아닙니다..", Toast.LENGTH_LONG).show();
                     }
@@ -91,4 +96,20 @@ public class RegisterActivity extends Activity {
         Matcher m = p.matcher(email);
         return m.matches();
     }
+
+    /**
+     * 패스워드 유효성검사
+     * 특수문자, 숫자, 소문자 입력
+     * 정규식 (영문, 숫자, 특수문자 조합, 4~20자리)
+     */
+    private boolean checkPassWord(String password) {
+        String valiPass =  "^(?=.*\\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z]).{4,20}$";
+        Pattern pattern = Pattern.compile(valiPass);
+
+        Matcher matcher = pattern.matcher(password);
+
+        return matcher.matches();
+    }
+
 }
+
