@@ -110,6 +110,7 @@ public class SelectDateDialog extends Dialog implements View.OnClickListener, On
         public void afterTextChanged(Editable s) {
             if (s.length() == 2) {
                 //시만 입력.
+                Log.d(TAG, "s.length -> " + s.length());
                 Integer hour = Integer.parseInt(s.toString());
                 //23 이상 숫자입력불가능.
                 if (hour > 23) {
