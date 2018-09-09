@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class RegisterActivity extends Activity {
     Button regBtn;
     EditText editEmail, editPw, editName, editPhone, editBirth;
@@ -50,7 +53,12 @@ public class RegisterActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "비어있는 항목을 채워주세요.", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    savePreferences();
+                    if (checkEmail(strEmail)) {
+                        savePreferences();
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "이메일 형식이 아닙니다..", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -67,8 +75,20 @@ public class RegisterActivity extends Activity {
         editor.putString("prefPhone", strPhone);
         editor.putString("prefBirth", strBirth);
 
+        Toast.makeText(getApplicationContext(), "회원 저장완료", Toast.LENGTH_LONG).show();
+
         editor.commit();
 
         finish();
+    }
+
+    /**
+     * 이메일 형식 체크
+     */
+    private boolean checkEmail(String email) {
+        String mail = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
+        Pattern p = Pattern.compile(mail);
+        Matcher m = p.matcher(email);
+        return m.matches();
     }
 }

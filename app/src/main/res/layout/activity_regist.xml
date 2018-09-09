@@ -17,6 +17,7 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/pwInput"
+        android:inputType="textPassword"
         android:hint="패스워드"
         android:layout_below="@+id/emailInput"/>
 

@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class LoginActivity extends Activity {
 
@@ -38,7 +41,6 @@ public class LoginActivity extends Activity {
         pref = getSharedPreferences("registInfo", Activity.MODE_PRIVATE);
         editor = pref.edit();
 
-
         idInput = (EditText) findViewById(R.id.idInput);
         pwInput = (EditText) findViewById(R.id.pwInput);
 
@@ -47,7 +49,6 @@ public class LoginActivity extends Activity {
         registBtn = (Button) findViewById(R.id.registBtn);
 
         loginBtn = (Button) findViewById(R.id.loginBtn);
-
 
         //로그인 버튼
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -60,18 +61,24 @@ public class LoginActivity extends Activity {
 
                 //입력한 아이디, 비밀번호가 등록된 자료인지..
                 if (loginId.equals("") || loginPw.equals("")) {
-                    Toast.makeText(getApplicationContext(), "아이디나 비밀번호가 비어있습니다..", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "아이디나 비밀번호가 비어있습니다.", Toast.LENGTH_LONG).show();
                 } else {
-                    Boolean validation = loginValidation(loginId, loginPw);
 
-                    if (validation) {
-                        Log.d(TAG, "로그인 성공 ----");
-                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        mainIntent.putExtra("SuccessLogin", "OK");
-                        startActivity(mainIntent);
-                        finish();
+                    if (checkEmail(loginId)) {
+                        Log.d(TAG, "이메일 형식입니다.");
+                        Boolean validation = loginValidation(loginId, loginPw);
+
+                        if (validation) {
+                            Log.d(TAG, "로그인 성공 ----");
+                            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            mainIntent.putExtra("SuccessLogin", "OK");
+                            startActivity(mainIntent);
+                            finish();
+                        } else {
+
+                        }
                     } else {
-
+                       Toast.makeText(getApplicationContext(), "이메일 형식이 아닙니다.", Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -123,6 +130,7 @@ public class LoginActivity extends Activity {
         String strAuto = pref.getString("prefAutoLogin", "");
         Log.d(TAG, "autoCheck -->" + strAuto);
 
+        Log.d(TAG, "id info --> " + pref.getString("prefEmail", "") + "////" + pref.getString("prefPw", ""));
         //기존에 자동로그인을 체크했을 경우 아이디 비밀번호 표시
         if (strAuto.equals("check")) {
             idInput.setText(pref.getString("prefEmail", ""));
@@ -139,6 +147,15 @@ public class LoginActivity extends Activity {
     }
 
     //check login info validate
+
+    /**
+     * SharedPreference 에 데이터가 없으면, 회원가입이 필요.
+     * SharedPreference 에 데이터가 있지만, 입력받은 정보랑 다르면 저장된 정보가 아니다.
+     * 같을 경우에만 true
+     * @param id
+     * @param pw
+     * @return
+     */
     private boolean loginValidation(String id, String pw) {
 
         pref.getString("prefEmail", "");
@@ -168,5 +185,15 @@ public class LoginActivity extends Activity {
             //login failed
             return false;
         }
+    }
+
+    /**
+     * 이메일 형식 체크
+     */
+    private boolean checkEmail(String email) {
+        String mail = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
+        Pattern p = Pattern.compile(mail);
+        Matcher m = p.matcher(email);
+        return m.matches();
     }
 }
