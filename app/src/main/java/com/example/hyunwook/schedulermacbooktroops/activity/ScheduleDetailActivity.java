@@ -78,6 +78,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     long resTime;
 
 
+
+
     //realm 에 time을 보기 편하게 변환
     private String HUMAN_TIME_FORMAT = "";
     private String resultTime;
@@ -289,12 +291,17 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     }
 
     private void setScheduleData() {
-        Log.d(TAG, "set eventid ==>" + mSchedule.getEventSetId());
-        vSchedule.setBackgroundResource(CalUtils.getEventSetColor(mSchedule.getColor()));//색상 설정
-        ivEventIcon.setImageResource(mSchedule.getEventSetId() == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon); //설정한 이벤트셋이 있다면.
+        Log.d(TAG, "set eventid ==>"+ mSchedule.getEventSetId());
+        eventSetId = mSchedule.getEventSetId();
+        eventColor =mSchedule.getColor();
+
+        vSchedule.setBackgroundResource(CalUtils.getEventSetColor(eventColor));//색상 설정
+        ivEventIcon.setImageResource(eventSetId == 0 ? R.mipmap.ic_detail_category : R.mipmap.ic_detail_icon); //설정한 이벤트셋이 있다면.
         etTitle.setText(mSchedule.getTitle());
         etDesc.setText(mSchedule.getDesc()); //자세한 내용
-        EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
+
+
+        EventSetR current = mEventSetsMap.get(eventSetId);
 
         Log.d(TAG, "SetSchedule Data -->"+ current);
         if (current != null) {
