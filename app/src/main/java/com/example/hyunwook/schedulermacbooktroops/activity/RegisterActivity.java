@@ -3,6 +3,7 @@ package com.example.hyunwook.schedulermacbooktroops.activity;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,8 @@ public class RegisterActivity extends Activity {
     EditText editEmail, editPw, editName, editPhone, editBirth;
 
     String strEmail, strPw, strName, strPhone, strBirth;
+
+    String base64Pw;
 
     static final String TAG = RegisterActivity.class.getSimpleName();
 
@@ -41,12 +44,15 @@ public class RegisterActivity extends Activity {
 
                 strEmail = editEmail.getText().toString();
                 strPw = editPw.getText().toString();
+
+//                strPw = getBase64encode(editPw.getText().toString()); //baas
+
                 strName = editName.getText().toString();
                 strPhone = editPhone.getText().toString();
                 strBirth = editBirth.getText().toString();
 
                 Log.d(TAG, "Regist info -->" + strEmail + "--" + strPw + "--" + strName
-                        + "--" + strPhone + "--" + strBirth);
+                        + "--" + strPhone + "--" + strBirth + "--" +base64Pw);
 
                 //id, pw, name, phone, birth 한개라도 비어있으면 토스트.
                 if (strEmail.equals("") || strPw.equals("") || strName.equals("") || strPhone.equals("") || strBirth.equals("")) {
@@ -56,10 +62,11 @@ public class RegisterActivity extends Activity {
                     if (checkEmail(strEmail)) {
 //                        savePreferences();
                         if (checkPassWord(strPw)) {
+                            base64Pw = getBase64encode(strPw); //base64
                             savePreferences();
 
                         } else {
-                            Toast.makeText(getApplicationContext(), "소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "패스워드에 소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "이메일 형식이 아닙니다..", Toast.LENGTH_LONG).show();
@@ -75,7 +82,7 @@ public class RegisterActivity extends Activity {
         SharedPreferences.Editor editor = pref.edit();
 
         editor.putString("prefEmail", strEmail);
-        editor.putString("prefPw", strPw);
+        editor.putString("prefPw", base64Pw);
         editor.putString("prefName", strName);
         editor.putString("prefPhone", strPhone);
         editor.putString("prefBirth", strBirth);
@@ -111,5 +118,12 @@ public class RegisterActivity extends Activity {
         return matcher.matches();
     }
 
+    /**
+     * Base64 인코딩(암호화) password
+     */
+
+    public static String getBase64encode(String content){
+        return Base64.encodeToString(content.getBytes(), 0);
+    }
 }
 

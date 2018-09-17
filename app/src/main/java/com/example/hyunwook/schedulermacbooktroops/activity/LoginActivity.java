@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -57,6 +58,9 @@ public class LoginActivity extends Activity {
 
                 loginId = idInput.getText().toString();
                 loginPw = pwInput.getText().toString();
+//                loginPw = getBase64encode(pwInput.getText().toString());
+
+                Log.d(TAG, "loginPw base64 ->" + loginPw);
 
 
                 //입력한 아이디, 비밀번호가 등록된 자료인지..
@@ -79,7 +83,7 @@ public class LoginActivity extends Activity {
 
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "패스워드에 소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
                         }
                     } else {
                        Toast.makeText(getApplicationContext(), "이메일 형식이 아닙니다.", Toast.LENGTH_LONG).show();
@@ -134,13 +138,16 @@ public class LoginActivity extends Activity {
         String strAuto = pref.getString("prefAutoLogin", "");
         Log.d(TAG, "autoCheck -->" + strAuto);
 
-        Log.d(TAG, "id info --> " + pref.getString("prefEmail", "") + "////" + pref.getString("prefPw", ""));
+        String autoId = pref.getString("prefEmail", "");
+        String autoPw = getBase64decode(pref.getString("prefPw", ""));
+
+        Log.d(TAG, "id info --> " + autoId + "////" + autoPw);
         //기존에 자동로그인을 체크했을 경우 아이디 비밀번호 표시
         if (strAuto.equals("check")) {
-            idInput.setText(pref.getString("prefEmail", ""));
-            pwInput.setText(pref.getString("prefPw", ""));
+            idInput.setText(autoId);
+            pwInput.setText(autoPw);
             autoCheck.setChecked(true);
-        } else if (pref.getString("prefEmail", "").equals("") || pref.getString("prefPw", "").equals("")) {
+        } else if (autoId.equals("") || autoPw.equals("")) {
             Log.d(TAG, "서버에 저장된 정보가 없어 자동로그인을 체크가 불가능합니다..");
             autoCheck.setEnabled(false);
         } else {
@@ -156,31 +163,33 @@ public class LoginActivity extends Activity {
      * SharedPreference 에 데이터가 없으면, 회원가입이 필요.
      * SharedPreference 에 데이터가 있지만, 입력받은 정보랑 다르면 저장된 정보가 아니다.
      * 같을 경우에만 true
+     *
+     * Base64로 인코딩된 암호를 한번 디코딩 작업을 한 후, 입력받은 패스워드와 비교.
      * @param id
      * @param pw
      * @return
      */
     private boolean loginValidation(String id, String pw) {
 
-        pref.getString("prefEmail", "");
-        pref.getString("prefPw", "");
+//        pref.getString("prefEmail", "");
+//        pref.getString("prefPw", "");
 
         String idt = pref.getString("prefEmail", "");
         String pwt = pref.getString("prefPw", "");
 
-        Log.d(TAG, "idt --->" + idt + "--" + pwt);
+        String base64pw = getBase64decode(pwt);
+        Log.d(TAG, "idt --->" + idt + "--" + pwt + "--" + base64pw);
         //Preference 에 저장된 정보가 없어 검사를 할 수없을 경우 (최초)
-        if (pref.getString("prefEmail", "").equals("") || pref.getString("prefPw", "").equals("")) {
+        if (idt.equals("") || base64pw.equals("")) {
             Log.d(TAG, "회원가입이 필요합니다..");
             Toast.makeText(this, "회원가입이 필요합니다.", Toast.LENGTH_LONG).show();
             return false;
         }
         //입력받은 id,pw와 저장된 id,pw 같을경우
-        else if (pref.getString("prefEmail", "").equals(id) && pref.getString("prefPw", "").equals(pw)) {
+        else if (idt.equals(id) && base64pw.equals(pw)) {
             //login success
             return true;
-        } else if (pref.getString("prefEmail", "") != id ||
-                pref.getString("prefPw", "") != pw) {
+        } else if (idt != id || base64pw != pw) {
             //저장 된 정보랑 다를 경우
             Log.d(TAG, "저장 된 정보가 아닙니다..");
             Toast.makeText(this, "저장 된 정보가 아닙니다.", Toast.LENGTH_LONG).show();
@@ -214,5 +223,16 @@ public class LoginActivity extends Activity {
         Matcher matcher = pattern.matcher(password);
 
         return matcher.matches();
+    }
+
+    /**
+     * Base64 디코딩(해독) password
+     * @param content
+     * @return
+     */
+    public static String getBase64decode(String content){
+
+        return new String(Base64.decode(content, 0));
+
     }
 }
