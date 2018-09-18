@@ -19,5 +19,5 @@ public interface HolidayService {
 //    @GET("{year}")
     @GET(HolidayUrl.HOLI_YEAR)
 //    Call<ArrayList<JsonObject>> getHolidayInfo(@Path("year") String year);
-    Call<Holiday> requestHoliInfo(@Path(HolidayUrl.HOLI_PATH) String year);
+    Call<Holiday> requestHoliInfo(@Path(HolidayUrl.HOLI_PATH) int year);
 }

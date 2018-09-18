@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,9 @@ import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RetrofitHoliday;
+import com.example.hyunwook.schedulermacbooktroops.holiday.model.Holiday;
+import com.example.hyunwook.schedulermacbooktroops.holiday.presenter.MainPresenter;
+import com.example.hyunwook.schedulermacbooktroops.holiday.presenter.view.MainPresenterView;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRTask;
 import com.google.gson.JsonObject;
 
@@ -48,7 +52,7 @@ import retrofit2.Response;
  * Main
  *
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>> {
+public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, MainPresenterView {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -78,6 +82,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
     public static int ADD_EVENT_SET_CODE = 1;
     private long[] mNotes = new long[2]; //back button save.
+
+    private MainPresenter mainPresenter;
+    private ProgressBar mProgressBar;
+
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
@@ -91,10 +99,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         realm = Realm.getDefaultInstance();
 
         /**
-         * Retrofit 초기화
+         * Retrofit Presenter
          */
-
-        Call<ArrayList<JsonObject>> holiday = RetrofitHoliday.getInstance().getService().getHolidayInfo("2018");
+        mainPresenter = new MainPresenter(this);
+    /*    Call<Holiday> holiday = RetrofitHoliday.getInstance().getService().requestHoliInfo("2018");
         holiday.enqueue(new Callback<ArrayList<JsonObject>> () {
             @Override
             public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
@@ -106,8 +114,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
                 Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
 
+    mainPresenter.onRequestHoliday(2018);
         //각각 클릭 리스너 적용
         searchViewById(R.id.imgBtnMain).setOnClickListener(this);
         searchViewById(R.id.linearMenuSchedule).setOnClickListener(this);
@@ -409,4 +418,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
     }
+
+    //Retrofit implement
+    @Override
+    public void onSearch(boolean isSearch, String message, String user) {
+        Log.d(TAG, "onSearch ----");
+    }
+
+
+
 }
