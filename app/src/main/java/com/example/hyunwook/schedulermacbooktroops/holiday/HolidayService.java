@@ -1,5 +1,9 @@
 package com.example.hyunwook.schedulermacbooktroops.holiday;
 
+import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -9,8 +13,8 @@ import retrofit2.http.Path;
  * API Method 방식, Path정의
  * http://schedule.mactroops.com:3000/v1/holiday/2018
  */
-public interface ApiService {
+public interface HolidayService {
 
-    @GET("v1/holiday/{path}")
-    Call holidayInfo(@Path("path") String path);
+    @GET("{year}")
+    Call<ArrayList<JsonObject>> getHolidayInfo(@Path("year") String year);
 }

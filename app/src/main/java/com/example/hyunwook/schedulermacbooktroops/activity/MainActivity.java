@@ -23,23 +23,28 @@ import android.widget.Toast;
 
 import com.example.common.base.app.BaseActivity;
 import com.example.common.base.app.BaseFragment;
-import com.example.common.bean.EventSet;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.EventSetR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
+import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayService;
+import com.example.hyunwook.schedulermacbooktroops.holiday.RetrofitHoliday;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetTask;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.BrokenBarrierException;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 18-05-24
@@ -87,6 +92,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         rvEventSetList = searchViewById(R.id.rvEventSetList);
 
         realm = Realm.getDefaultInstance();
+
+        /**
+         * Retrofit 초기화
+         */
+
+        Call<ArrayList<JsonObject>> holiday = RetrofitHoliday.getInstance().getService().getHolidayInfo("2018");
+        holiday.enqueue(new Callback<ArrayList<JsonObject>> () {
+            @Override
+            public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+                Toast.makeText(MainActivity.this, response.body().toString(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "result retrofit ->" + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+                Toast.makeText(MainActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
         //각각 클릭 리스너 적용
         searchViewById(R.id.imgBtnMain).setOnClickListener(this);
         searchViewById(R.id.linearMenuSchedule).setOnClickListener(this);
