@@ -29,7 +29,6 @@ import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
-import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayService;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RetrofitHoliday;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRTask;
 import com.google.gson.JsonObject;
@@ -43,8 +42,6 @@ import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 18-05-24
