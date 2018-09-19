@@ -14,9 +14,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
+import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LoginActivity extends Activity {
@@ -51,6 +58,22 @@ public class LoginActivity extends Activity {
 
         loginBtn = (Button) findViewById(R.id.loginBtn);
 
+        /**
+         * Retrofit Holiday 로그인하기전에 실행
+         */
+
+        Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(2018);
+        res.enqueue(new Callback<ArrayList<JsonObject>>() {
+            @Override
+            public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+                Log.d(TAG, "Retrofit --->" + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+                Log.d(TAG, "Fail...");
+            }
+        });
         //로그인 버튼
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
