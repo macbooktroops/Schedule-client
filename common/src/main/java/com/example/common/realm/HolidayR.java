@@ -9,7 +9,6 @@ import io.realm.annotations.PrimaryKey;
  */
 public class HolidayR extends RealmObject {
 
-    @PrimaryKey
     private int id;
 
     private int year;

@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.common.realm.HolidayR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,6 +52,7 @@ public class LoginActivity extends Activity {
 
     static final String TAG = LoginActivity.class.getSimpleName();
 
+    Realm realm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +70,9 @@ public class LoginActivity extends Activity {
 
         loginBtn = (Button) findViewById(R.id.loginBtn);
 
+        realm = Realm.getDefaultInstance();
+
+
         /**
          * Retrofit Holiday 로그인하기전에 실행
          * 인터넷 연결 확인필
@@ -74,32 +81,70 @@ public class LoginActivity extends Activity {
         Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(2018);
         res.enqueue(new Callback<ArrayList<JsonObject>>() {
             @Override
-            public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+            public void onResponse(Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {
                 Log.d(TAG, "Retrofit --->" + response.body().toString());
-                try {
-
                     /**
-                     * Use gson json parsing.
+                     * 이미 해당 연도 공휴일이 HolidayR Table에 있다면 실행하지않음.
                      */
-                    Gson gson = new Gson();
-                    JSONArray jsonArray = new JSONArray(response.body().toString());
-                    Type list = new TypeToken<List<HolidayJsonData>>() {
-                    }.getType();
-                     List<HolidayJsonData> holidayList = gson.fromJson(jsonArray.toString(), list);
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            Log.d(TAG, "Holiday Check ----");
+                            RealmResults<HolidayR> holidayRS = realm.where(HolidayR.class).findAll();
+                            Log.d(TAG, "holidayRS size ->" + holidayRS.size());
 
-                     Log.d(TAG, "holidayList ->" + holidayList.size());
 
-                     //print
-                     for (HolidayJsonData resHoliday : holidayList) {
-                         Log.d(TAG, "holiday data id -> " + resHoliday.id);
-                         Log.d(TAG, "holiday data year " + resHoliday.year);
-                         Log.d(TAG, "holiday data month" + resHoliday.month);
-                         Log.d(TAG, "holiday data day " + resHoliday.day);
-                         Log.d(TAG, "holiday data name" + resHoliday.name);
-                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                            if (holidayRS.size() == 0) {
+                                //HolidayR Table 없음
+                                /**
+                                 * Use gson json parsing.
+                                 */
+                                try {
+                                    Gson gson = new Gson();
+                                    JSONArray jsonArray = new JSONArray(response.body().toString());
+                                    Type list = new TypeToken<List<HolidayJsonData>>() {
+                                    }.getType();
+                                    List<HolidayJsonData> holidayList = gson.fromJson(jsonArray.toString(), list);
+
+
+                                    Log.d(TAG, "holidayList ->" + holidayList.size());
+
+                                 /*   Number currentIdNum = realm.where(HolidayR.class).max("seq");
+
+                                    int nextId;
+
+                                    if (currentIdNum == null) {
+                                        nextId = 0;
+                                    } else {
+                                        nextId = currentIdNum.intValue() + 1;
+                                    }*/
+                                    Log.d(TAG, "Holiday Insert Realm ....");
+                                    //print
+                                    for (HolidayJsonData resHoliday : holidayList) {
+                                        HolidayR holidayR = realm.createObject(HolidayR.class);
+
+                                        Log.d(TAG, "holiday data id -> " + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
+
+                                        holidayR.setId(resHoliday.id);
+                                        holidayR.setYear(resHoliday.year);
+                                        holidayR.setMonth(resHoliday.month);
+                                        holidayR.setDay(resHoliday.day);
+                                        holidayR.setName(resHoliday.name);
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                Log.d(TAG, "exist HolidayR");
+                            }
+                        }
+                    });
+
+
+
+
+
             }
 
             @Override
