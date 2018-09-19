@@ -14,10 +14,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,6 +68,7 @@ public class LoginActivity extends Activity {
 
         /**
          * Retrofit Holiday 로그인하기전에 실행
+         * 인터넷 연결 확인필
          */
 
         Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(2018);
@@ -67,6 +76,30 @@ public class LoginActivity extends Activity {
             @Override
             public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
                 Log.d(TAG, "Retrofit --->" + response.body().toString());
+                try {
+
+                    /**
+                     * Use gson json parsing.
+                     */
+                    Gson gson = new Gson();
+                    JSONArray jsonArray = new JSONArray(response.body().toString());
+                    Type list = new TypeToken<List<HolidayJsonData>>() {
+                    }.getType();
+                     List<HolidayJsonData> holidayList = gson.fromJson(jsonArray.toString(), list);
+
+                     Log.d(TAG, "holidayList ->" + holidayList.size());
+
+                     //print
+                     for (HolidayJsonData resHoliday : holidayList) {
+                         Log.d(TAG, "holiday data id -> " + resHoliday.id);
+                         Log.d(TAG, "holiday data year " + resHoliday.year);
+                         Log.d(TAG, "holiday data month" + resHoliday.month);
+                         Log.d(TAG, "holiday data day " + resHoliday.day);
+                         Log.d(TAG, "holiday data name" + resHoliday.name);
+                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class HolidayJsonData {
 
+    @SerializedName("id")
+    public int id;
     @SerializedName("year")
     public int year;
 
