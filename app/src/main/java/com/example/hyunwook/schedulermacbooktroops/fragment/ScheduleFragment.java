@@ -143,6 +143,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     @Override
     public void onClickDate(int year, int month, int day) {
         setCurrentSelectDate(year, month, day);
+        Log.d(TAG, "onClickDate -------");
         resetScheduleList();
     }
 
