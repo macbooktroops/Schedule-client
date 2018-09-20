@@ -145,6 +145,7 @@ public class LoginActivity extends Activity {
                                         holidayR.setTitle(resHoliday.name);
                                         holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
                                         holidayR.setColor(-1); //공휴일 하늘색.
+                                        holidayR.setState(-1); //상태 -1 (좌측 노란색)
                                     }
 
                                 } catch (JSONException e) {

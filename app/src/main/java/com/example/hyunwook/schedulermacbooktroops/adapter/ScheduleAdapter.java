@@ -106,13 +106,21 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
 
             if (schedule.getState() == 0) {
+                Log.d(TAG, "State 0");
                 viewHolder.tvScheduleState.setBackgroundResource(R.drawable.start_schedule_hint);
                 viewHolder.tvScheduleState.setText(mContext.getString(R.string.start));
                 viewHolder.tvScheduleState.setTextColor(mContext.getResources().getColor(R.color.color_schedule_start));
-            } else {
+            } else if (schedule.getState() == 1){
+                Log.d(TAG, "State 1");
                 viewHolder.tvScheduleState.setBackgroundResource(R.drawable.finish_schedule_hint);
                 viewHolder.tvScheduleState.setText(mContext.getString(R.string.finish));
                 viewHolder.tvScheduleState.setTextColor(mContext.getResources().getColor(R.color.color_schedule_finish));
+            } else if (schedule.getState() == -1) {
+                Log.d(TAG, "State -1");
+                viewHolder.tvScheduleState.setBackgroundResource(R.drawable.holiday_schedule_hint);
+                viewHolder.tvScheduleState.setText(mContext.getString(R.string.holiday));
+                viewHolder.tvScheduleState.setTextColor(mContext.getResources().getColor(R.color.color_holiday_view));
+
             }
 
             //상태 클릭시 (시작 , 종료)
@@ -306,6 +314,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         notifyDataSetChanged();
 
                         break;
+
+                    case -1:
+                        Log.d(TAG, "holiday check.");
                 }
             }
         });
