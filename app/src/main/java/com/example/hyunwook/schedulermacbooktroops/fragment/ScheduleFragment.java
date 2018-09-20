@@ -296,7 +296,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         scheduleLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
-                scheduleLayout.getMonthCalendar().getCurrentMonthView().clickThisMonth(year, month, day);
+                Log.d(TAG, "year select ->" + month);
+                scheduleLayout.getMonthCalendar().getCurrentMonthView().clickThisMonth(year, month -1, day);
             }
         }, 100);
         mTime = time;
