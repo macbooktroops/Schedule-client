@@ -27,7 +27,11 @@ import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.Observable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,7 +83,17 @@ public class LoginActivity extends Activity {
          * 인터넷 연결 확인필
          */
 
-        Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(2018);
+        int nYear;
+
+        Calendar calendar = new GregorianCalendar(Locale.KOREA);
+        nYear = calendar.get(Calendar.YEAR);
+
+
+        Log.d(TAG, "check this year ->" + nYear);
+
+        Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
+//        android.database.Observable.
+//        io.reactivex.Observable.combineLatest()
         res.enqueue(new Callback<ArrayList<JsonObject>>() {
             @Override
             public void onResponse(Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {

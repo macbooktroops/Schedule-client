@@ -17,7 +17,7 @@
 - DetailActivity 에서 날짜 선택 후 오른쪽 상단에 완료버튼을 누르지않아도
   수정 날짜로 변경되는 오류  --완료
 
-- ScheduleFragment에서 시작날짜 설정 후 완료누르면 +1 월 되는 문제 
+- ScheduleFragment에서 시작날짜 설정 후 완료누르면 +1 월 되는 문제  --완료
   (2018-09-09)
 
 - SelectDateDialog로 날짜 설정 시에 시작시간이 기본으로 AM 09:00 으로 들어감
