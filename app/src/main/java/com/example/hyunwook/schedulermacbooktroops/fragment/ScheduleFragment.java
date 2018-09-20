@@ -2,7 +2,6 @@ package com.example.hyunwook.schedulermacbooktroops.fragment;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,38 +14,25 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.example.calendar.widget.calendar.OnCalendarClickListener;
 import com.example.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.example.common.base.app.BaseFragment;
-import com.example.common.bean.Schedule;
-import com.example.common.data.ScheduleRealm;
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.RealmArrayList;
 import com.example.common.realm.ScheduleR;
 import com.example.common.util.DeviceUtils;
 import com.example.common.util.ToastUtils;
 import com.example.hyunwook.schedulermacbooktroops.R;
-
-
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
-
-import com.example.common.base.app.BaseFragment;
-import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
 import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.adapter.ScheduleAdapter;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectDateDialog;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.schedule.AddScheduleTask;
 import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleRTask;
-import com.example.hyunwook.schedulermacbooktroops.task.schedule.LoadScheduleTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -227,7 +213,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     //스케줄 작성 전 시작 시간을 적을 수 있는 다이얼로그.
     private void showSelectDateDialog() {
-//        Log.d(TAG, "mCurrent all -->" + mCurrentSelectYear)
+        Log.d(TAG, "scheduleFrags -> " + mCurrentSelectMonth);
          new SelectDateDialog(mActivity, this, mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay,
                  scheduleLayout.getMonthCalendar().getCurrentItem()).show();
     }
