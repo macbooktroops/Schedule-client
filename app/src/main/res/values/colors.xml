@@ -44,6 +44,7 @@
     <color name="color_schedule_green">#84C5A3</color>
     <color name="color_schedule_blue">#679BE4</color>
     <color name="color_schedule_finish_title_text">#7F838F</color>
+    <color name="color_schedule_holiday">#58D3F7</color>
 
     <color name="color_schedule_start">#3D81E2</color>
 

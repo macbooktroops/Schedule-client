@@ -1,7 +1,6 @@
 package com.example.hyunwook.schedulermacbooktroops.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,12 +9,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.common.base.app.BaseFragment;
 import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
-import com.example.hyunwook.schedulermacbooktroops.activity.ScheduleDetailActivity;
 import com.example.hyunwook.schedulermacbooktroops.dialog.ConfirmDialog;
-import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 import com.example.hyunwook.schedulermacbooktroops.utils.CalUtils;
 import com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView;
 
@@ -97,6 +93,8 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final ScheduleViewHolder viewHolder = (ScheduleViewHolder) holder;
 
             Log.d(TAG, "Schedule bind --> " +schedule.getTitle());
+
+
             viewHolder.vScheduleHintBlock.setBackgroundResource(CalUtils.getScheduleBlockView(schedule.getColor()));;
             viewHolder.tvScheduleTitle.setText(schedule.getTitle());
 

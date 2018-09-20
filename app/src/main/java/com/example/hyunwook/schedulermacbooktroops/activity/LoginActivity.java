@@ -13,8 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.common.realm.EventSetR;
-import com.example.common.realm.HolidayR;
+
 import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
@@ -145,7 +144,7 @@ public class LoginActivity extends Activity {
                                         holidayR.setDay(resHoliday.day);
                                         holidayR.setTitle(resHoliday.name);
                                         holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
-                                        holidayR.setColor(0);
+                                        holidayR.setColor(-1); //공휴일 하늘색.
                                     }
 
                                 } catch (JSONException e) {
