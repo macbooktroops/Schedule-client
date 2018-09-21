@@ -180,10 +180,6 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     schedule.setState(0);
                     schedule.setTime(mTime);
                     schedule.sethTime(resultTime);
-
-                    Log.d(TAG, "onSelect add ->" + mTime + "-"  +resultTime);
-
-
                     schedule.setYear(mCurrentSelectYear);
                     schedule.setMonth(mCurrentSelectMonth +1);
                     schedule.setDay(mCurrentSelectDay);
@@ -304,19 +300,10 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 scheduleLayout.getMonthCalendar().getCurrentMonthView().clickThisMonth(year, month -1, day);
             }
         }, 100);
-
-        Log.d(TAG, "onSelectDate ->" + time);
         mTime = time;
 
         SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
-
-        if (mTime == 0) {
-            resultTime = null;
-        } else {
-            resultTime = sdf.format(mTime);
-        }
-
-        Log.d(TAG, "onSelectDate resultTime->" + resultTime);
+        resultTime = sdf.format(mTime);
 
 
     }

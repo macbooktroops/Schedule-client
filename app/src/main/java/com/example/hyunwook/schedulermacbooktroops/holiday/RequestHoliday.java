@@ -1,7 +1,5 @@
 package com.example.hyunwook.schedulermacbooktroops.holiday;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -12,18 +10,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RequestHoliday {
 
     private static RequestHoliday ourInstance = new RequestHoliday();
-
-
     public static RequestHoliday getInstance() {
         return ourInstance;
     }
 
     private RequestHoliday() {
-       /* HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
-        OkHttpClient okhttp = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-        new Retrofit.Build().client(okhttp);*/
     }
 
     //http://schedule.mactroops.com/v1/holidays?year=2018

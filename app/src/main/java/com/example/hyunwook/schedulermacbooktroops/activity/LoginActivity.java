@@ -102,7 +102,7 @@ public class LoginActivity extends Activity {
                 .subscribeOn( listOfUsers -> {
 
                 })*/
-     /*   Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
+        Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
 //        android.database.Observable.
 
 //        io.reactivex.Observable.combineLatest()
@@ -110,9 +110,9 @@ public class LoginActivity extends Activity {
             @Override
             public void onResponse(Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {
                 Log.d(TAG, "Retrofit --->" + response.body().toString());
-                    *//**
+                    /**
                      * ScheduleR Table에 eventSetId가 '-1'이면 공휴일로 판단.
-                     *//*
+                     */
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
@@ -125,9 +125,9 @@ public class LoginActivity extends Activity {
 
                             if (holidayRS.size() == 0) {
                                 //ScheduleR Table 에 공휴일정보가 저장이 되어있지않음.
-                                *//**
+                                /**
                                  * Use gson json parsing.
-                                 *//*
+                                 */
                                 try {
                                     Gson gson = new Gson();
                                     JSONArray jsonArray = new JSONArray(response.body().toString());
@@ -138,7 +138,7 @@ public class LoginActivity extends Activity {
 
                                     Log.d(TAG, "holidayList ->" + holidayList.size());
 
-                                 *//*   Number currentIdNum = realm.where(HolidayR.class).max("seq");
+                                 /*   Number currentIdNum = realm.where(HolidayR.class).max("seq");
 
                                     int nextId;
 
@@ -146,7 +146,7 @@ public class LoginActivity extends Activity {
                                         nextId = 0;
                                     } else {
                                         nextId = currentIdNum.intValue() + 1;
-                                    }*//*
+                                    }*/
                                     Log.d(TAG, "Holiday Insert Realm ....");
                                     //print
                                     for (HolidayJsonData resHoliday : holidayList) {
@@ -193,7 +193,7 @@ public class LoginActivity extends Activity {
             public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
                 Log.d(TAG, "Fail...");
             }
-        });*/
+        });
         //로그인 버튼
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
