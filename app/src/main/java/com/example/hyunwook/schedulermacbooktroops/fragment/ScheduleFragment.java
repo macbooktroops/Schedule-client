@@ -303,8 +303,12 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         mTime = time;
 
         SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
-        resultTime = sdf.format(mTime);
 
+        if (mTime == 0) {
+            resultTime = null;
+        } else {
+            resultTime = sdf.format(mTime);
+        }
 
     }
 

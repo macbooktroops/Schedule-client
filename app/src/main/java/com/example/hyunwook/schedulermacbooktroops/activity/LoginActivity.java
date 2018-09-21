@@ -101,99 +101,99 @@ public class LoginActivity extends Activity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn( listOfUsers -> {
 
-                })*/
-        Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
-//        android.database.Observable.
-
-//        io.reactivex.Observable.combineLatest()
-        res.enqueue(new Callback<ArrayList<JsonObject>>() {
-            @Override
-            public void onResponse(Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {
-                Log.d(TAG, "Retrofit --->" + response.body().toString());
-                    /**
-                     * ScheduleR Table에 eventSetId가 '-1'이면 공휴일로 판단.
-                     */
-                    realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            Log.d(TAG, "Holiday Check ----");
-//                            RealmResults<HolidayR> holidayRS = realm.where(HolidayR.class).findAll();
-                            RealmResults<ScheduleR> holidayRS = realm.where(ScheduleR.class).equalTo("eventSetId", -1).findAll();
-
-                            Log.d(TAG, "holidayRS size ->" + holidayRS.size());
-
-
-                            if (holidayRS.size() == 0) {
-                                //ScheduleR Table 에 공휴일정보가 저장이 되어있지않음.
-                                /**
-                                 * Use gson json parsing.
-                                 */
-                                try {
-                                    Gson gson = new Gson();
-                                    JSONArray jsonArray = new JSONArray(response.body().toString());
-                                    Type list = new TypeToken<List<HolidayJsonData>>() {
-                                    }.getType();
-                                    List<HolidayJsonData> holidayList = gson.fromJson(jsonArray.toString(), list);
-
-
-                                    Log.d(TAG, "holidayList ->" + holidayList.size());
-
-                                 /*   Number currentIdNum = realm.where(HolidayR.class).max("seq");
-
-                                    int nextId;
-
-                                    if (currentIdNum == null) {
-                                        nextId = 0;
-                                    } else {
-                                        nextId = currentIdNum.intValue() + 1;
-                                    }*/
-                                    Log.d(TAG, "Holiday Insert Realm ....");
-                                    //print
-                                    for (HolidayJsonData resHoliday : holidayList) {
-
-                                        Number currentIdNum = realm.where(ScheduleR.class).max("seq");
-
-                                        int nextId;
-
-                                        if (currentIdNum == null) {
-                                            nextId = 0;
-                                        } else {
-                                            nextId = currentIdNum.intValue() + 1;
-                                        }
-                                        ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
-
-                                        Log.d(TAG, "holiday data id -> " + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
-
-//                                        holidayR.setId(resHoliday.id);
-                                        holidayR.setYear(resHoliday.year);
-                                        holidayR.setMonth(resHoliday.month);
-                                        holidayR.setDay(resHoliday.day);
-                                        holidayR.setTitle(resHoliday.name);
-                                        holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
-                                        holidayR.setColor(-1); //공휴일 하늘색.
-                                        holidayR.setState(-1); //상태 -1 (좌측 노란색)
-                                    }
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                Log.d(TAG, "exist HolidayR");
-                            }
-                        }
-                    });
-
-
-
-
-
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
-                Log.d(TAG, "Fail...");
-            }
-        });
+//                })*/
+//        Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
+////        android.database.Observable.
+//
+////        io.reactivex.Observable.combineLatest()
+//        res.enqueue(new Callback<ArrayList<JsonObject>>() {
+//            @Override
+//            public void onResponse(Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {
+//                Log.d(TAG, "Retrofit --->" + response.body().toString());
+//                    /**
+//                     * ScheduleR Table에 eventSetId가 '-1'이면 공휴일로 판단.
+//                     */
+//                    realm.executeTransaction(new Realm.Transaction() {
+//                        @Override
+//                        public void execute(Realm realm) {
+//                            Log.d(TAG, "Holiday Check ----");
+////                            RealmResults<HolidayR> holidayRS = realm.where(HolidayR.class).findAll();
+//                            RealmResults<ScheduleR> holidayRS = realm.where(ScheduleR.class).equalTo("eventSetId", -1).findAll();
+//
+//                            Log.d(TAG, "holidayRS size ->" + holidayRS.size());
+//
+//
+//                            if (holidayRS.size() == 0) {
+//                                //ScheduleR Table 에 공휴일정보가 저장이 되어있지않음.
+//                                /**
+//                                 * Use gson json parsing.
+//                                 */
+//                                try {
+//                                    Gson gson = new Gson();
+//                                    JSONArray jsonArray = new JSONArray(response.body().toString());
+//                                    Type list = new TypeToken<List<HolidayJsonData>>() {
+//                                    }.getType();
+//                                    List<HolidayJsonData> holidayList = gson.fromJson(jsonArray.toString(), list);
+//
+//
+//                                    Log.d(TAG, "holidayList ->" + holidayList.size());
+//
+//                                 /*   Number currentIdNum = realm.where(HolidayR.class).max("seq");
+//
+//                                    int nextId;
+//
+//                                    if (currentIdNum == null) {
+//                                        nextId = 0;
+//                                    } else {
+//                                        nextId = currentIdNum.intValue() + 1;
+//                                    }*/
+//                                    Log.d(TAG, "Holiday Insert Realm ....");
+//                                    //print
+//                                    for (HolidayJsonData resHoliday : holidayList) {
+//
+//                                        Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+//
+//                                        int nextId;
+//
+//                                        if (currentIdNum == null) {
+//                                            nextId = 0;
+//                                        } else {
+//                                            nextId = currentIdNum.intValue() + 1;
+//                                        }
+//                                        ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
+//
+//                                        Log.d(TAG, "holiday data id -> " + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
+//
+////                                        holidayR.setId(resHoliday.id);
+//                                        holidayR.setYear(resHoliday.year);
+//                                        holidayR.setMonth(resHoliday.month);
+//                                        holidayR.setDay(resHoliday.day);
+//                                        holidayR.setTitle(resHoliday.name);
+//                                        holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
+//                                        holidayR.setColor(-1); //공휴일 하늘색.
+//                                        holidayR.setState(-1); //상태 -1 (좌측 노란색)
+//                                    }
+//
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            } else {
+//                                Log.d(TAG, "exist HolidayR");
+//                            }
+//                        }
+//                    });
+//
+//
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+//                Log.d(TAG, "Fail...");
+//            }
+//        });
         //로그인 버튼
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
