@@ -330,8 +330,6 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
-
-
     private void changeScheduleItem(ScheduleR schedule) {
         int i = mSchedules.indexOf(schedule);
         Log.d(TAG, "changeSchedule --->" + i);

@@ -34,11 +34,11 @@ public class MonthCalendarView extends ViewPager implements OnMonthClickListener
         addOnPageChangeListener(mOnPageChangeListener);
     }
 
-    /**
-     * Attrs 속성 초기화
-     * @param context
-     * @param attrs
-     */
+//    /**
+//     * Attrs 속성 초기화
+//     * @param context
+//     * @param attrs
+
     private void initAttrs(Context context, AttributeSet attrs) {
         initMonthAdapter(context, context.obtainStyledAttributes(attrs, R.styleable.MonthCalendarView));
     }

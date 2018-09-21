@@ -16,10 +16,15 @@ import android.view.View;
 import com.example.calendar.R;
 import com.example.calendar.widget.calendar.CalendarUtils;
 import com.example.common.data.ScheduleDB;
+import com.example.common.realm.ScheduleR;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.jar.Attributes;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 18-05-27
@@ -65,6 +70,8 @@ public class MonthView extends View {
 
     private GestureDetector mGestureDetector; //터치 이벤트처
     static final String TAG = MonthView.class.getSimpleName();
+
+    Realm realm;
     public MonthView(Context context, int year, int month) {
         this(context, null, year, month);
     }
@@ -109,7 +116,7 @@ public class MonthView extends View {
             mLastOrNextMonthTextColor = array.getColor(R.styleable.MonthCalendarView_month_last_or_next_month_text_color, Color.parseColor("#ACA9BC")); //흑색 블루
 
             mLunarTextColor = array.getColor(R.styleable.MonthCalendarView_month_lunar_text_color, Color.parseColor("#ACA9BC")); //흑색 블루
-            mHolidayTextColor = array.getColor(R.styleable.MonthCalendarView_month_holiday_color, Color.parseColor("#A68BFF")); //보라색
+            mHolidayTextColor = array.getColor(R.styleable.MonthCalendarView_month_holiday_color, Color.parseColor("#04B404")); //보라색
 
             mDaySize = array.getInteger(R.styleable.MonthCalendarView_month_day_text_size, 13);
             mLunarTextSize = array.getInteger(R.styleable.MonthCalendarView_month_day_lunar_text_size, 8);
@@ -126,7 +133,7 @@ public class MonthView extends View {
             mCurrentDayColor = Color.parseColor("#FF8594");
             mHintCircleColor = Color.parseColor("#FE8595");
             mLastOrNextMonthTextColor = Color.parseColor("#ACA9BC");
-            mHolidayTextColor = Color.parseColor("#A68BFF");
+            mHolidayTextColor = Color.parseColor("#04B404");
             mDaySize = 13;
             mLunarTextSize = 8;
             mIsShowHint = true;
@@ -200,7 +207,10 @@ public class MonthView extends View {
     //그리기
     @Override
     protected void onDraw(Canvas canvas) {
+
         Log.d(TAG, "onDraw~~~");
+
+        realm = Realm.getDefaultInstance();
         initSize();
         clearData();
 
@@ -282,6 +292,36 @@ public class MonthView extends View {
         int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth); //해당 연월 일개수
         int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //해당 연월 1일 요일
 
+        Log.d(TAG, "check This Month -->" + mSelYear + "-" + mSelMonth);
+
+        //해당 연월에 공휴일 정보
+        final ArrayList arrHoliday = new ArrayList<>();
+//        ScheduleR holiSchedule;
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                /**
+                 * 해당 연월에 공휴일인 데이터 select
+                 */
+                RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                        .equalTo("eventSetId", -1).equalTo("year", mSelYear).equalTo("month", mSelMonth +1).findAll();
+
+                Log.d(TAG, "scheduleR result ->" + scheduleR.size());
+
+                for (ScheduleR holiSchedule : scheduleR) {
+                    Log.d(TAG, "info data ->" + holiSchedule.getTitle());
+                    Log.d(TAG, "info year month -> "+ holiSchedule.getYear() + "--" + holiSchedule.getMonth() + "--" + holiSchedule.getDay());
+
+                    arrHoliday.add(holiSchedule.getDay());
+                }
+
+                for (int i =0; i < arrHoliday.size(); i++ ) {
+                    Log.d(TAG, "arrHoliday result -> " +arrHoliday.get(i).toString());
+                }
+            }
+        });
         /**
          * monthDays = 30
          * 일요일1 ~ 토요일7
@@ -298,6 +338,8 @@ public class MonthView extends View {
             int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
 
             //선택날짜랑 dayString 이 같을경우.
+
+            Log.d(TAG, "dayResult -> " +dayString + "-" + mSelDay + "-" + mCurrDay);
             if (dayString.equals(String.valueOf(mSelDay))) {
                 int startRecX = mColumnSize * col;
                 Log.d(TAG, "drawThisMonth startRecX -->" + startRecX);
@@ -311,6 +353,7 @@ public class MonthView extends View {
                 int endRecY = startRecY + mRowSize;
                 Log.d(TAG, "drawThisMOnth endRecY -->" + endRecY);
 
+
                 if (mSelYear == mCurrYear && mSelMonth == mCurrMonth && day + 1 == mCurrDay) {
                     mPaint.setColor(mSelectBGTodayColor);
                 } else {
@@ -321,6 +364,8 @@ public class MonthView extends View {
                 mWeekRow = row + 1;
             }
 
+
+
             if (dayString.equals(String.valueOf(mSelDay))) {
                 selectedPoint[0] = row;
                 selectedPoint[1] = col;
@@ -329,7 +374,15 @@ public class MonthView extends View {
                 //day가 현재날짜랑 같을 경우?
             } else if (dayString.equals(String.valueOf(mCurrDay)) && mCurrDay != mSelDay && mCurrMonth == mSelMonth && mCurrYear == mSelYear) {
                 mPaint.setColor(mCurrentDayColor);
-            } else {
+            } else if (dayString.equals(String.valueOf(25))) {
+                Log.d(TAG, "holiday preview");
+                Log.d(TAG, "array -> " + arrHoliday.get(0).toString());
+                mPaint.setColor(Color.GREEN);
+            }
+            //공휴일 색깔은 진한 초록? 색으로 표시
+//            else if () {
+
+            else {
                 mPaint.setColor(mNormalDayColor);
             }
             canvas.drawText(dayString, startX, startY, mPaint);
