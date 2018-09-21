@@ -27,6 +27,7 @@ import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -35,6 +36,8 @@ import java.util.Observable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit2.Call;
@@ -90,9 +93,18 @@ public class LoginActivity extends Activity {
 
 
         Log.d(TAG, "check this year ->" + nYear);
+/*
+        io.reactivex.Observable.zip(RequestHoliday.getInstance().getService().getListHoliday(nYear -1), RequestHoliday.getInstance().getService().getListHoliday(nYear), RequestHoliday.getInstance().getService().getListHoliday(nYear +1), (u1,  u2, u3) -> {
+            return Arrays.asList(u1, u2, u3);
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn( listOfUsers -> {
 
+                })*/
         Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
 //        android.database.Observable.
+
 //        io.reactivex.Observable.combineLatest()
         res.enqueue(new Callback<ArrayList<JsonObject>>() {
             @Override
