@@ -246,12 +246,12 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         eventSet.setName(getString(R.string.menu_no_category));
 
         mEventSetsMap.put(eventSet.getSeq(), eventSet);
-        Log.d(TAG, "eventset result ->" + eventSet.getSeq());
 //        EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
         EventSetR current = mEventSetsMap.get(mSchedule.getEventSetId());
-        Log.d(TAG, "mschedule --->" + mSchedule.getEventSetId());
-        Log.d(TAG, "current ->" + current.getName() + "--" + current.getSeq());
+//        Log.d(TAG, "mschedule --->" + mSchedule.getEventSetId());
+//        Log.d(TAG, "current ->" + current.getName() + "--" + current.getSeq());
 
+//        Log.d(TAG, "current -> " +current.getName());
         EventSetR titleEvent = realm.where(EventSetR.class).equalTo("seq", mSchedule.getEventSetId()).findFirst();
 
         if (current != null) {
@@ -260,6 +260,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             } else {
                 tvEventSet.setText(titleEvent.getName());
             }
+        } else if (current == null) {
+            tvEventSet.setText("공휴일");
         }
     }
 
