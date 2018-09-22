@@ -257,6 +257,8 @@ public class MonthView extends View {
     //이번연월 공휴일 얻기
     private void getHolidayInfo() {
         Log.d(TAG, "getHoliday");
+//        resultSeq = 0;
+
         if (isRealm) {
             Log.d(TAG, "execute Realm Holiday");
             realm = Realm.getDefaultInstance();
@@ -376,6 +378,7 @@ public class MonthView extends View {
         int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //해당 연월 1일 요일
 
         Log.d(TAG, "check This Month -->" + mSelYear + "-" + mSelMonth + "-"+ resultMinHoliday);
+        Log.d(TAG, "resultMinHoliday --->" +resultMinHoliday);
 
         //해당 연월에 공휴일 정보
 //        ScheduleR holiSchedule;
@@ -395,7 +398,6 @@ public class MonthView extends View {
             int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
 
             //선택날짜랑 dayString 이 같을경우.
-
             Log.d(TAG, "dayResult -> " +dayString + "-" + mSelDay + "-" + mCurrDay);
             if (dayString.equals(String.valueOf(mSelDay))) {
                 int startRecX = mColumnSize * col;
@@ -431,7 +433,10 @@ public class MonthView extends View {
                 //day가 현재날짜랑 같을 경우?
             } else if (dayString.equals(String.valueOf(mCurrDay)) && mCurrDay != mSelDay && mCurrMonth == mSelMonth && mCurrYear == mSelYear) {
                 mPaint.setColor(mCurrentDayColor);
-            } else if (dayString.equals(String.valueOf(resultMinHoliday))) {
+            }
+
+
+            if (dayString.equals(String.valueOf(resultMinHoliday))) {
 //                Log.d(TAG, "holiday preview");
 //                Log.d(TAG, "check holiday result " + newArrHoliday.size());
 
