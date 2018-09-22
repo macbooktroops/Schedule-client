@@ -20,7 +20,7 @@ public class RequestHoliday {
 
     //http://schedule.mactroops.com/v1/holidays?year=2018
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://schedule.mactroops.com/v1/holidays?year=")
+            .baseUrl("http://schedule.mactroops.com")
             .addConverterFactory(GsonConverterFactory.create())
             //.addConverterFactory(RxJavaCallA
             .build();

@@ -19,8 +19,8 @@ import retrofit2.http.Query;
 public interface RetrofitInterface {
 
     @Headers("Content-Type: application/json")
-    @GET("{year}")
-    Call<ArrayList<JsonObject>> getListHoliday(@Path("year") int year);
+    @GET("/v1/holidays?")
+    Call<ArrayList<JsonObject>> getListHoliday(@Query("year") int year);
 
 //    @GET("{year}")
 //    io.reactivex.Observable<JsonObject> getListHoliday(@Path("year") int year);
