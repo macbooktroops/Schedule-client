@@ -181,8 +181,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
                     holidayR.setId(1);
                     holidayR.setYear(2018);
-                    holidayR.setMonth(9);
-                    holidayR.setDay(18);
+                    holidayR.setMonth(10);
+                    holidayR.setDay(24);
                     holidayR.setTitle("공휴일 테스트");
                     holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
                     holidayR.setColor(-1); //공휴일 하늘색.
