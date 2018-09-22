@@ -20,6 +20,7 @@ import com.example.common.realm.ScheduleR;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.jar.Attributes;
 
@@ -72,6 +73,11 @@ public class MonthView extends View {
     static final String TAG = MonthView.class.getSimpleName();
 
     Realm realm;
+
+    int resultMinHoliday; //해당 연월에 공휴일 min
+    ArrayList<Integer> arrHoliday = new ArrayList<Integer>(); //해당 연월에 공휴일 ArrayList
+
+    private boolean isRealm = true; //최초 MonthView에만 실행
     public MonthView(Context context, int year, int month) {
         this(context, null, year, month);
     }
@@ -210,9 +216,10 @@ public class MonthView extends View {
 
         Log.d(TAG, "onDraw~~~");
 
-        realm = Realm.getDefaultInstance();
+
         initSize();
         clearData();
+        getHolidayInfo();
 
         drawLastMonth(canvas);
         int selected[] = drawThisMonth(canvas);
@@ -242,7 +249,73 @@ public class MonthView extends View {
         Log.d(TAG, "clearData =====");
         mDaysText = new int[6][7]; //6주//7일
         mHolidayOrLunarText = new String[6][7]; //음력도 6주//7일//
+    }
 
+
+    //이번연월 공휴일 얻기
+    private void getHolidayInfo() {
+        Log.d(TAG, "getHoliday");
+        if (isRealm) {
+            Log.d(TAG, "execute Realm Holiday");
+            realm = Realm.getDefaultInstance();
+            isRealm = false;
+        }
+
+        //해당 연월에 공휴일 정보
+//        final ArrayList<Integer> arrHoliday = new ArrayList<Integer>();
+//        ScheduleR holiSchedule;
+
+//         int resultMonth = mSelMonth +1;
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                /**
+                 * 해당 연월에 공휴일인 데이터 select
+                 */
+                RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                        .equalTo("eventSetId", -1).equalTo("year", mSelYear).equalTo("month", mSelMonth +1).findAll();
+
+                Log.d(TAG, "scheduleR result ->" + scheduleR.size());
+                Log.d(TAG, "month ----->" + (mSelMonth-1));
+//                mSelMonth -1;
+
+                for (ScheduleR holiSchedule : scheduleR) {
+                    Log.d(TAG, "info data ->" + holiSchedule.getTitle());
+                    Log.d(TAG, "info year month -> "+ holiSchedule.getYear() + "--" + holiSchedule.getMonth() + "--" + holiSchedule.getDay());
+
+                    arrHoliday.add(holiSchedule.getDay());
+                }
+
+                for (int i =0; i < arrHoliday.size(); i++ ) {
+                    Log.d(TAG, "arrHoliday result -> " +arrHoliday);
+                }
+//                int [] numbers = {10, 20, 30, 40, 50};
+//                int smallest = numbers[0];
+//                for(int x : numbers ){
+//                    if (x < smallest) {
+//                        smallest = x;
+//                    }
+//                }
+//                System.out.println(smallest);
+
+               if (scheduleR.size() == 0) {
+
+               } else {
+                   resultMinHoliday = Collections.min(arrHoliday);
+                   Log.d(TAG, "the smallist value ->" + resultMinHoliday);
+               }
+
+               arrHoliday.clear(); //작업 완료 시 클리어
+//                int smallest = arrHoliday.get(0);
+//                for (int x : arrHoliday) {
+//                    if (x < smallest) {
+//                        smallest = x;
+//                    }
+//                }
+//
+//                Log.d(TAG, "smalllist -->" + smallest);
+            }
+        });
 
     }
 
@@ -292,36 +365,10 @@ public class MonthView extends View {
         int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth); //해당 연월 일개수
         int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //해당 연월 1일 요일
 
-        Log.d(TAG, "check This Month -->" + mSelYear + "-" + mSelMonth);
+        Log.d(TAG, "check This Month -->" + mSelYear + "-" + mSelMonth + "-"+ resultMinHoliday);
 
         //해당 연월에 공휴일 정보
-        final ArrayList arrHoliday = new ArrayList<>();
 //        ScheduleR holiSchedule;
-
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-
-                /**
-                 * 해당 연월에 공휴일인 데이터 select
-                 */
-                RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
-                        .equalTo("eventSetId", -1).equalTo("year", mSelYear).equalTo("month", mSelMonth +1).findAll();
-
-                Log.d(TAG, "scheduleR result ->" + scheduleR.size());
-
-                for (ScheduleR holiSchedule : scheduleR) {
-                    Log.d(TAG, "info data ->" + holiSchedule.getTitle());
-                    Log.d(TAG, "info year month -> "+ holiSchedule.getYear() + "--" + holiSchedule.getMonth() + "--" + holiSchedule.getDay());
-
-                    arrHoliday.add(holiSchedule.getDay());
-                }
-
-                for (int i =0; i < arrHoliday.size(); i++ ) {
-                    Log.d(TAG, "arrHoliday result -> " +arrHoliday.get(i).toString());
-                }
-            }
-        });
         /**
          * monthDays = 30
          * 일요일1 ~ 토요일7
@@ -374,9 +421,9 @@ public class MonthView extends View {
                 //day가 현재날짜랑 같을 경우?
             } else if (dayString.equals(String.valueOf(mCurrDay)) && mCurrDay != mSelDay && mCurrMonth == mSelMonth && mCurrYear == mSelYear) {
                 mPaint.setColor(mCurrentDayColor);
-            } else if (dayString.equals(String.valueOf(25))) {
+            } else if (dayString.equals(String.valueOf(resultMinHoliday))) {
                 Log.d(TAG, "holiday preview");
-                Log.d(TAG, "array -> " + arrHoliday.get(0).toString());
+//                Log.d(TAG, "array -> " + arrHoliday.get(0).toString());
                 mPaint.setColor(Color.GREEN);
             }
             //공휴일 색깔은 진한 초록? 색으로 표시
