@@ -21,6 +21,8 @@ public class CalUtils {
     //eventSet 색깔 설정
     public static int getEventSetColor(int color) {
         switch (color) {
+            case -1:
+                return R.color.color_schedule_holiday;
             case 0:
                 return R.color.color_schedule_pink;
             case 1:
