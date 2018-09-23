@@ -170,8 +170,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         new LoadEventSetRTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 //        initHolidayEventSet();
+
+        /**
+         * 앱 실행 시, EventSetR에 해당 연도 공휴일 항목이 있는지 검사.
+         */
+
         InitHoliday initHoliday = new InitHoliday();
         initHoliday.initHolidayEventSet();
+
     }
 
     //RecyclerView 설정

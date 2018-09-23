@@ -87,7 +87,6 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
                 gotoEventSetFragment(eventSet); //해당 스케줄 분류 프레그먼트로.
             }
         });
-
     }
 
     private void showDeleteEventSetDialog(final EventSetR eventSet, final int position) {
@@ -116,13 +115,11 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
 
                         SystemClock.sleep(100);
 
-                            Log.d(TAG, "try delete eventset");
-                            removeItem(position);
-                            eventSet.deleteFromRealm();;
+                        Log.d(TAG, "try delete eventset");
+                        removeItem(position);
+                        eventSet.deleteFromRealm();
 //                            }
-
                     }
-
                 });
             }
         }).show();

@@ -178,23 +178,23 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     /**
                      * 공휴일 임시
                      */
-                    ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
-                    holidayR.setId(1);
-                    holidayR.setYear(2018);
-                    holidayR.setMonth(10);
-                    holidayR.setDay(24);
-                    holidayR.setTitle("공휴일 테스트");
-                    holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
-                    holidayR.setColor(-1); //공휴일 하늘색.
-                    holidayR.setState(-1); //상태 -1 (좌측 노란색)
-//                    ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-//                    schedule.setTitle(content);
-//                    schedule.setState(0);
-//                    schedule.setTime(mTime);
-//                    schedule.sethTime(resultTime);
-//                    schedule.setYear(mCurrentSelectYear);
-//                    schedule.setMonth(mCurrentSelectMonth +1);
-//                    schedule.setDay(mCurrentSelectDay);
+//                    ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
+//                    holidayR.setId(1);
+//                    holidayR.setYear(2018);
+//                    holidayR.setMonth(10);
+//                    holidayR.setDay(24);
+//                    holidayR.setTitle("공휴일 테스트");
+//                    holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
+//                    holidayR.setColor(-1); //공휴일 하늘색.
+//                    holidayR.setState(-1); //상태 -1 (좌측 노란색)
+                    ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                    schedule.setTitle(content);
+                    schedule.setState(0);
+                    schedule.setTime(mTime);
+                    schedule.sethTime(resultTime);
+                    schedule.setYear(mCurrentSelectYear);
+                    schedule.setMonth(mCurrentSelectMonth +1);
+                    schedule.setDay(mCurrentSelectDay);
 //
                     new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                         @Override
@@ -209,8 +209,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
                             }
                         }
-//                    }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    }, holidayR).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                    }, holidayR).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             });
 

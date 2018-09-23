@@ -49,38 +49,16 @@ public class InitHoliday {
                 EventSetR holidayE = realm.where(EventSetR.class).equalTo("name", nYear+"년 공휴일").findFirst();
                 Log.d(TAG, "check holidayE -> " +holidayE);
 
-                Number currentIdNum = realm.where(EventSetR.class).max("seq");
-                Log.d(TAG, "check currentIdNum -> " + currentIdNum);
-                int nextId;
-
-                if (currentIdNum == null) {
-                    nextId = 1;
-                } else {
-                    nextId = currentIdNum.intValue() + 1;
-                }
-
-
                 if (holidayE == null) {
                     //최초로 판단.
-                    EventSetR eventSet = realm.createObject(EventSetR.class, nextId);
+                    EventSetR eventSet = realm.createObject(EventSetR.class, -1);
                     eventSet.setName(nYear+ "년 공휴일");
-                    eventSet.setColor(Color.GREEN);
+                    eventSet.setColor(-1);
                     //execute Save EventSet AsyncTask
                     new AddEventSetRTask(mActivity.getApplicationContext(), new OnTaskFinishedListener<EventSetR>() {
                         @Override
                         public void onTaskFinished(EventSetR data) {
                             Log.d(TAG, "AddEventSetRTask holiday ->" + data.getName() + data.getColor());
-                            /**
-                             * Intent 전송 시
-                             * EventSetR 구분은 항상 seq
-                             */
-
-//                            if (eventSet != null) {
-//                                Log.d(TAG, "execute holiday eventSet");
-//                                mEventSetAdapter.insertItem(eventSet);
-//                            }
-//                            mActivity.setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data.getSeq()));
-//                            finish();
                         }
                     }, eventSet).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
