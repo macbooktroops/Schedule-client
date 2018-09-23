@@ -46,13 +46,13 @@ public class InitHoliday {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                EventSetR holidayE = realm.where(EventSetR.class).equalTo("name", nYear+"년 공휴일").findFirst();
+                EventSetR holidayE = realm.where(EventSetR.class).equalTo("name", "공휴일").findFirst();
                 Log.d(TAG, "check holidayE -> " +holidayE);
 
                 if (holidayE == null) {
                     //최초로 판단.
                     EventSetR eventSet = realm.createObject(EventSetR.class, -1);
-                    eventSet.setName(nYear+ "년 공휴일");
+                    eventSet.setName("공휴일");
                     eventSet.setColor(-1);
                     //execute Save EventSet AsyncTask
                     new AddEventSetRTask(mActivity.getApplicationContext(), new OnTaskFinishedListener<EventSetR>() {

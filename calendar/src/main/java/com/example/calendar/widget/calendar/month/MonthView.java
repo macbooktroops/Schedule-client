@@ -263,7 +263,7 @@ public class MonthView extends View {
         mDaysText = new int[6][7]; //6주//7일
         mHolidayOrLunarText = new String[6][7]; //음력도 6주//7일//
     }
-    
+
     //이번연월 공휴일 얻기
     private void getHolidayInfo() {
         Log.d(TAG, "getHoliday");
