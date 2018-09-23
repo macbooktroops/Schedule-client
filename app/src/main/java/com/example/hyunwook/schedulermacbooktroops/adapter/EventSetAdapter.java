@@ -83,6 +83,7 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
         holder.sdvEventSet.setOnContentClickListener(new SlideDeleteView.OnContentClickListener() {
             @Override
             public void onContentClick() {
+                Log.d(TAG, "onContentClick ----->" +eventSet.getName());
                 gotoEventSetFragment(eventSet); //해당 스케줄 분류 프레그먼트로.
             }
         });
@@ -212,6 +213,8 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
             // 해당 스케줄 분류 프레그먼트로.
             int position = (int) sdvEventSet.getTag();
             EventSetR eventSet = mEventSets.get(position);
+            Log.d(TAG, "onContentClick 2----->" +eventSet.getName());
+
             gotoEventSetFragment(eventSet);
         }
     }
