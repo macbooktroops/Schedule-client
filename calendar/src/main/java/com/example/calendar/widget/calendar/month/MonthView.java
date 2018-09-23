@@ -80,6 +80,12 @@ public class MonthView extends View {
     ArrayList<Integer> newArrHoliday; //공휴일 중복처리가 완료된 ArrayList
     int resultSeq; //공휴일 오름차순이 된 후에, 배열 순서.
 
+    ArrayList<Integer> arrScheData = new ArrayList<Integer>(); //해당 연월에 등록된 스케줄 ArrayList
+    ArrayList<Integer> newArrScheData;
+
+    int resultScheSeq; //스케줄 등록된 오름차순이 된 후에, 배열 순서.
+    int resultMinScheData; //해당 연월일에 스케줄 min
+
     private boolean isRealm = true; //최초 MonthView에만 실행
     public MonthView(Context context, int year, int month) {
         this(context, null, year, month);
@@ -218,9 +224,14 @@ public class MonthView extends View {
     protected void onDraw(Canvas canvas) {
 
         Log.d(TAG, "onDraw~~~");
-
+        if (isRealm) {
+            Log.d(TAG, "execute Realm Holiday");
+            realm = Realm.getDefaultInstance();
+            isRealm = false;
+        }
         initSize();
         clearData();
+//        getScheduleData();
         getHolidayInfo();
 
         drawLastMonth(canvas);
@@ -252,18 +263,12 @@ public class MonthView extends View {
         mDaysText = new int[6][7]; //6주//7일
         mHolidayOrLunarText = new String[6][7]; //음력도 6주//7일//
     }
-
-
+    
     //이번연월 공휴일 얻기
     private void getHolidayInfo() {
         Log.d(TAG, "getHoliday");
 //        resultSeq = 0;
 
-        if (isRealm) {
-            Log.d(TAG, "execute Realm Holiday");
-            realm = Realm.getDefaultInstance();
-            isRealm = false;
-        }
 
         //해당 연월에 공휴일 정보
 //        final ArrayList<Integer> arrHoliday = new ArrayList<Integer>();
@@ -276,21 +281,35 @@ public class MonthView extends View {
                 /**
                  * 해당 연월에 공휴일인 데이터 select
                  */
-                RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                RealmResults<ScheduleR> scheduleH = realm.where(ScheduleR.class)
                         .equalTo("eventSetId", -1).equalTo("year", mSelYear).equalTo("month", mSelMonth +1).findAll();
+
+                /**
+                 * 해당 연월에 등록된 스케줄 데이터 select
+                 * eventSetId = '-1' 은 공휴일이니, 제외하고 검색.
+                 */
+                RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                        .notEqualTo("eventSetId", -1).equalTo("year", mSelYear).equalTo("month", mSelMonth + 1).findAll();
+
+                Log.d(TAG, "getScheduleData size -->" + scheduleR.size());
 
 //                Log.d(TAG, "scheduleR result ->" + scheduleR.size());
 //                Log.d(TAG, "month ----->" + (mSelMonth-1));
 //                mSelMonth -1;
 
                 //해당 연월 공휴일 데이터 arrHoliday에 add
-                for (ScheduleR holiSchedule : scheduleR) {
+                for (ScheduleR holiSchedule : scheduleH) {
                     Log.d(TAG, "info data ->" + holiSchedule.getTitle());
                     Log.d(TAG, "info year month -> "+ holiSchedule.getYear() + "--" + holiSchedule.getMonth() + "--" + holiSchedule.getDay());
 
                     arrHoliday.add(holiSchedule.getDay());
                 }
 
+                //해당 연월 저장된 스케줄 데이터 arrScheData에 add
+                for (ScheduleR scheduleChk : scheduleR) {
+                    Log.d(TAG, "info schedule data ->" + scheduleChk.getTitle());
+                    arrScheData.add(scheduleChk.getDay());
+                }
 
                 // HashSet 데이터 형태로 생성되면서 중복 제거됨
                 // 해당 연월일에 공휴일이 중복될 경우 하나로 처리.
@@ -305,10 +324,23 @@ public class MonthView extends View {
                 for (int i = 0; i < newArrHoliday.size(); i++) {
                     Log.d(TAG, "newArrHoliday result ->"  +newArrHoliday);
                 }
-               if (scheduleR.size() == 0) {
+
+                /**
+                 * HashSet 데이터 형태로 생성되면서 중복 제거됨
+                 * 해당 연월일에 스케줄이 중복될 경우
+                 * 추후에 우선순위 세워서 처리 할 예정
+                 */
+                HashSet hsData = new HashSet(arrScheData);
+
+                newArrScheData = new ArrayList<>(hsData);
+
+                for (int i = 0; i < newArrScheData.size(); i++) {
+                    Log.d(TAG, "newArrScheData result ->"  +newArrScheData);
+                }
+
+               if (scheduleH.size() == 0) {
 
                } else {
-
                     arrHoliday.clear();
                    Collections.sort(newArrHoliday); //오름차순 정렬
 
@@ -317,6 +349,22 @@ public class MonthView extends View {
                    Log.d(TAG, "the smallist value ->" + resultMinHoliday);
                }
 
+                if (scheduleR.size() == 0) {
+
+                } else {
+                    arrScheData.clear();
+                    Collections.sort(newArrScheData); //오름차순
+
+
+//                    for (int i = 0; i < newArrScheData.size(); i++) {
+                    Log.d(TAG, "newArrScheData sort ->"  +newArrScheData);
+//                    }
+
+                    resultMinScheData = newArrScheData.get(resultScheSeq);
+                    Log.d(TAG, "the smallist schedule value ->" + resultMinScheData);
+
+
+                }
 //               arrHoliday.clear(); //작업 완료 시 클리어
 //                int smallest = arrHoliday.get(0);
 //                for (int x : arrHoliday) {
@@ -435,16 +483,14 @@ public class MonthView extends View {
                 mPaint.setColor(mCurrentDayColor);
             }
 
-
+            /**
+             * View Holiday Calendar View
+             */
             if (dayString.equals(String.valueOf(resultMinHoliday))) {
-//                Log.d(TAG, "holiday preview");
-//                Log.d(TAG, "check holiday result " + newArrHoliday.size());
-
-
                 //오름차순
 //                Collections.sort(arrHoliday);
                 for (int i = 0; i < newArrHoliday.size(); i++) {
-                    Log.d(TAG, "check holiday value ->" + newArrHoliday);
+                    Log.d(TAG, "check holiday value ->" + newArrHoliday + "--" + dayString);
                 }
 
 
@@ -457,32 +503,27 @@ public class MonthView extends View {
 
                 Log.d(TAG, "resSeq ->" + resSeq);
                  /**
-                 * resultSeq +1 증가시켜, arrHoliday.get(resultSeq)값과, 현재 resultMinHoliday 값비교.
+                 * resultSeq +1 증가시켜, newArrHoliday.get(resultSeq)값과, 현재 resultMinHoliday 값비교.
                  */
 //                Log.d(TAG, "resultMin ->" + resultMinHoliday + "--" + arrHoliday.get(resultSeq + 1));
 
                 if (resSeq == resHoliSize) {
                     Log.d(TAG, "this holiday check finish");
+
                     resultSeq = 0;
                 } else {
                     if (resultMinHoliday < newArrHoliday.get(resSeq)) {
                         /**
-                         * 오름차순으로 정렬된 해당연월 공휴일 배열 arrHoliday 에 위치를 +1 시킨 후
-                         * resultMinHoliday와 비교 후 arrHoliday.get(resultSeq +1) 값이 더 클경우
+                         * 오름차순으로 정렬된 해당연월 공휴일 배열 newArrHoliday 에 위치를 +1 시킨 후
+                         * resultMinHoliday와 비교 후 newArrHoliday.get(resultSeq +1) 값이 더 클경우
                          */
                         resultMinHoliday = newArrHoliday.get(resSeq);
                         Log.d(TAG, "resultMinHoliday result -> " + resultMinHoliday);
 
                         //size 4
                         resultSeq++;
-                        /*if (resHoliSize == resSeq - 1) {
-                            resultSeq = 0;
-                        } else if (resSeq - 1 < resHoliSize) {
-                            resultSeq++;
-                        }*/
                     }
                 }
-
             }
             //공휴일 색깔은 진한 초록? 색으로 표시
 //            else if () {
@@ -491,6 +532,41 @@ public class MonthView extends View {
                 mPaint.setColor(mNormalDayColor);
             }
             canvas.drawText(dayString, startX, startY, mPaint);
+
+            /**
+             * View Saved Schedule Calendar View
+             */
+            if (dayString.equals(String.valueOf(resultMinScheData))) {
+                Log.d(TAG, "Schedule Data ---- " + newArrScheData.size() + "--" + dayString);
+
+                mPaint.setColor(Color.RED);
+
+                int resScheSize = newArrScheData.size();
+                int resScheSeq = resultScheSeq +1;
+
+                Log.d(TAG, "resScheSeq -> " + resScheSeq);
+
+                /**
+                 * resultScheSeq +1 증가시켜,  newArrScheData.get(resultScheSeq)값과, 현재 resultMinScheData비교
+                 */
+                if (resScheSeq == resScheSize) {
+                    Log.d(TAG, "this month schedule data check finish...");
+                    resultScheSeq = 0; //init
+                } else {
+                    if (resultMinScheData < newArrScheData.get(resScheSeq)) {
+                        /**
+                         * 오름차순으러 정렬된 해당연월 스케줄 데이터 배열 newArrScheData 에 위치를 +1 시킨 후
+                         * resultMinScheData와 비교 후 newArrScheData.get(resultScheSeq +1)값이 더 클 경우
+                         */
+                        resultMinScheData = newArrScheData.get(resScheSeq);
+                        Log.d(TAG, "resultMinScheData result -->" + resultMinScheData);
+                        Log.d(TAG, "resultMin Holiday before -->" + resultMinHoliday);
+                        resultScheSeq++;
+                    }
+                }
+            }
+            canvas.drawText(dayString, startX, startY, mPaint);
+
             mHolidayOrLunarText[row][col] = CalendarUtils.getHolidayFromSolar(mSelYear, mSelMonth, mDaysText[row][col]);
 //            newArrHoliday.clear(); //작업 완료 시 클리어
 
