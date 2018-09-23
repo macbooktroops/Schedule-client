@@ -31,12 +31,15 @@ import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 
+import com.example.hyunwook.schedulermacbooktroops.task.eventset.AddEventSetRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRTask;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -78,6 +81,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
     public static int ADD_EVENT_SET_CODE = 1;
+
+    public static int ADD_EVENT_SET_FINISH = 2;
+    public static String EVENT_SET_OBJ = "event.set.obj";
+
+
     private long[] mNotes = new long[2]; //back button save.
 
     private ProgressBar mProgressBar;
@@ -151,6 +159,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         super.initData();
         resetMainTitleDate(mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay);
         new LoadEventSetRTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+//        initHolidayEventSet();
     }
 
     //RecyclerView 설정
@@ -175,7 +185,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mEventSetAdapter = new EventSetAdapter(this, mEventSets);
         rvEventSetList.setAdapter(mEventSetAdapter);
-
     }
 
     //goto ScheduleView Fragment()
@@ -384,7 +393,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         mEventSetAdapter.changeAllData(resultEvent);
     }
-
     //메뉴 계획 항목 추가 리시버
     private class AddEventSetBroadcastReceiver extends BroadcastReceiver {
 
