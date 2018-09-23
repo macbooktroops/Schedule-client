@@ -98,14 +98,14 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             Log.d(TAG, "schedule eventId ->" + schedule.getEventSetId());
 
             //EventSetId = 0 ->  기본 스케줄 분류 일경우에는 회색 표시.
-            if (schedule.getEventSetId() == 0) {
+      /*      if (schedule.getEventSetId() == 0) {
                 Log.d(TAG, "this event basic---");
                 viewHolder.vScheduleHintBlock.setBackgroundColor(Color.GRAY);
                 viewHolder.tvScheduleTitle.setText(schedule.getTitle());
-            } else {
+            } else {*/
                 viewHolder.vScheduleHintBlock.setBackgroundResource(CalUtils.getScheduleBlockView(schedule.getColor()));
                 viewHolder.tvScheduleTitle.setText(schedule.getTitle());
-            }
+//            }
             //저장된 데이터 시간검사.
             if (schedule.getTime() != 0) {
                 viewHolder.tvScheduleTime.setText(CalUtils.timeStamp2Time(schedule.getTime()));

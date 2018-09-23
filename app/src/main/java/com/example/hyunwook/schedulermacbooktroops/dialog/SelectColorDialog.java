@@ -75,7 +75,7 @@ public class SelectColorDialog extends Dialog implements View.OnClickListener {
 
     //선택된 칸은 테두리 뷰 형태.
     private void changeColor(int position) {
-        mColor = position;
+        mColor = position +1 ;
         for (int i = 0; i < mColorBorderView.length; i++) {
             mColorBorderView[i].setVisibility(position == i ? View.VISIBLE : View.GONE);
         }
