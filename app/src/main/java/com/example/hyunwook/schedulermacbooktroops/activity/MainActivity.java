@@ -1,6 +1,7 @@
 package com.example.hyunwook.schedulermacbooktroops.activity;
 
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,6 +32,7 @@ import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 
+import com.example.hyunwook.schedulermacbooktroops.holiday.InitHoliday;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.AddEventSetRTask;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.LoadEventSetRTask;
 import com.google.gson.JsonObject;
@@ -90,9 +92,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private ProgressBar mProgressBar;
 
+    static Activity activity;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
+
+        activity = this;
         drawMain = searchViewById(R.id.dlMain);
         linearDate = searchViewById(R.id.linearTitleDate);
         tvTitleMonth = searchViewById(R.id.tvTitleMonth);
@@ -153,6 +158,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+    public static Activity getActivity() {
+        return activity;
+    }
+
     //after execute bindView()
     @Override
     protected void initData() {
@@ -161,6 +170,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         new LoadEventSetRTask(this, this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 //        initHolidayEventSet();
+        InitHoliday initHoliday = new InitHoliday();
+        initHoliday.initHolidayEventSet();
     }
 
     //RecyclerView 설정
@@ -303,7 +314,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     }
                 });
             }
-
         }
     }
 

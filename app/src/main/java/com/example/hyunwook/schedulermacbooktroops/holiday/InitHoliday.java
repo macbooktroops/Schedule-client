@@ -1,11 +1,15 @@
 package com.example.hyunwook.schedulermacbooktroops.holiday;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.EventSetR;
+import com.example.hyunwook.schedulermacbooktroops.activity.MainActivity;
 import com.example.hyunwook.schedulermacbooktroops.task.eventset.AddEventSetRTask;
 
 import java.util.Calendar;
@@ -19,12 +23,21 @@ import io.realm.Realm;
  * Holiday EventSet 생성 클래스
  */
 public class InitHoliday {
+    Realm realm;
+    Activity mActivity;
+
+    public static int ADD_EVENT_SET_FINISH = 2;
+    public static String EVENT_SET_OBJ = "event.set.obj";
+
+    static final String TAG = InitHoliday.class.getSimpleName();
+
     /**
      * 최초 앱 실행 시 공휴일 EventSet 추가.
      * 클릭 시, 해당 연도 공휴일을 한번에 볼 수있음.
      */
-    private void initHolidayEventSet() {
-
+    public void initHolidayEventSet() {
+        mActivity = MainActivity.getActivity();
+        realm = Realm.getDefaultInstance();
         int nYear;
 
         Calendar calendar = new GregorianCalendar(Locale.KOREA);
@@ -51,9 +64,9 @@ public class InitHoliday {
                     //최초로 판단.
                     EventSetR eventSet = realm.createObject(EventSetR.class, nextId);
                     eventSet.setName(nYear+ "년 공휴일");
-                    eventSet.setColor(Color.CYAN);
+                    eventSet.setColor(Color.GREEN);
                     //execute Save EventSet AsyncTask
-                    new AddEventSetRTask(getApplicationContext(), new OnTaskFinishedListener<EventSetR>() {
+                    new AddEventSetRTask(mActivity.getApplicationContext(), new OnTaskFinishedListener<EventSetR>() {
                         @Override
                         public void onTaskFinished(EventSetR data) {
                             Log.d(TAG, "AddEventSetRTask holiday ->" + data.getName() + data.getColor());
@@ -62,11 +75,11 @@ public class InitHoliday {
                              * EventSetR 구분은 항상 seq
                              */
 
-                            if (eventSet != null) {
-                                Log.d(TAG, "execute holiday eventSet");
-                                mEventSetAdapter.insertItem(eventSet);
-                            }
-//                            setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data.getSeq()));
+//                            if (eventSet != null) {
+//                                Log.d(TAG, "execute holiday eventSet");
+//                                mEventSetAdapter.insertItem(eventSet);
+//                            }
+//                            mActivity.setResult(ADD_EVENT_SET_FINISH, new Intent().putExtra(EVENT_SET_OBJ, data.getSeq()));
 //                            finish();
                         }
                     }, eventSet).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
