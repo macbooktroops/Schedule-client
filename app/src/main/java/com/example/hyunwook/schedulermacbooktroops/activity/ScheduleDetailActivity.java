@@ -302,7 +302,6 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         etTitle.setText(mSchedule.getTitle());
         etDesc.setText(mSchedule.getDesc()); //자세한 내용
 
-
         EventSetR current = mEventSetsMap.get(eventSetId);
 
         Log.d(TAG, "SetSchedule Data -->"+ current);
@@ -321,10 +320,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             Log.d(TAG, "mschedule location 2- >" + mSchedule.getLocation());
             location = mSchedule.getLocation();
             tvLocation.setText(location);
-
         }
-
-
     }
 
     @Override

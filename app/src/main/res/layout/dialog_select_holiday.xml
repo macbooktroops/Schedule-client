@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/space_30dp"
-    android:paddingRight="@dimen/space_30dp">
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:paddingLeft="@dimen/space_20dp"
+    android:paddingRight="@dimen/space_20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,9 @@
             android:id="@+id/pastYear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
             android:layout_gravity="center"
             android:text="past"/>
 
@@ -42,7 +44,9 @@
             android:id="@+id/currentYear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
             android:layout_gravity="center"
             android:text="current"/>
 
@@ -56,18 +60,24 @@
             android:id="@+id/futureYear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
             android:layout_gravity="center"
             android:text="future"/>
-
         <View
             android:layout_width="match_parent"
-            android:layout_height="50dp"/>
+            android:layout_height="@dimen/schedule_hint_dash_line_width"
+            android:background="@color/color_select_date_dialog_line"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="30dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:id="@+id/resultText"
-            android:text="2018년 공휴일이 선택되었습니다."/>
+            android:text="확인하고 싶은 공휴일을 선택해주세요."/>
 
         <LinearLayout
             android:layout_width="match_parent"
