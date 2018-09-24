@@ -77,6 +77,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     Realm realm;
 
     static EventSetR resultEvent; //EVENT_SET_OBJ
+    static int resultYear;
     /**
      * http://milkissboy.tistory.com/34
      * @param eventSet
@@ -91,6 +92,16 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         return fragment;
     }
 
+    //공휴일에서 EventSetFragment 접근 할 경우.
+    public static EventSetFragment getInstance(EventSetR eventSet, int year) {
+        EventSetFragment fragment = new EventSetFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(EVENT_SET_OBJ, eventSet.getSeq());
+        fragment.setArguments(bundle);
+        resultEvent = eventSet;
+        resultYear = year;
+        return fragment;
+    }
     @Nullable
     @Override
     protected View initContentView(LayoutInflater inflater, @Nullable ViewGroup container) {
@@ -311,11 +322,20 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                Log.d(TAG, "get realm");
-                resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).findAll();
+                Log.d(TAG, "get realm year- >" + resultYear);
+
+                if (resultYear == 0) {
+                    resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).findAll();
+                } else {
+                    resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).equalTo("year", resultYear).findAllSorted("id");
+                }
                 Log.d(TAG, "resEmp Get -->" +  resEmp.size());
 
                 resList.addAll(resEmp);   //resList에 해당 스케줄 항목인 스케줄들을 추가.
+
+                for (int i = 0 ; i < resList.size(); i++) {
+                    Log.d(TAG, "check data -->" + resList.get(i).getTitle());
+                }
             /*    for (ScheduleR sd : resList) {
                     int id = sd.getId();
                     int color = sd.getColor();
@@ -336,13 +356,15 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             }
         });
         Log.d(TAG, "resList -->" + resList);
+        resultYear = 0;
         mScheduleAdapter.changeAllData(resList);
 
         rlNoTask.setVisibility(resList.size() == 0 ? View.VISIBLE : View.GONE);
 
-                resList.clear();
+        resList.clear();
 
     }
+
 
     @Override
     public void onClick(ScheduleR schedule) {

@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.common.bean.EventSet;
+import com.example.common.realm.EventSetR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 
 import java.util.Calendar;
@@ -23,17 +25,21 @@ public class SelectHolidayDialog extends Dialog implements View.OnClickListener 
     static final String TAG = SelectHolidayDialog.class.getSimpleName();
 
     public Context mContext;
-    private int mYear;
+
     private OnHolidaySetListener mOnHolidaySetListener;
 
     private TextView past, current, future, result;
     int nYear;
 
+    int resultYear;
+    EventSetR eventSetR;
+
     private boolean isChecked;
-    public SelectHolidayDialog(Context context, OnHolidaySetListener onHolidaySetListener) {
+    public SelectHolidayDialog(Context context, OnHolidaySetListener onHolidaySetListener, EventSetR eventSet) {
         super(context, R.style.DialogFullScreen);
         mOnHolidaySetListener = onHolidaySetListener;
         mContext = context;
+        eventSetR = eventSet;
 
         initView();
     }
@@ -61,6 +67,7 @@ public class SelectHolidayDialog extends Dialog implements View.OnClickListener 
         future.setText(nYear +1 +"년");
 
 
+
     }
 
     @Override
@@ -72,10 +79,9 @@ public class SelectHolidayDialog extends Dialog implements View.OnClickListener 
             case R.id.tvConfirm:
                 if (isChecked) {
                     if (mOnHolidaySetListener != null) {
-                        mOnHolidaySetListener.onHolidaySet(mYear);
+                        mOnHolidaySetListener.onHolidaySet(resultYear, eventSetR);
                     }
                     dismiss();
-
 
                 } else {
                     Toast.makeText(getContext(), "연도를 클릭해주세요.",Toast.LENGTH_LONG).show();
@@ -84,22 +90,25 @@ public class SelectHolidayDialog extends Dialog implements View.OnClickListener 
             case R.id.pastYear:
                 Log.d(TAG, "pastClick");
                 result.setText(nYear -1+"년 공휴일을 보시겠어요?");
+                resultYear = nYear -1;
                 isChecked = true;
                 break;
             case R.id.currentYear:
                 Log.d(TAG, "currentClick");
                 result.setText(nYear+"년 공휴일을 보시겠어요?");
+                resultYear = nYear;
                 isChecked = true;
                 break;
             case R.id.futureYear:
                 Log.d(TAG, "futureClick");
                 result.setText(nYear +1+"년 공휴일을 보시겠어요?");
+                resultYear = nYear + 1;
                 isChecked = true;
                 break;
         }
     }
 
     public interface OnHolidaySetListener {
-        void onHolidaySet(int year);
+        void onHolidaySet(int year, EventSetR eventSet);
     }
 }

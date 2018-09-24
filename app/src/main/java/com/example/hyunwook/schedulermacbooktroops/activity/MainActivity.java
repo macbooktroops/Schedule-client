@@ -97,7 +97,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     static Activity activity;
 
     private int mYear;
-
     private SelectHolidayDialog mSelectHolidayDialog;
     @Override
     protected void bindView() {
@@ -235,10 +234,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
     }
+
+    /**
+     * SelectHolidayDialog 년도 선택 완료시 호출.
+     * SelectHolidayDialog -> EventSetFragment 순
+     * @param year
+     * @param eventSet
+     */
     @Override
-    public void onHolidaySet(int year) {
-        Log.d(TAG, "onHolidaySet --->" + year);
+    public void onHolidaySet(int year, EventSetR eventSet) {
+        Log.d(TAG, "onHolidaySet --->" + year + "--"+ eventSet.getName());
         mYear = year;
+        //mYear 로 검색한 공휴일 EventSetFragment show
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+
+        //공휴일 년도 변경은 현재 EventSetR체크 할 필요없음.
+//        if (mCurrentEventSet != eventSet || eventSet.getSeq() == 0 || mYear !=  ) {
+            if (mEventSetFragment != null)
+                ft.remove(mEventSetFragment);
+
+            mEventSetFragment = EventSetFragment.getInstance(eventSet, mYear);
+            ft.add(R.id.frameContainer, mEventSetFragment);
+//        }
+
+        ft.hide(mScheduleFragment); //스케줄 은 숨기고.
+        ft.show(mEventSetFragment); //스케줄 항목 프래그로.
+        ft.commit();
+
+        Log.d(TAG, "gotoEventSet getName ->" + eventSet);
+        resetTitleText(eventSet.getName());
+        drawMain.closeDrawer(Gravity.START);
+        mCurrentEventSet = eventSet;
+
     }
 
 
@@ -254,8 +283,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (eventSet.getSeq() == -1) {
             Log.d(TAG, "start SelectHolidayDialog ----" + mSelectHolidayDialog);
             if (mSelectHolidayDialog == null)
-                mSelectHolidayDialog = new SelectHolidayDialog(this, this);
-
+                mSelectHolidayDialog = new SelectHolidayDialog(this, this, eventSet);
 
             mSelectHolidayDialog.show();
         } else {
