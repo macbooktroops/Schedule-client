@@ -99,7 +99,8 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
                     Log.d(TAG, "Try Event Set --->" + currentIdNum);
                     int nextId;
 
-                    if (currentIdNum == null) {
+                    if (currentIdNum.intValue() == -1) {
+                        Log.d(TAG, "init Event");
                         nextId = 1;
                     } else {
                         nextId = currentIdNum.intValue() + 1;
