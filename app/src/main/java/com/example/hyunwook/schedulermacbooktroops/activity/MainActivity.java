@@ -29,6 +29,8 @@ import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.EventSetR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.adapter.EventSetAdapter;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectColorDialog;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectHolidayDialog;
 import com.example.hyunwook.schedulermacbooktroops.fragment.EventSetFragment;
 import com.example.hyunwook.schedulermacbooktroops.fragment.ScheduleFragment;
 
@@ -54,7 +56,7 @@ import retrofit2.Response;
  * Main
  *
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>> {
+public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -93,6 +95,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ProgressBar mProgressBar;
 
     static Activity activity;
+
+    private int mYear;
+
+    private SelectHolidayDialog mSelectHolidayDialog;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
@@ -229,34 +235,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
     }
+    @Override
+    public void onHolidaySet(int year) {
+        Log.d(TAG, "onHolidaySet --->" + year);
+        mYear = year;
+    }
 
 
 
     //goto eventset fragment
     //스케줄 작성 된 프레그먼트로.
     public void gotoEventSetFragment(EventSetR eventSet) {
-        Log.d(TAG, "gotoEventSetFragment");
-        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        Log.d(TAG, "gotoEventSetFragment -->" + eventSet.get());
 
-        ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+        /**
+         * -1이면 EventSetFragment 실행 전에 SelectHolidayDialog 표시 먼저
+         */
+        if (eventSet.getSeq() == -1) {
+            Log.d(TAG, "start SelectHolidayDialog ----" + mSelectHolidayDialog);
+            if (mSelectHolidayDialog == null)
+                mSelectHolidayDialog = new SelectHolidayDialog(this, this);
+
+
+            mSelectHolidayDialog.show();
+        } else {
+            Log.d(TAG, "start Fragment----");
+            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+            ft.setTransition(FragmentTransaction.TRANSIT_NONE);
 
 //        Log.d(TAG, "eventSet --->" + eventSet.getSeq() + "---" + eventSet.getId());
-        if (mCurrentEventSet != eventSet || eventSet.getSeq() == 0) {
-            if (mEventSetFragment != null)
-                ft.remove(mEventSetFragment);
+            if (mCurrentEventSet != eventSet || eventSet.getSeq() == 0) {
+                if (mEventSetFragment != null)
+                    ft.remove(mEventSetFragment);
 
-            mEventSetFragment = EventSetFragment.getInstance(eventSet);
-            ft.add(R.id.frameContainer, mEventSetFragment);
+                mEventSetFragment = EventSetFragment.getInstance(eventSet);
+                ft.add(R.id.frameContainer, mEventSetFragment);
+            }
+
+            ft.hide(mScheduleFragment); //스케줄 은 숨기고.
+            ft.show(mEventSetFragment); //스케줄 항목 프래그로.
+            ft.commit();
+
+            Log.d(TAG, "gotoEventSet getName ->" + eventSet);
+            resetTitleText(eventSet.getName());
+            drawMain.closeDrawer(Gravity.START);
+            mCurrentEventSet = eventSet;
         }
-
-        ft.hide(mScheduleFragment); //스케줄 은 숨기고.
-        ft.show(mEventSetFragment); //스케줄 항목 프래그로.
-        ft.commit();
-
-        Log.d(TAG, "gotoEventSet getName ->" + eventSet);
-        resetTitleText(eventSet.getName());
-        drawMain.closeDrawer(Gravity.START);
-        mCurrentEventSet = eventSet;
     }
 
     private void initBroadcastReceiver() {

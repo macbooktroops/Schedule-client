@@ -15,12 +15,14 @@ public class SelectHolidayDialog extends Dialog implements View.OnClickListener 
 
     static final String TAG = SelectHolidayDialog.class.getSimpleName();
 
-//    priva
+    private int mYear;
     private OnHolidaySetListener mOnHolidaySetListener;
 
     public SelectHolidayDialog(Context context, OnHolidaySetListener onHolidaySetListener) {
         super(context, R.style.DialogFullScreen);
-//        m
+        mOnHolidaySetListener = onHolidaySetListener;
+
+        setContentView(R.layout.dialog_select_holiday);
     }
 
     private void initView() {
@@ -35,12 +37,12 @@ public class SelectHolidayDialog extends Dialog implements View.OnClickListener 
                 break;
             case R.id.tvConfirm:
                 if (mOnHolidaySetListener != null) {
-                    mOnHolidaySetListener.onHolidaySet();
+                    mOnHolidaySetListener.onHolidaySet(mYear);
                 }
         }
     }
 
     public interface OnHolidaySetListener {
-        void onHolidaySet();
+        void onHolidaySet(int year);
     }
 }
