@@ -57,7 +57,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/space_14dp"
-                    android:background="@drawable/pink_circle"/>
+                    android:background="@drawable/base_circle"/>
             </RelativeLayout>
 
         </LinearLayout>

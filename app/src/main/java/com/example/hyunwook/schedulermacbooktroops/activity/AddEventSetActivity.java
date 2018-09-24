@@ -134,7 +134,14 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
     //색깔 선택 다이얼로그에서 Confirm버튼 누르면 호출
     @Override
     public void onSelectColor(int color) {
-        mColor = color;
+        //SelectColorDialog 접근 시, 색상 선택안하고 확인눌렀을 경우 기본 빨강.
+        if (color == 0) {
+            mColor = 1;
+            color = 1;
+        } else {
+            mColor = color;
+        }
+        Log.d(TAG, "onSelectColor -->" + mColor);
         vEventSetColor.setBackgroundResource(CalUtils.getEventSetCircle(color));
     }
 }
