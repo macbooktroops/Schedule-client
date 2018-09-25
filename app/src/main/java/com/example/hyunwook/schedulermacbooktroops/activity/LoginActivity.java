@@ -18,10 +18,10 @@ import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
-import com.example.hyunwook.schedulermacbooktroops.login.JsonLogin;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestLogin;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -323,32 +323,32 @@ public class LoginActivity extends Activity {
          * SignIn http://localhost:3000/users/sign_in
          */
         Log.d(TAG, "pw validate ->" + pw);
+        JsonObject jsonObject = new JsonObject();
+        JsonObject userJsonObject = new JsonObject();
+        userJsonObject.addProperty("email", id);
+        userJsonObject.addProperty("password", pw);
+        jsonObject.add("user", userJsonObject);
 
-        String jsonUserInfo = "";
-        JSONObject jsonObject = new JSONObject();
-        try {
-            JSONObject userJsonObject = new JSONObject();
-            userJsonObject.put("email", "test@test.com");
-            userJsonObject.put("password", "asd1234");
+            Log.d(TAG, "jsonresult ->" + userJsonObject);
 
-            jsonObject.put("user", userJsonObject);
 
-            jsonUserInfo = new Gson().toJson(jsonObject);
-            Log.v(TAG, jsonUserInfo);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//            parser.parse(jsonUserInfo);
 
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonUserInfo);
-        Call<ArrayList<JsonObject>> res = RequestLogin.getInstance().getService().postSignIn(body);
-        res.enqueue(new Callback<ArrayList<JsonObject>>() {
+        /**
+         *   Parameters: {"_json"=>"{\"user\":{\"email\":\"c004245@naver.com\",\"password\":\"whgusdnr1!\"}}",
+         *   "session"=>{"_json"=>"{\"user\":{\"email\":\"c004245@naver.com\",\"password\":\"whgusdnr1!\"}}"}}
+         */
+
+//        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonUserInfo);
+        Call<JsonObject> res = RequestLogin.getInstance().getService().postSignIn(jsonObject);
+        res.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.d(TAG, "result Response -->" + response.body().toString());
             }
 
             @Override
-            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+            public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.d(TAG, "result Failure -->" + t);
             }
         });
@@ -416,4 +416,5 @@ public class LoginActivity extends Activity {
         return new String(Base64.decode(content, 0));
 
     }
+
 }

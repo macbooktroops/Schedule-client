@@ -25,8 +25,7 @@ public class RequestLogin {
      */
     Retrofit retrofit = new Retrofit.Builder()
 //            .baseUrl("http://localhost:3000/users/")
-//            .baseUrl("http://172.16.6.221010:3000/")
-            .baseUrl("http://172.16.6.1:3000/")
+            .baseUrl("http://172.16.6.210:3000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 

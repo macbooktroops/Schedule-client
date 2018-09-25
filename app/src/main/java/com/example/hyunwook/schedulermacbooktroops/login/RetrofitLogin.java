@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -25,7 +24,7 @@ public interface RetrofitLogin {
     @Headers({"Content-Type: application/json", "Accept: application/json"})
 //    @Headers("Accept: applecation/json")
     @POST("users/sign_in")
-    Call<ArrayList<JsonObject>> postSignIn(@Body RequestBody login);
+    Call<JsonObject> postSignIn(@Body JsonObject login);
 //    Call<ArrayList<JsonObject>> postSignIn(@Field("email") String email, @Field("encrypted_password") String password);
 
 //    JsonLogin postSignIn(@Body)
