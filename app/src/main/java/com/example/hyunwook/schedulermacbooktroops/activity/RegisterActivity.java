@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends Activity {
     Button regBtn;
-    EditText editEmail, editPw, editName, editPhone, editBirth;
+    EditText editEmail, editPw, editNickName, editPhone, editBirth;
 
-    String strEmail, strPw, strName, strPhone, strBirth;
+    String strEmail, strPw, strNickName, strPhone, strBirth;
 
     String base64Pw;
 
@@ -32,7 +32,7 @@ public class RegisterActivity extends Activity {
 
         editEmail = (EditText) findViewById(R.id.emailInput);
         editPw = (EditText) findViewById(R.id.pwInput);
-        editName = (EditText) findViewById(R.id.nameInput);
+        editNickName = (EditText) findViewById(R.id.nicknameInput);
         editPhone = (EditText) findViewById(R.id.phoneInput);
         editBirth = (EditText) findViewById(R.id.birthInput);
 
@@ -47,15 +47,15 @@ public class RegisterActivity extends Activity {
 
 //                strPw = getBase64encode(editPw.getText().toString()); //baas
 
-                strName = editName.getText().toString();
+                strNickName = editNickName.getText().toString();
                 strPhone = editPhone.getText().toString();
                 strBirth = editBirth.getText().toString();
 
-                Log.d(TAG, "Regist info -->" + strEmail + "--" + strPw + "--" + strName
+                Log.d(TAG, "Regist info -->" + strEmail + "--" + strPw + "--" + strNickName
                         + "--" + strPhone + "--" + strBirth + "--" +base64Pw);
 
                 //id, pw, name, phone, birth 한개라도 비어있으면 토스트.
-                if (strEmail.equals("") || strPw.equals("") || strName.equals("") || strPhone.equals("") || strBirth.equals("")) {
+                if (strEmail.equals("") || strPw.equals("") || strNickName.equals("") || strPhone.equals("") || strBirth.equals("")) {
                     Toast.makeText(getApplicationContext(), "비어있는 항목을 채워주세요.", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -83,7 +83,7 @@ public class RegisterActivity extends Activity {
 
         editor.putString("prefEmail", strEmail);
         editor.putString("prefPw", base64Pw);
-        editor.putString("prefName", strName);
+        editor.putString("prefNickName", strNickName);
         editor.putString("prefPhone", strPhone);
         editor.putString("prefBirth", strBirth);
 

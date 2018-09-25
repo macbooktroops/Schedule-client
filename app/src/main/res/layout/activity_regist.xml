@@ -26,8 +26,8 @@
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
-        android:id="@+id/nameInput"
-        android:hint="이름"
+        android:id="@+id/nicknameInput"
+        android:hint="닉네임"
         android:layout_below="@+id/pwInput"/>
 
     <EditText
@@ -36,7 +36,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/phoneInput"
         android:hint="핸드폰 번호"
-        android:layout_below="@+id/nameInput"/>
+        android:layout_below="@+id/nicknameInput"/>
 
     <EditText
         android:layout_width="300dp"
