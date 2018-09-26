@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.google.gson.JsonObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,6 +96,25 @@ public class RegisterActivity extends Activity {
      */
     //값 저장
     private void savePreferences() {
+
+        //Create json body
+        JsonObject jsonObject = new JsonObject();
+        JsonObject userJsonObject = new JsonObject();
+
+        userJsonObject.addProperty("name", strNickName);
+        userJsonObject.addProperty("email", strEmail);
+        userJsonObject.addProperty("password", strPw);
+        userJsonObject.addProperty("password_confirmation", strConfirmPw);
+        userJsonObject.addProperty("phone", strPhone);
+        userJsonObject.addProperty("birth", strBirth);
+
+        jsonObject.add("user", userJsonObject);
+
+        //1. 그냥 json형태로만 보내면 insert가 바로 되는지
+        //2. Sequel Pro 로 확인하는법..
+        //3. 이미 회원가입 된 유저 판단
+        //4. 핸드폰 번호 인증?
+        Log.d(TAG, "json Register ->" + jsonObject);
         SharedPreferences pref = getSharedPreferences("registInfo", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
