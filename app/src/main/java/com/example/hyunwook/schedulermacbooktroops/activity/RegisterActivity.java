@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends Activity {
     Button regBtn;
-    EditText editEmail, editPw, editNickName, editPhone, editBirth;
+    EditText editEmail, editPw, editConfirmPw, editNickName, editPhone, editBirth;
 
-    String strEmail, strPw, strNickName, strPhone, strBirth;
+    String strEmail, strPw, strConfirmPw, strNickName, strPhone, strBirth;
 
     String base64Pw;
 
@@ -32,6 +32,7 @@ public class RegisterActivity extends Activity {
 
         editEmail = (EditText) findViewById(R.id.emailInput);
         editPw = (EditText) findViewById(R.id.pwInput);
+        editConfirmPw = (EditText) findViewById(R.id.pwConfirmInput);
         editNickName = (EditText) findViewById(R.id.nicknameInput);
         editPhone = (EditText) findViewById(R.id.phoneInput);
         editBirth = (EditText) findViewById(R.id.birthInput);
@@ -46,7 +47,7 @@ public class RegisterActivity extends Activity {
                 strPw = editPw.getText().toString();
 
 //                strPw = getBase64encode(editPw.getText().toString()); //baas
-
+                strConfirmPw = editConfirmPw.getText().toString();
                 strNickName = editNickName.getText().toString();
                 strPhone = editPhone.getText().toString();
                 strBirth = editBirth.getText().toString();
@@ -62,9 +63,13 @@ public class RegisterActivity extends Activity {
                     if (checkEmail(strEmail)) {
 //                        savePreferences();
                         if (checkPassWord(strPw)) {
-                            base64Pw = getBase64encode(strPw); //base64
-                            savePreferences();
-
+                            if (checkConfirmPassWord(strPw, strConfirmPw)) {
+                                base64Pw = getBase64encode(strPw); //base64
+                                savePreferences();
+                                Log.d(TAG, "Regist Test -->" + strEmail + "--" + strPw + "--" + strNickName + "--" + strPhone + "--"+ strBirth);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "패스워드 확인을 다시해주세요", Toast.LENGTH_LONG).show();
+                           }
                         } else {
                             Toast.makeText(getApplicationContext(), "패스워드에 소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
                         }
@@ -76,6 +81,18 @@ public class RegisterActivity extends Activity {
         });
     }
 
+    /**
+     * {
+     * “user”: {
+     * “name”: “joungsik4”,
+     * “email”: “test5@test.com”,
+     * “password”: “asd1234”,
+     * “password_confirmation”: “asd1234”,
+     * “phone”: “01030211717”,
+     * “birth”: “1995-08-18”
+     }
+     }
+     */
     //값 저장
     private void savePreferences() {
         SharedPreferences pref = getSharedPreferences("registInfo", MODE_PRIVATE);
@@ -124,6 +141,25 @@ public class RegisterActivity extends Activity {
 
     public static String getBase64encode(String content){
         return Base64.encodeToString(content.getBytes(), 0);
+    }
+
+    /**
+     * 패스워드, 패스워드 확인칸에 동일하게 입력했는지,
+     * 추후에는 패스워드 확인 EditText 포커스 사라지면
+     * 바로 검사할 수있도록 수정예정
+     * @param pw
+     * @param pwConfirm
+     * @return
+     */
+    public boolean checkConfirmPassWord(String pw, String pwConfirm) {
+        Log.d(TAG, "check pw ->" + pw + "--" + pwConfirm);
+        if (pw.equals(pwConfirm)) {
+            Log.d(TAG, "samePassword");
+            return true;
+        } else {
+            Log.d(TAG, "different password");
+            return false;
+        }
     }
 }
 

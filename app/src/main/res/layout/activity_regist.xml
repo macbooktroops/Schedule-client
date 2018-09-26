@@ -26,9 +26,17 @@
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
+        android:id="@+id/pwConfirmInput"
+        android:inputType="textPassword"
+        android:hint="패스워드 확인"
+        android:layout_below="@+id/pwInput"/>
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
         android:id="@+id/nicknameInput"
         android:hint="닉네임"
-        android:layout_below="@+id/pwInput"/>
+        android:layout_below="@+id/pwConfirmInput"/>
 
     <EditText
         android:layout_width="300dp"

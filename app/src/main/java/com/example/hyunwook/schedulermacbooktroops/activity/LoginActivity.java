@@ -231,6 +231,8 @@ public class LoginActivity extends Activity {
                                 @Override
                                 public void onFail(String result) {
                                     Toast.makeText(getApplicationContext(), "로그인 실패..", Toast.LENGTH_LONG).show();
+                                    //회원가입 하시겠습니까? 다이얼로그 생성 예정
+
                                 }
                             });
                         } else {
@@ -357,6 +359,7 @@ public class LoginActivity extends Activity {
                     Log.d(TAG, "로그인 실패...");
                     //정보 없음 회원가입 유도
                     callback.onFail("fail");
+
                 } else {
                     String jsonArray = response.body().toString();
                     Type list = new TypeToken<LoginJsonData>() {
