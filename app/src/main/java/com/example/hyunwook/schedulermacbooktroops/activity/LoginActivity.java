@@ -74,7 +74,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
-        pref = getSharedPreferences("registInfo", Activity.MODE_PRIVATE);
+        pref = getSharedPreferences("loginData", MODE_PRIVATE);
         editor = pref.edit();
 
         idInput = (EditText) findViewById(R.id.idInput);
@@ -285,12 +285,11 @@ public class LoginActivity extends Activity {
         super.onStart();
         Log.d(TAG, "onStart");
         //이전에 자동로그인을 체크했나 ?
-
         String strAuto = pref.getString("prefAutoLogin", "");
         Log.d(TAG, "autoCheck -->" + strAuto);
 
         String autoId = pref.getString("prefEmail", "");
-        String autoPw = getBase64decode(pref.getString("prefPw", ""));
+        String autoPw = pref.getString("prefPw", "");
 
         Log.d(TAG, "id info --> " + autoId + "////" + autoPw);
         //기존에 자동로그인을 체크했을 경우 아이디 비밀번호 표시
@@ -353,8 +352,10 @@ public class LoginActivity extends Activity {
                  */
                 Gson gson = new Gson();
                 if (response.body() == null) {
-                    Toast.makeText(getApplicationContext(), "로그인 실패...", Toast.LENGTH_LONG).show();
+//                    Log.d(TAG, "fail login ->" + response.body().toString());
+//                    Toast.makeText(getApplicationContext(), "로그인 실패...", Toast.LENGTH_LONG).show();
                     Log.d(TAG, "로그인 실패...");
+                    //정보 없음 회원가입 유도
                     callback.onFail("fail");
                 } else {
                     String jsonArray = response.body().toString();
@@ -366,11 +367,13 @@ public class LoginActivity extends Activity {
                     String loginToken = loginList.token;
 
                     Log.d(TAG, "result name and token ->" + loginName + "--" + loginToken);
-                    SharedPreferences pref = getSharedPreferences("loginData", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
 
                     editor.putString("loginName", loginName);
                     editor.putString("loginToken", loginToken);
+
+                    //자동 로그인 테스트
+                    editor.putString("prefEmail", id);
+                    editor.putString("prefPw", pw);
 
                     editor.apply();
                     callback.onSuccess("success");
@@ -381,6 +384,7 @@ public class LoginActivity extends Activity {
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.d(TAG, "result Failure -->" + t);
                 callback.onFail("fail");
+                //서버가 죽은경우?
             }
         });
     }

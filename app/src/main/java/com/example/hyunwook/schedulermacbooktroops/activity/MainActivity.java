@@ -155,8 +155,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Log.d(TAG, "mMonthText -->" + mMonthText[Calendar.getInstance().get(Calendar.MONTH)]);
 
         tvTitleDay.setText(getString(R.string.calendar_today));
-//        SharedPreferences pref = getSharedPreferences("loginData", Activity.MODE_PRIVATE);
-//        Log.d(TAG, "login data check ->" + pref.getString("loginName", "") + "--" + pref.getString("loginToken", ""));
+        SharedPreferences pref = getSharedPreferences("loginData", Activity.MODE_PRIVATE);
+        Log.d(TAG, "login data check ->" + pref.getString("loginName", "") + "--" + pref.getString("loginToken", ""));
         //kitkat 이하
         if (Build.VERSION.SDK_INT < 19) {
             Log.d(TAG, "this phone below kitkat");
