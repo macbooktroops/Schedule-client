@@ -22,10 +22,15 @@ public class RequestLogin {
     /**
      * http://localhost:3000/users/sign_in
      * Email, password
+     *
+     * rails s -b 0.0.0.0로 로컬 테스트 시
+     * http://192.168.219.104:3000/ 내 맥북 아이피.
      */
     Retrofit retrofit = new Retrofit.Builder()
-//            .baseUrl("http://localhost:3000/users/")
-            .baseUrl("http://172.16.6.210:3000/")
+//            .baseUrl("http://localhost:3000/")
+            .baseUrl("http://192.168.219.104:3000/")
+//            .baseUrl("http://schedule.mactroops.com/")
+
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 

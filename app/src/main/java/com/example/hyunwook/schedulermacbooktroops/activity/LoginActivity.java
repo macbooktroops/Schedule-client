@@ -18,6 +18,7 @@ import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
+import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestLogin;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -109,7 +110,7 @@ public class LoginActivity extends Activity {
                 .subscribeOn( listOfUsers -> {
 
 //                })*/
-       /* Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
+        Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(nYear);
 //        android.database.Observable.
 //
 ////        io.reactivex.Observable.combineLatest()
@@ -117,9 +118,9 @@ public class LoginActivity extends Activity {
             @Override
             public void onResponse(Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {
                 Log.d(TAG, "Retrofit --->" + response.body().toString());
-                    *//**
+                    /**
                      * ScheduleR Table에 eventSetId가 '-1'이면 공휴일로 판단.
-                     *//*
+                     */
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
@@ -132,9 +133,9 @@ public class LoginActivity extends Activity {
 
                             if (holidayRS.size() == 0) {
                                 //ScheduleR Table 에 공휴일정보가 저장이 되어있지않음.
-                                *//**
+                                /**
                                  * Use gson json parsing.
-                                 *//*
+                                 */
                                 try {
                                     Gson gson = new Gson();
                                     JSONArray jsonArray = new JSONArray(response.body().toString());
@@ -142,10 +143,11 @@ public class LoginActivity extends Activity {
                                     }.getType();
                                     List<HolidayJsonData> holidayList = gson.fromJson(jsonArray.toString(), list);
 
-
+                                    Log.d(TAG, "holiday response ->" + jsonArray);
                                     Log.d(TAG, "holidayList ->" + holidayList.size());
+                                    Log.d(TAG, "holiday gson ->" + holidayList.get(0).toString());
 
-                                 *//*   Number currentIdNum = realm.where(HolidayR.class).max("seq");
+                                 /*   Number currentIdNum = realm.where(HolidayR.class).max("seq");
 
                                     int nextId;
 
@@ -153,7 +155,7 @@ public class LoginActivity extends Activity {
                                         nextId = 0;
                                     } else {
                                         nextId = currentIdNum.intValue() + 1;
-                                    }*//*
+                                    }*/
                                     Log.d(TAG, "Holiday Insert Realm ....");
                                     //print
                                     for (HolidayJsonData resHoliday : holidayList) {
@@ -195,7 +197,7 @@ public class LoginActivity extends Activity {
             public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
                 Log.d(TAG, "Fail...");
             }
-        });*/
+        });
         //로그인 버튼
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,17 +218,21 @@ public class LoginActivity extends Activity {
                     if (checkEmail(loginId)) {
                         Log.d(TAG, "이메일 형식입니다.");
                         if (checkPassWord(loginPw)) {
-                            Boolean validation = loginValidation(loginId, loginPw);
+                            loginValidation(loginId, loginPw, new ApiCallback() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    Log.d(TAG, "로그인 성공 ----");
+                                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                    mainIntent.putExtra("SuccessLogin", "OK");
+                                    startActivity(mainIntent);
+                                    finish();
+                                }
 
-                            if (validation) {
-                                Log.d(TAG, "로그인 성공 ----");
-                                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                mainIntent.putExtra("SuccessLogin", "OK");
-                                startActivity(mainIntent);
-                                finish();
-                            } else {
-
-                            }
+                                @Override
+                                public void onFail(String result) {
+                                    Toast.makeText(getApplicationContext(), "로그인 실패..", Toast.LENGTH_LONG).show();
+                                }
+                            });
                         } else {
                             Toast.makeText(getApplicationContext(), "패스워드에 소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
                         }
@@ -314,13 +320,15 @@ public class LoginActivity extends Activity {
      * @param pw
      * @return
      */
-    private boolean loginValidation(String id, String pw) {
-
-//        pref.getString("prefEmail", "");
-//        pref.getString("prefPw", "");
-
+    private void loginValidation(String id, String pw, final ApiCallback callback) {
         /**
          * SignIn http://localhost:3000/users/sign_in
+         * {
+         * “user”: {
+         * “email”: “tjstlr2010@gmail.com”,
+         * “password”: “js30211717”
+         * }
+         * }
          */
         Log.d(TAG, "pw validate ->" + pw);
         JsonObject jsonObject = new JsonObject();
@@ -329,33 +337,59 @@ public class LoginActivity extends Activity {
         userJsonObject.addProperty("password", pw);
         jsonObject.add("user", userJsonObject);
 
-            Log.d(TAG, "jsonresult ->" + userJsonObject);
-
-
-//            parser.parse(jsonUserInfo);
-
+        Log.d(TAG, "jsonresult ->" + jsonObject);
         /**
          *   Parameters: {"_json"=>"{\"user\":{\"email\":\"c004245@naver.com\",\"password\":\"whgusdnr1!\"}}",
          *   "session"=>{"_json"=>"{\"user\":{\"email\":\"c004245@naver.com\",\"password\":\"whgusdnr1!\"}}"}}
          */
-
-//        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonUserInfo);
         Call<JsonObject> res = RequestLogin.getInstance().getService().postSignIn(jsonObject);
         res.enqueue(new Callback<JsonObject>() {
+
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.d(TAG, "result Response -->" + response.body().toString());
+                /**
+                 * 성공 {"id":1,"name":"c004245","email":"c004245@naver.com","phone":"01027327899","birth":"1997-08-02T00:00:00.000Z","auth_token":"3Ay2uTVEVtwCe5YscQrq","created_at":"2018-09-25T05:17:34.000Z","updated_at":"2018-09-26T04:07:15.949Z"}
+                 * 실패
+                 */
+                Gson gson = new Gson();
+                if (response.body() == null) {
+                    Toast.makeText(getApplicationContext(), "로그인 실패...", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "로그인 실패...");
+                    callback.onFail("fail");
+                } else {
+                    String jsonArray = response.body().toString();
+                    Type list = new TypeToken<LoginJsonData>() {
+                    }.getType();
+                    LoginJsonData loginList = gson.fromJson(jsonArray.toString(), list);
+
+                    String loginName = loginList.name;
+                    String loginToken = loginList.token;
+
+                    Log.d(TAG, "result name and token ->" + loginName + "--" + loginToken);
+                    SharedPreferences pref = getSharedPreferences("loginData", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+
+                    editor.putString("loginName", loginName);
+                    editor.putString("loginToken", loginToken);
+
+                    editor.apply();
+                    callback.onSuccess("success");
+                }
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.d(TAG, "result Failure -->" + t);
+                callback.onFail("fail");
             }
         });
-        return true;
-
+    }
+    public interface ApiCallback{
+        void onSuccess(String result);
+        void onFail(String result);
+    }
 /*
-                        String idt = pref.getString("prefEmail", "");
+        String idt = pref.getString("prefEmail", "");
         String pwt = pref.getString("prefPw", "");
 
         String base64pw = getBase64decode(pwt);
@@ -378,8 +412,8 @@ public class LoginActivity extends Activity {
         } else {
             //login failed
             return false;
-        }*/
-    }
+        }
+    }*/
 
     /**
      * 이메일 형식 체크

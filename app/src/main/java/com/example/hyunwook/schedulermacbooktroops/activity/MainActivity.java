@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -135,6 +136,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchViewById(R.id.linearMenuNoCategory).setOnClickListener(this);
         searchViewById(R.id.tvMenuAddEventSet).setOnClickListener(this);
 
+
         initUI();
         initEventSetList();
         goScheduleFragment();
@@ -153,7 +155,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Log.d(TAG, "mMonthText -->" + mMonthText[Calendar.getInstance().get(Calendar.MONTH)]);
 
         tvTitleDay.setText(getString(R.string.calendar_today));
-
+//        SharedPreferences pref = getSharedPreferences("loginData", Activity.MODE_PRIVATE);
+//        Log.d(TAG, "login data check ->" + pref.getString("loginName", "") + "--" + pref.getString("loginToken", ""));
         //kitkat 이하
         if (Build.VERSION.SDK_INT < 19) {
             Log.d(TAG, "this phone below kitkat");
