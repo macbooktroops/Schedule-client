@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.common.listener.OnTaskFinishedListener;
 import com.example.common.realm.EventSetR;
@@ -76,7 +77,13 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
             @Override
             public void onClick(View v) {
                 //휴지통 삭제버튼 클릭 시
-                showDeleteEventSetDialog(eventSet, position);
+                Log.d(TAG, "onClick delete TestSchedule2 -->" + eventSet.getSeq());
+
+                if (eventSet.getSeq() == -1) {
+                    Toast.makeText(mContext, "공휴일 일정은 삭제가 불가능해요.", Toast.LENGTH_LONG).show();
+                } else {
+                    showDeleteEventSetDialog(eventSet, position);
+                }
             }
         });
 
@@ -201,6 +208,7 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
             EventSetR eventSet = mEventSets.get(position);
 
             if (view.getId() == R.id.ibEventSetDelete) {
+                Log.d(TAG, "onClick delete TestSchedule");
                 showDeleteEventSetDialog(eventSet, position);
             }
         }
