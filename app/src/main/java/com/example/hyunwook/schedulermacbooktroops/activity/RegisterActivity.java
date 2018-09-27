@@ -12,13 +12,16 @@ import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
+import com.example.hyunwook.schedulermacbooktroops.login.Message;
 import com.example.hyunwook.schedulermacbooktroops.login.RegisterJsonData;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestRegister;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -127,19 +130,26 @@ public class RegisterActivity extends Activity {
                 Log.d(TAG, "register response -->" + response.body().toString());
 
                 // 정상 {"id":6,"name":"hyun2","email":"c0024245@naver.com","phone":"222","birth":"2018-09-27T00:00:00.000Z","auth_token":null,"fcm_token":null,"created_at":"2018-09-27T09:47:32.382Z","updated_at":"2018-09-27T09:47:32.382Z"}
-                //nickname 이 이미 있는 경우 {"message":{"code":400,"message":["Name has already been taken"]}}
+                // nickname 이 이미 있는 경우 {"message":{"code":400,"message":["Name has already been taken"]}}
                 // Email이 이미 있는 경우 {"message":{"code":400,"message":["Email has already been taken"]}}
+                // nickname, email 중복 {"message":{"code":400,"message":["Email has already been taken","Name has already been taken"]}}
+                // password 짧을 경우 Password is too short (minimum is 6 characters)"]}}
+
 
                 Gson gson = new Gson();
 
                 String jsonArray = response.body().toString();
-                Type list = new TypeToken<RegisterJsonData>() {
+//                Type list = new TypeToken<RegisterJsonData>() {
+                Type list = new TypeToken<JsonObject>() {
                 }.getType();
 
 
-                RegisterJsonData registList = gson.fromJson(jsonArray.toString(), list);
+//                RegisterJsonData registList = gson.fromJson(jsonArray.toString(), list);
+//                Message registList = gson.fromJson(jsonArray.toString(), list);
+                JsonObject registList = gson.fromJson(jsonArray.toString(), list);
 
-                String message = registList.message;
+//                String message = registList.message;
+                JsonElement message = registList.get("code");
 
                 Log.d(TAG, "message -->" + message);
                 //{"message":{"code":400,"message":["Email has already been taken","Password is too short (minimum is 6 characters)","Name has already been taken"]}}

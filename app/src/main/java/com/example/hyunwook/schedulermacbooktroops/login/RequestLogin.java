@@ -28,8 +28,8 @@ public class RequestLogin {
      */
     Retrofit retrofit = new Retrofit.Builder()
 //            .baseUrl("http://localhost:3000/")
-            .baseUrl("http://192.168.219.104:3000/")
-//            .baseUrl("http://schedule.mactroops.com/")
+//            .baseUrl("http://192.168.219.104:3000/")
+            .baseUrl("http://schedule.mactroops.com/")
 
             .addConverterFactory(GsonConverterFactory.create())
             .build();
