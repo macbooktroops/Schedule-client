@@ -11,9 +11,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
+import com.example.hyunwook.schedulermacbooktroops.login.RegisterJsonData;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestRegister;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,6 +125,24 @@ public class RegisterActivity extends Activity {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 Log.d(TAG, "register response -->" + response.body().toString());
+
+                // 정상 {"id":6,"name":"hyun2","email":"c0024245@naver.com","phone":"222","birth":"2018-09-27T00:00:00.000Z","auth_token":null,"fcm_token":null,"created_at":"2018-09-27T09:47:32.382Z","updated_at":"2018-09-27T09:47:32.382Z"}
+                //nickname 이 이미 있는 경우 {"message":{"code":400,"message":["Name has already been taken"]}}
+                // Email이 이미 있는 경우 {"message":{"code":400,"message":["Email has already been taken"]}}
+
+                Gson gson = new Gson();
+
+                String jsonArray = response.body().toString();
+                Type list = new TypeToken<RegisterJsonData>() {
+                }.getType();
+
+
+                RegisterJsonData registList = gson.fromJson(jsonArray.toString(), list);
+
+                String message = registList.message;
+
+                Log.d(TAG, "message -->" + message);
+                //{"message":{"code":400,"message":["Email has already been taken","Password is too short (minimum is 6 characters)","Name has already been taken"]}}
             }
 
             @Override
