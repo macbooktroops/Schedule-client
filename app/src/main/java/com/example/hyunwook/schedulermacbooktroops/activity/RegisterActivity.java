@@ -11,10 +11,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.login.RequestRegister;
 import com.google.gson.JsonObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends Activity {
     Button regBtn;
@@ -110,6 +115,18 @@ public class RegisterActivity extends Activity {
 
         jsonObject.add("user", userJsonObject);
 
+        Call<JsonObject> res = RequestRegister.getInstance().getService().postSignUp(jsonObject);
+        res.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                Log.d(TAG, "register response -->" + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "register onFailure -->" + t.toString());
+            }
+        });
         //1. 그냥 json형태로만 보내면 insert가 바로 되는지
         //2. Sequel Pro 로 확인하는법..
         //3. 이미 회원가입 된 유저 판단
