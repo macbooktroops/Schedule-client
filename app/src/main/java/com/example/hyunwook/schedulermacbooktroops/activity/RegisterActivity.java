@@ -96,7 +96,11 @@ public class RegisterActivity extends Activity {
                                 Toast.makeText(getApplicationContext(), "패스워드 확인을 다시해주세요", Toast.LENGTH_LONG).show();
                            }
                         } else {
-                            Toast.makeText(getApplicationContext(), "패스워드에 소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
+                            if (strPw.length() < 6) {
+                                Toast.makeText(getApplicationContext(), "패스워드는 최소 6자리가 넘어야됩니다..", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "패스워드에 소문자, 특수문자, 숫자가 포함되어야합니다..", Toast.LENGTH_LONG).show();
+                            }
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "이메일 형식이 아닙니다..", Toast.LENGTH_LONG).show();
@@ -232,7 +236,7 @@ public class RegisterActivity extends Activity {
      * 정규식 (영문, 숫자, 특수문자 조합, 4~20자리)
      */
     private boolean checkPassWord(String password) {
-        String valiPass =  "^(?=.*\\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z]).{4,20}$";
+        String valiPass =  "^(?=.*\\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z]).{6,20}$";
         Pattern pattern = Pattern.compile(valiPass);
 
         Matcher matcher = pattern.matcher(password);
