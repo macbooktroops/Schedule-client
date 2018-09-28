@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
 import com.example.hyunwook.schedulermacbooktroops.login.Message;
+import com.example.hyunwook.schedulermacbooktroops.login.Message2;
 import com.example.hyunwook.schedulermacbooktroops.login.RegisterJsonData;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestRegister;
 import com.google.gson.Gson;
@@ -138,20 +139,32 @@ public class RegisterActivity extends Activity {
 
                 Gson gson = new Gson();
 
-                String jsonArray = response.body().toString();
+                JsonObject jsonArray = response.body();
 //                Type list = new TypeToken<RegisterJsonData>() {
-                Type list = new TypeToken<JsonObject>() {
+                Type list = new TypeToken<Message>() {
                 }.getType();
 
 
 //                RegisterJsonData registList = gson.fromJson(jsonArray.toString(), list);
 //                Message registList = gson.fromJson(jsonArray.toString(), list);
-                JsonObject registList = gson.fromJson(jsonArray.toString(), list);
+                Message registList = gson.fromJson(jsonArray, list);
 
-//                String message = registList.message;
-                JsonElement message = registList.get("code");
+                JsonObject message = registList.message;
+//                JsonElement message = registList.get("code");
 
-                Log.d(TAG, "message -->" + message);
+                Log.d(TAG, "message -->" + message.toString());
+
+                JsonObject jsonResult = message;
+
+                Type listSec = new TypeToken<Message2>() {
+                }.getType();
+
+                Message2 regist2List = gson.fromJson(jsonResult, listSec);
+
+                int code = regist2List.code;
+                List<String> message2 = regist2List.message;
+
+                Log.d(TAG, "message List -> " +code + "--" + message2);
                 //{"message":{"code":400,"message":["Email has already been taken","Password is too short (minimum is 6 characters)","Name has already been taken"]}}
             }
 
