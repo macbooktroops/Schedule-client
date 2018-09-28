@@ -1,7 +1,6 @@
 package com.example.hyunwook.schedulermacbooktroops.activity;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -11,13 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.hyunwook.schedulermacbooktroops.R;
-import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
-import com.example.hyunwook.schedulermacbooktroops.login.Message;
-import com.example.hyunwook.schedulermacbooktroops.login.Message2;
-import com.example.hyunwook.schedulermacbooktroops.login.RegisterJsonData;
+import com.example.hyunwook.schedulermacbooktroops.login.Result;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestRegister;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -138,68 +133,76 @@ public class RegisterActivity extends Activity {
 
         jsonObject.add("user", userJsonObject);
 
-        Call<JsonObject> res = RequestRegister.getInstance().getService().postSignUp(jsonObject);
-        res.enqueue(new Callback<JsonObject>() {
+        Call<Result> res = RequestRegister.getInstance().getService().postSignUp(jsonObject);
+        res.enqueue(new Callback<Result>() {
+            String error;
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+            public void onResponse(Call<Result> call, Response<Result> response) {
 
+//                Log.d(TAG, "response ->" + response);
                 if (response.isSuccessful()) {
                     Log.v(TAG, "response - " + response.body().toString());
                 } else {
-                    Log.v(TAG, "response error - " + response.errorBody().toString());
+                    try {
+                        error = response.errorBody().string();
+                        Log.v(TAG, "response error - " + response.errorBody().string());
+                    } catch (Exception e) {
+
+                    }
                 }
-//                Log.d(TAG, "register response -->" + response.body());
 
-                // 정상 {"id":6,"name":"hyun2","email":"c0024245@naver.com","phone":"222","birth":"2018-09-27T00:00:00.000Z","auth_token":null,"fcm_token":null,"created_at":"2018-09-27T09:47:32.382Z","updated_at":"2018-09-27T09:47:32.382Z"}
-                // nickname 이 이미 있는 경우 {"message":{"code":400,"message":["Name has already been taken"]}}
-                // Email이 이미 있는 경우 {"message":{"code":400,"message":["Email has already been taken"]}}
-                // nickname, email 중복 {"message":{"code":400,"message":["Email has already been taken","Name has already been taken"]}}
-                // password 짧을 경우 Password is too short (minimum is 6 characters)"]}}
-                Log.d(TAG, "check result ->" + response);
-                Gson gson = new Gson();
-
-                JsonObject jsonArray = response.body();
-//                Type list = new TypeToken<RegisterJsonData>() {
-                Type list = new TypeToken<Message>() {
-                }.getType();
-
-
-//                RegisterJsonData registList = gson.fromJson(jsonArray.toString(), list);
-//                Message registList = gson.fromJson(jsonArray.toString(), list);
-                Message registList = gson.fromJson(jsonArray, list);
-
-                JsonObject message = registList.message;
-//                JsonElement message = registList.get("code");
-
-                Log.d(TAG, "message -->" + message.toString());
-
-                JsonObject jsonResult = message;
-
-                Type listSec = new TypeToken<Message2>() {
-                }.getType();
-
-                Message2 regist2List = gson.fromJson(jsonResult, listSec);
-
-                int code = regist2List.code;
-                List<String> message2 = regist2List.message;
-
-                Log.d(TAG, "message List -> " +code + "--" + message2);
-
-                if (code == 400) {
-                    //회원가입 에러로 판단.
-                    Log.d(TAG, "Register Error -----");
-                    Toast.makeText(getApplicationContext(), message2.toString(), Toast.LENGTH_LONG).show();
-                } else {
+                if (error == null) {
                     Log.d(TAG, "Success Register....");
                     Toast.makeText(getApplicationContext(), "회원 저장완료", Toast.LENGTH_LONG).show();
                     finish();
+                } else {
+//                Log.d(TAG, "register response -->" + response.body());
+
+                    // 정상 {"id":6,"name":"hyun2","email":"c0024245@naver.com","phone":"222","birth":"2018-09-27T00:00:00.000Z","auth_token":null,"fcm_token":null,"created_at":"2018-09-27T09:47:32.382Z","updated_at":"2018-09-27T09:47:32.382Z"}
+                    // nickname 이 이미 있는 경우 {"message":{"code":400,"message":["Name has already been taken"]}}
+                    // Email이 이미 있는 경우 {"message":{"code":400,"message":["Email has already been taken"]}}
+                    // nickname, email 중복 {"message":{"code":400,"message":["Email has already been taken","Name has already been taken"]}}
+                    // password 짧을 경우 Password is too short (minimum is 6 characters)"]}}
+                    Log.d(TAG, "check result ->" + error);
+                    Result result = new Gson().fromJson(error, Result.class);
+
+                    int code = result.code;
+                    List<String> message = result.message;
+//                JsonElement message = registList.get("code");
+                    Log.d(TAG, "code -->" + code);
+                    Log.d(TAG, "message -->" + message);
+
+//                JsonObject jsonResult = message;
+
+//                Type listSec = new TypeToken<Message2>() {
+//                }.getType();
+//
+//                Message2 regist2List = gson.fromJson(jsonResult, listSec);
+
+//                int code = regist2List.code;
+//                List<String> message2 = regist2List.message;
+
+//                Log.d(TAG, "message List -> " +code + "--" + message2);
+
+                        //회원가입 에러로 판단.
+                    Log.d(TAG, "Register Error -----");
+
+                    if (message.contains("Name has already been taken") && message.contains("Email has already been taken")) {
+                        Toast.makeText(getApplicationContext(),"이미 존재하는 닉네임과 이메일입니다.", Toast.LENGTH_LONG).show();
+                    } else if (message.contains("Email has already been taken")) {
+                        Toast.makeText(getApplicationContext(), "이미 존재하는 이메일입니다.", Toast.LENGTH_LONG).show();
+                    } else if (message.contains("Name has already been taken")) {
+                        Toast.makeText(getApplicationContext(), "이미 존재하는 닉네임입니다.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), message.toString(), Toast.LENGTH_LONG).show();
+                    }
+                        //{"message":{"code":400,"message":["Email has already been taken","Password is too short (minimum is 6 characters)","Name has already been taken"]}}
 
                 }
-                //{"message":{"code":400,"message":["Email has already been taken","Password is too short (minimum is 6 characters)","Name has already been taken"]}}
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<Result> call, Throwable t) {
                 Log.d(TAG, "register onFailure -->" + t.toString());
             }
         });

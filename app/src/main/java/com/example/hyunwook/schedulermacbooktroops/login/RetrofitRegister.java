@@ -17,5 +17,5 @@ public interface RetrofitRegister {
 
     @Headers({"Content-Type: application/json", "Accept: application/json"})
     @POST("users")
-    Call<JsonObject> postSignUp(@Body JsonObject login);
+    Call<Result> postSignUp(@Body JsonObject login);
 }

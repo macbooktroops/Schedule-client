@@ -9,28 +9,34 @@ import java.util.List;
  * 18-09-27
  * Register Json SerializedName
  */
-public class Message {
+public class Result {
+
+    @SerializedName("code")
+    public int code;
 
     @SerializedName("message")
-    public JsonObject message;
+    public List<String> message;
+
+    // @SerializedName("message")
+    // public JsonObject message;
 
 //    @SerializedName("message")
 //    private List<String> messageList;
 
-//    public void setMessage(String message) {
-//        this.message = message;
-//    }
-//    public String getMessage() {
-//        return message;
-//    }
-//    public void setCode(int code) {
-//        this.code = code;
-//    }
-//
-//    public int getCode() {
-//        return code;
-//    }
+  /*  public void setMessage(List<String> message) {
+        this.message = message;
+    }
+    public List<String> getMessage() {
+        return message;
+    }
+    public void setCode(int code) {
+        this.code = code;
+    }
 
+    public int getCode() {
+        return code;
+    }
+*/
 //    public void setMessage(List<String> message) {
 //        this.message = message;
 //    }

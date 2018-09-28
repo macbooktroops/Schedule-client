@@ -15,4 +15,4 @@ public class LoginJsonData {
     @SerializedName("auth_token")
     public String token;
 }
-//    java.lang.ClassCastException: com.google.gson.JsonObject cannot be cast to com.example.hyunwook.schedulermacbooktroops.login.Message
+//    java.lang.ClassCastException: com.google.gson.JsonObject cannot be cast to com.example.hyunwook.schedulermacbooktroops.login.Result
