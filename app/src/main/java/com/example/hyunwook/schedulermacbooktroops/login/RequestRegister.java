@@ -21,6 +21,7 @@ public class RequestRegister {
      */
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://schedule.mactroops.com/")
+//            .baseUrl("http://192.168.1.253:3000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 

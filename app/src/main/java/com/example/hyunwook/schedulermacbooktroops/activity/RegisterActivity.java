@@ -53,6 +53,16 @@ public class RegisterActivity extends Activity {
         editBirth = (EditText) findViewById(R.id.birthInput);
 
 
+        /**
+         * Test
+         */
+
+        editEmail.setText("c004245@naver.com");
+        editPw.setText("whgusdnr1!");
+        editConfirmPw.setText("whgusdnr1!");
+        editPhone.setText("01027327899");
+        editNickName.setText("hyun");
+        editBirth.setText("970802");
         regBtn = (Button) findViewById(R.id.registFinBtn);
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,15 +138,20 @@ public class RegisterActivity extends Activity {
         res.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.d(TAG, "register response -->" + response.body().toString());
+
+                if (response.isSuccessful()) {
+                    Log.v(TAG, "response - " + response.body().toString());
+                } else {
+                    Log.v(TAG, "response error - " + response.errorBody().toString());
+                }
+//                Log.d(TAG, "register response -->" + response.body());
 
                 // 정상 {"id":6,"name":"hyun2","email":"c0024245@naver.com","phone":"222","birth":"2018-09-27T00:00:00.000Z","auth_token":null,"fcm_token":null,"created_at":"2018-09-27T09:47:32.382Z","updated_at":"2018-09-27T09:47:32.382Z"}
                 // nickname 이 이미 있는 경우 {"message":{"code":400,"message":["Name has already been taken"]}}
                 // Email이 이미 있는 경우 {"message":{"code":400,"message":["Email has already been taken"]}}
                 // nickname, email 중복 {"message":{"code":400,"message":["Email has already been taken","Name has already been taken"]}}
                 // password 짧을 경우 Password is too short (minimum is 6 characters)"]}}
-
-
+                Log.d(TAG, "check result ->" + response);
                 Gson gson = new Gson();
 
                 JsonObject jsonArray = response.body();
@@ -165,6 +180,17 @@ public class RegisterActivity extends Activity {
                 List<String> message2 = regist2List.message;
 
                 Log.d(TAG, "message List -> " +code + "--" + message2);
+
+                if (code == 400) {
+                    //회원가입 에러로 판단.
+                    Log.d(TAG, "Register Error -----");
+                    Toast.makeText(getApplicationContext(), message2.toString(), Toast.LENGTH_LONG).show();
+                } else {
+                    Log.d(TAG, "Success Register....");
+                    Toast.makeText(getApplicationContext(), "회원 저장완료", Toast.LENGTH_LONG).show();
+                    finish();
+
+                }
                 //{"message":{"code":400,"message":["Email has already been taken","Password is too short (minimum is 6 characters)","Name has already been taken"]}}
             }
 
@@ -178,20 +204,16 @@ public class RegisterActivity extends Activity {
         //3. 이미 회원가입 된 유저 판단
         //4. 핸드폰 번호 인증?
         Log.d(TAG, "json Register ->" + jsonObject);
-        SharedPreferences pref = getSharedPreferences("registInfo", MODE_PRIVATE);
+      /*  SharedPreferences pref = getSharedPreferences("registInfo", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
         editor.putString("prefEmail", strEmail);
         editor.putString("prefPw", base64Pw);
         editor.putString("prefNickName", strNickName);
         editor.putString("prefPhone", strPhone);
-        editor.putString("prefBirth", strBirth);
+        editor.putString("prefBirth", strBirth);*/
 
-        Toast.makeText(getApplicationContext(), "회원 저장완료", Toast.LENGTH_LONG).show();
 
-        editor.commit();
-
-        finish();
     }
 
     /**
