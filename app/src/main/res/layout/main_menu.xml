@@ -136,7 +136,7 @@
                 android:layout_height="@dimen/line_height"
                 android:background="@color/color_menu_line"/>
 
-            <com.example.hyunwook.schedulermacbooktroops.widget.AbsoluteRecyclerView
+            <com.playgilround.schedule.client.widget.AbsoluteRecyclerView
                 android:id="@+id/rvEventSetList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

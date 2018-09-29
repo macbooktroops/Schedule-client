@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.calendar">
+    package="com.playgilround.calendar">
 
     <!--안드로이드 SDK 버전 17이상에서는 운영체제 차원에서
     RTL(Right-TO-LEFT) 레이아웃을 지원한다는 얘기.-->

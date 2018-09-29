@@ -6,7 +6,7 @@ android {
 //    compileSdkVersion 27
     compileSdkVersion compile_sdk_version
     defaultConfig {
-        applicationId "com.example.hyunwook.schedulermacbooktroops"
+        applicationId "com.playgilround.schedule.client"
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         versionCode 1

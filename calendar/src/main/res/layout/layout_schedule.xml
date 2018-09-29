@@ -6,13 +6,13 @@
     android:layout_alignWithParentIfMissing="true"
     android:orientation="vertical">
 
-    <com.example.calendar.widget.calendar.WeekBarView
+    <com.playgilround.calendar.widget.calendar.WeekBarView
         android:layout_width="match_parent"
         android:layout_height="@dimen/week_bar_height"
         android:background="@color/calendar_bg_color"
         app:week_text_size="@integer/calendar_text_size"/>
 
-    <com.example.calendar.widget.calendar.schedule.ScheduleLayout
+    <com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/sdLayout"
@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/rlMonthCalendar">
 
-                    <com.example.calendar.widget.calendar.month.MonthCalendarView
+                    <com.playgilround.calendar.widget.calendar.month.MonthCalendarView
                         android:id="@+id/monthCalendar"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/month_calendar_height"
@@ -48,7 +48,7 @@
                         app:month_show_task_hint="false"/>
                 </RelativeLayout>
 
-                <com.example.calendar.widget.calendar.week.WeekCalendarView
+                <com.playgilround.calendar.widget.calendar.week.WeekCalendarView
                     android:id="@+id/weekCalendar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/week_calendar_height"
@@ -70,7 +70,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/colorBackground">
 
-                <com.example.calendar.widget.calendar.schedule.ScheduleRecyclerView
+                <com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView
                     android:id="@+id/rvScheduleList"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -99,5 +99,5 @@
 
             </RelativeLayout>
         </LinearLayout>
-    </com.example.calendar.widget.calendar.schedule.ScheduleLayout>
+    </com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout>
 </LinearLayout>

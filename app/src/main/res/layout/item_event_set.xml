@@ -5,7 +5,7 @@
     android:layout_height="50.5dp"
     android:orientation="vertical">
 
-    <com.example.hyunwook.schedulermacbooktroops.widget.SlideDeleteView
+    <com.playgilround.schedule.client.widget.SlideDeleteView
         android:id="@+id/sdvEventSet"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -55,7 +55,7 @@
             android:background="@color/colorTranslate"
             android:src="@drawable/btn_delete"
             android:tag="delete"/>
-    </com.example.hyunwook.schedulermacbooktroops.widget.SlideDeleteView>
+    </com.playgilround.schedule.client.widget.SlideDeleteView>
 
     <View
         android:layout_width="match_parent"

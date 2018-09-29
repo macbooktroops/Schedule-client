@@ -24,7 +24,7 @@
         android:src="@mipmap/ic_schedule_finish"/>
 
     <!-- 완료된 내용은 삭선-->
-    <com.example.hyunwook.schedulermacbooktroops.widget.StrikeThruTextView
+    <com.playgilround.schedule.client.widget.StrikeThruTextView
         android:id="@+id/tvScheduleTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

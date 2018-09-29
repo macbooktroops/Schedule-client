@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.common">
+    package="com.playgilround.common">
 
     <application
         android:allowBackup="true"
