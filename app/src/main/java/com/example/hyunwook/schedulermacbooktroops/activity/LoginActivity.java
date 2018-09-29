@@ -20,6 +20,7 @@ import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
 import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestLogin;
+import com.example.hyunwook.schedulermacbooktroops.login.Result;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -346,25 +347,20 @@ public class LoginActivity extends Activity {
         Call<JsonObject> res = RequestLogin.getInstance().getService().postSignIn(jsonObject);
         res.enqueue(new Callback<JsonObject>() {
 
+            String error;
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 /**
                  * 성공 {"id":1,"name":"c004245","email":"c004245@naver.com","phone":"01027327899","birth":"1997-08-02T00:00:00.000Z","auth_token":"3Ay2uTVEVtwCe5YscQrq","created_at":"2018-09-25T05:17:34.000Z","updated_at":"2018-09-26T04:07:15.949Z"}
                  * 실패
                  */
-                Gson gson = new Gson();
-                if (response.body() == null) {
-//                    Log.d(TAG, "fail login ->" + response.body().toString());
-//                    Toast.makeText(getApplicationContext(), "로그인 실패...", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "로그인 실패...");
-                    //정보 없음 회원가입 유도
-                    callback.onFail("fail");
 
-                } else {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "response success -->" + response.body().toString());
                     String jsonArray = response.body().toString();
                     Type list = new TypeToken<LoginJsonData>() {
                     }.getType();
-                    LoginJsonData loginList = gson.fromJson(jsonArray.toString(), list);
+                    LoginJsonData loginList = new Gson().fromJson(jsonArray, list);
 
                     String loginName = loginList.name;
                     String loginToken = loginList.token;
@@ -380,6 +376,33 @@ public class LoginActivity extends Activity {
 
                     editor.apply();
                     callback.onSuccess("success");
+                } else {
+                    try {
+                        error = response.errorBody().string();
+                        Log.d(TAG, "response error ->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        int code = result.code;
+                        List<String> message = result.message;
+
+                        Log.d(TAG, "Login fail code and message ----> " + code +"--"+ message);
+
+                        /**
+                         * 이메일, 패스워드 틀릴 경우 동일하게 처리 예정
+                         * [The password is incorrect.]
+                         * ["The email is incorrect."]
+                         */
+                        if (message.contains("The email is incorrect.") || message.contains("The password is incorrect.")) {
+                            Log.d(TAG, "email and password error");
+                            Toast.makeText(getApplicationContext(), "이메일이나 패스워드가 없는 정보입니다." , Toast.LENGTH_LONG).show();
+                        }
+
+//                        callback.onFail("fail");
+
+                    } catch (Exception e) {
+
+                    }
                 }
             }
 

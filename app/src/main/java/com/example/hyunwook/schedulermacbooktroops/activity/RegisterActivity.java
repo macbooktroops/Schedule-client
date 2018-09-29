@@ -48,16 +48,12 @@ public class RegisterActivity extends Activity {
         editBirth = (EditText) findViewById(R.id.birthInput);
 
 
-        /**
-         * Test
-         */
-
-        editEmail.setText("c004245@naver.com");
-        editPw.setText("whgusdnr1!");
-        editConfirmPw.setText("whgusdnr1!");
-        editPhone.setText("01027327899");
-        editNickName.setText("hyun");
-        editBirth.setText("970802");
+//        editEmail.setText("c004245@naver.com");
+//        editPw.setText("whgusdnr1!");
+//        editConfirmPw.setText("whgusdnr1!");
+//        editPhone.setText("01027327899");
+//        editNickName.setText("hyun");
+//        editBirth.setText("970802");*/
         regBtn = (Button) findViewById(R.id.registFinBtn);
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
