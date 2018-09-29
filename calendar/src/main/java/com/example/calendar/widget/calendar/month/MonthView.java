@@ -188,6 +188,7 @@ public class MonthView extends View {
         Log.d(TAG, "test mSelYear - chkYear ="+ resultYear);
 
         //현재 년도와, 스케줄상에 년도가 2년이상 차이일 경우
+        //1월, 12월 = 작년, 다음년도가 되기 1달전에 실행됨.
         if (resultYear <= -2 || resultYear >= 2) {
             Log.d(TAG, "check try holiday info");
 
