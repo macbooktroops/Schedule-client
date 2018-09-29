@@ -14,12 +14,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.example.common.holiday.HolidayJsonData;
+import com.example.common.holiday.RequestHoliday;
 import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectFindDialog;
 import com.example.hyunwook.schedulermacbooktroops.dialog.SelectHolidayDialog;
-import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
-import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
+
 import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
 import com.example.hyunwook.schedulermacbooktroops.login.RequestLogin;
 import com.example.hyunwook.schedulermacbooktroops.login.Result;

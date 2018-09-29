@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.telecom.Call;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,6 +18,7 @@ import com.example.calendar.R;
 import com.example.calendar.widget.calendar.CalendarUtils;
 import com.example.common.data.ScheduleDB;
 import com.example.common.realm.ScheduleR;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,6 +29,7 @@ import java.util.jar.Attributes;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+
 
 /**
  * 18-05-27
@@ -87,6 +90,9 @@ public class MonthView extends View {
     int resultMinScheData; //해당 연월일에 스케줄 min
 
     private boolean isRealm = true; //최초 MonthView에만 실행
+
+    private int chkYear;
+
     public MonthView(Context context, int year, int month) {
         this(context, null, year, month);
     }
@@ -101,6 +107,8 @@ public class MonthView extends View {
 
     public MonthView(Context context, TypedArray array, AttributeSet attrs, int defStyleAttrs, int year, int month) {
         super(context, attrs, defStyleAttrs);
+
+        realm = Realm.getDefaultInstance();
 
         initAttrs(array, year, month);
         initPaint();
@@ -158,7 +166,42 @@ public class MonthView extends View {
         mSelYear = year;
         mSelMonth = month;
         mHolidays = CalendarUtils.getInstance(getContext()).getHolidays(mSelYear, mSelMonth  + 1);
-        Log.d(TAG, "mSel Year/Month --> " + mSelYear + "-" + mSelMonth);
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        chkYear = calendar.get(Calendar.YEAR);
+
+        Log.d(TAG, "mSel Year/Month --> " + mSelYear + "-" + chkYear);
+        int resultYear = mSelYear - chkYear;
+        Log.d(TAG, "test mSelYear - chkYear ="+ resultYear);
+
+        //현재 년도와, 스케줄상에 년도가 2년이상 차이일 경우
+        if (resultYear <= -2 || resultYear >= 2) {
+            Log.d(TAG, "check try holiday info");
+
+            //먼저 공휴일 데이터가 있는지 검사
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmResults<ScheduleR> scheduleY = realm.where(ScheduleR.class)
+                            .equalTo("eventSetId", -1).equalTo("year", mSelYear).findAll();
+
+                    Log.d(TAG, "scheduleY size -->" + scheduleY.size());
+                    int size = scheduleY.size();
+
+                    if (size == 0) {
+                        //공휴일 정보를 mSelYear 기준으로 얻어옴
+                        Log.d(TAG, "Try mSelYear getHoliday....");
+//                        retrofit2.Call<ArrayList<JsonObject>> res = RequestHo
+                    }
+
+
+                }
+            });
+
+        }
+
 
 
     }
@@ -224,11 +267,6 @@ public class MonthView extends View {
     protected void onDraw(Canvas canvas) {
 
         Log.d(TAG, "onDraw~~~");
-        if (isRealm) {
-            Log.d(TAG, "execute Realm Holiday");
-            realm = Realm.getDefaultInstance();
-            isRealm = false;
-        }
         initSize();
         clearData();
 //        getScheduleData();
@@ -275,6 +313,7 @@ public class MonthView extends View {
 //        ScheduleR holiSchedule;
 
 //         int resultMonth = mSelMonth +1;
+        Log.d(TAG, "realm...-->"+ realm);
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -578,6 +617,7 @@ public class MonthView extends View {
     private void drawNextMonth(Canvas canvas) {
         mPaint.setColor(mLastOrNextMonthTextColor);
 
+        Log.d(TAG, "drawNextMonth ---->" + mSelYear);
         //30
         int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth); //선택연월 일 개수 얻기
 

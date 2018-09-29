@@ -1,4 +1,4 @@
-package com.example.hyunwook.schedulermacbooktroops.holiday;
+package com.example.common.holiday;
 
 import com.google.gson.annotations.SerializedName;
 

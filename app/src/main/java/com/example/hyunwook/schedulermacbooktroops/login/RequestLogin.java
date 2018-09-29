@@ -1,6 +1,5 @@
 package com.example.hyunwook.schedulermacbooktroops.login;
 
-import com.example.hyunwook.schedulermacbooktroops.holiday.RetrofitInterface;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
