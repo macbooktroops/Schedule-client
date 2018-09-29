@@ -17,9 +17,18 @@ import android.view.View;
 import com.example.calendar.R;
 import com.example.calendar.widget.calendar.CalendarUtils;
 import com.example.common.data.ScheduleDB;
+import com.example.common.holiday.HolidayJsonData;
+import com.example.common.holiday.RequestHoliday;
 import com.example.common.realm.ScheduleR;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -29,6 +38,8 @@ import java.util.jar.Attributes;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -183,7 +194,7 @@ public class MonthView extends View {
             //먼저 공휴일 데이터가 있는지 검사
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
-                public void execute(Realm realm) {
+                public void execute(final Realm realm) {
                     RealmResults<ScheduleR> scheduleY = realm.where(ScheduleR.class)
                             .equalTo("eventSetId", -1).equalTo("year", mSelYear).findAll();
 
@@ -192,8 +203,78 @@ public class MonthView extends View {
 
                     if (size == 0) {
                         //공휴일 정보를 mSelYear 기준으로 얻어옴
-                        Log.d(TAG, "Try mSelYear getHoliday....");
-//                        retrofit2.Call<ArrayList<JsonObject>> res = RequestHo
+                        Log.d(TAG, "Try mSelYear getHoliday.... -->" +mSelYear);
+                        final retrofit2.Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(mSelYear);
+
+                        res.enqueue(new retrofit2.Callback<ArrayList<JsonObject>>() {
+                            @Override
+                            public void onResponse(retrofit2.Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {
+                                Log.d(TAG, " check this year retrofit->" + mSelYear);
+                                Log.d(TAG, "MonthView Retrofit --->" + response.body().toString());
+
+                                /**
+                                 * ScheduleR Table eventSetId = '-1'공휴일
+                                 * 현재 년도에 2년 이전, 이후 공휴일을 받아오지만
+                                 * 서버는 +-1 년도 공휴일을 보내주기때문에
+                                 * 양 끝 공휴일이 덮어씌워지게됨.
+                                 */
+
+                                 realm.executeTransaction(new Realm.Transaction() {
+                                     @Override
+                                     public void execute(Realm realm) {
+                                         try {
+                                             Log.d(TAG, "MonthView HolidayCheck ....");
+                                             JSONArray jsonArray = new JSONArray(response.body().toString());
+                                             Type list = new TypeToken<List<HolidayJsonData>>() {
+                                             }.getType();
+
+                                             List<HolidayJsonData> holidayList = new Gson().fromJson(jsonArray.toString(), list);
+
+                                             Log.d(TAG, "MonthView holiday response -->" + jsonArray);
+                                             Log.d(TAG, "MonthView HolidayList size ->" + holidayList.size());
+                                             Log.d(TAG, "MonthView holiday gson ->" + holidayList.get(0).toString());
+
+
+                                             Log.d(TAG, "Start Insert REalm....");
+
+                                             for (HolidayJsonData resHoliday : holidayList) {
+                                                 Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                                                 int nextId;
+
+                                                 if (currentIdNum == null) {
+                                                     nextId = 0;
+                                                 } else {
+                                                     nextId = currentIdNum.intValue() +1;
+                                                 }
+
+                                                 ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
+
+                                                 Log.d(TAG, "holiday data id MonthView ->" + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
+
+                                                 holidayR.setId(resHoliday.id);
+                                                 holidayR.setYear(resHoliday.year);
+                                                 holidayR.setMonth(resHoliday.month);
+                                                 holidayR.setDay(resHoliday.day);
+                                                 holidayR.setTitle(resHoliday.name);
+                                                 holidayR.setEventSetId(-1);
+                                                 holidayR.setColor(-1);
+                                                 holidayR.setState(-1);
+                                             }
+                                         } catch (JSONException e) {
+                                             e.printStackTrace();
+                                         }
+                                     }
+                                 });
+                            }
+
+                            @Override
+                            public void onFailure(retrofit2.Call<ArrayList<JsonObject>> call, Throwable t) {
+                                Log.d(TAG, "Fail MonthView ---> " +t.toString());
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "MonthView Already exist..");
                     }
 
 
