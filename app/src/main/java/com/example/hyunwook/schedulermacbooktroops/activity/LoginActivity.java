@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.common.realm.ScheduleR;
 import com.example.hyunwook.schedulermacbooktroops.R;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectFindDialog;
+import com.example.hyunwook.schedulermacbooktroops.dialog.SelectHolidayDialog;
 import com.example.hyunwook.schedulermacbooktroops.holiday.HolidayJsonData;
 import com.example.hyunwook.schedulermacbooktroops.holiday.RequestHoliday;
 import com.example.hyunwook.schedulermacbooktroops.login.LoginJsonData;
@@ -54,19 +56,20 @@ import retrofit2.Response;
 import static com.example.hyunwook.schedulermacbooktroops.activity.RegisterActivity.getBase64encode;
 
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements SelectFindDialog.OnFindSetListener {
 
     EditText idInput, pwInput;
     CheckBox autoCheck;
 
     String loginId, loginPw;
 
-    Button registBtn, loginBtn;
+    Button registBtn, loginBtn, findBtn;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
     Boolean loginChecked;
 
+    SelectFindDialog mSelectFindDialog;
     static final String TAG = LoginActivity.class.getSimpleName();
 
     Realm realm;
@@ -86,6 +89,8 @@ public class LoginActivity extends Activity {
         registBtn = (Button) findViewById(R.id.registBtn);
 
         loginBtn = (Button) findViewById(R.id.loginBtn);
+
+        findBtn = findViewById(R.id.findBtn);
 
         realm = Realm.getDefaultInstance();
 
@@ -254,6 +259,13 @@ public class LoginActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        findBtn.setOnClickListener(l -> {
+            if (mSelectFindDialog == null)
+                mSelectFindDialog = new SelectFindDialog(this, this);
+
+            mSelectFindDialog.show();
+        });
       /*  if (pref.getString("prefId", "").equals("") || pref.getString("prefPw", "").equals("")) {
             Log.d(TAG, "서버에 저장된 정보가 없어 자동로그인을 진행할 수 없습니다..");
             autoCheck.setEnabled(false);
@@ -413,6 +425,11 @@ public class LoginActivity extends Activity {
                 //서버가 죽은경우?
             }
         });
+    }
+
+    @Override
+    public void onFindSet() {
+        Log.d(TAG, "onFindSet check...");
     }
     public interface ApiCallback{
         void onSuccess(String result);

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingLeft="@dimen/space_20dp"
+    android:paddingRight="@dimen/space_20dp"
+    android:layout_width="300dp"
+    android:layout_height="300dp">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/dialog_background"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/schedule_hint_dash_line_width"
+            android:background="@color/color_select_date_dialog_line"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_16dp"
+            android:layout_marginTop="@dimen/space_10dp">
+        <Button
+            android:layout_marginLeft="@dimen/space_30dp"
+            android:layout_marginRight="@dimen/space_30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/findEmail"
+            android:text="이메일 찾기"
+            android:background="@drawable/btn_confirm"
+            android:textColor="@color/colorWrite"/>
+
+            <Button
+
+                android:id="@+id/findPw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@drawable/btn_confirm"
+                android:text="비밀번호 찾기"
+                android:textColor="@color/colorWrite" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/schedule_hint_dash_line_width"
+            android:background="@color/color_select_date_dialog_line"/>
+
+        <TextView
+            android:textSize="15dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/checkFind"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_16dp"
+            android:layout_marginTop="@dimen/space_10dp">
+
+
+            <TextView
+                android:id="@+id/tvConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="@dimen/space_20dp"
+                android:paddingLeft="@dimen/space_20dp"
+                android:background="@drawable/btn_confirm"
+                android:gravity="center"
+                android:paddingBottom="6dp"
+                android:paddingTop="6dp"
+                android:layout_marginRight="@dimen/space_10dp"
+                android:text="@string/confirm"
+                android:textColor="@color/colorWrite"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

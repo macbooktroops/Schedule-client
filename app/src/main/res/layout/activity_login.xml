@@ -20,23 +20,32 @@
         android:layout_below="@+id/idInput"/>
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="55dp"
-        android:text="Login"
         android:id="@+id/loginBtn"
-        android:textAllCaps="false"
-        android:layout_marginTop="20dp"
+        android:layout_width="100dp"
+        android:layout_height="55dp"
+        android:layout_alignStart="@+id/idInput"
+        android:layout_marginTop="@dimen/space_20dp"
         android:layout_below="@+id/pwInput"
-        android:layout_toStartOf="@+id/registBtn"/>
+        android:text="Login"
+        android:textAllCaps="false" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="55dp"
-        android:text="Regist"
         android:id="@+id/registBtn"
-        android:textAllCaps="false"
+        android:layout_width="100dp"
+        android:layout_height="55dp"
         android:layout_alignTop="@+id/loginBtn"
-        android:layout_alignEnd="@+id/pwInput"/>
+        android:layout_centerHorizontal="true"
+        android:text="Regist"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/findBtn"
+        android:layout_width="100dp"
+        android:layout_height="55dp"
+        android:layout_alignEnd="@+id/idInput"
+        android:layout_alignTop="@+id/loginBtn"
+        android:text="Find"
+        android:textAllCaps="false" />
 
     <CheckBox
         android:layout_width="wrap_content"
