@@ -21,6 +21,8 @@ import com.playgilround.common.holiday.HolidayJsonData;
 import com.playgilround.common.realm.ScheduleR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
+import com.playgilround.schedule.client.firebase.RequestFCMToken;
+import com.playgilround.schedule.client.firebase.TokenSerialized;
 import com.playgilround.schedule.client.login.LoginJsonData;
 import com.playgilround.schedule.client.login.RequestLogin;
 import com.playgilround.schedule.client.login.Result;
@@ -428,7 +430,36 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         jsonObject.add("user", userJsonObject);
 
         Log.d(TAG, "user jsonbody ->" + jsonObject);
+
+        String authToken =pref.getString("loginToken", "default");
+
+        Log.d(TAG, "authToken --->" + authToken);
+        Call<TokenSerialized> res = RequestFCMToken.getInstance().getService().postToken(jsonObject, authToken);
+//        Log.d(TAG, "res --->" + res.toString());
+        res.enqueue(new Callback<TokenSerialized>() {
+            @Override
+            public void onResponse(Call<TokenSerialized> call, Response<TokenSerialized> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "response FCM ->" + response.body().toString());
+                } else {
+                    try {
+                        //response error FCM ->{"code":401,"message":["Unauthorized auth_token."]}
+                        Log.d(TAG, "response error FCM ->" + response.errorBody().string());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TokenSerialized> call, Throwable t) {
+                Log.d(TAG, "fail FCM ->" + t.toString());
+            }
+        });
     }
+
+
     public interface ApiCallback{
         void onSuccess(String result);
         void onFail(String result);

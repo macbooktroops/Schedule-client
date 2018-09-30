@@ -16,7 +16,7 @@ import retrofit2.http.POST;
  */
 public interface RetrofitFirebase {
 
-    @Headers({"Accept: application/json", "Content-Type: application/json", "Authorization: "})
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST("v1/fcm_token")
 //    Call<TokenSerialized> postToken(@Header("Authorization") JsonObject token);
     Call<TokenSerialized> postToken(@Body JsonObject token, @Header("Authorization") String tokenData);
