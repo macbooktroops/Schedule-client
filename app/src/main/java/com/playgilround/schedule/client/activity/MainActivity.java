@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.common.listener.OnTaskFinishedListener;
@@ -137,11 +138,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchViewById(R.id.tvMenuAddEventSet).setOnClickListener(this);
 
 
+        getToken();
         initUI();
         initEventSetList();
         goScheduleFragment();
         initBroadcastReceiver();
 
+    }
+    //1607
+    //Get FireBase Token
+    /**
+     * 등록 토큰이 변경되는 경우
+     * 앱에서 인스턴스 ID 삭제
+     * 새 기기에서 앱 복원
+     * 사용자가 앱 삭제/재설치
+     * 사용자가 앱 데이터 소거
+     */
+    //eJrf0_A2Qxs:APA91bG17pliGqdtRikIYE7RJyjZFp0HDnMfOzSWLD-Oi-20E4nrW1LZzwLv2gNF_3IelUAwMUYnoJzmZpGmGeXrAIlg7VgUz-Uwq7rmDnWkSk-rUlHV1R1l4NqMcD7oPh4HT9TAh1AV
+    public void getToken() {
+        FirebaseInstanceId.getInstance().getToken();
+
+        if (FirebaseInstanceId.getInstance().getToken() != null) {
+            Log.d(TAG, "token ====>" + FirebaseInstanceId.getInstance().getToken());
+        }
     }
 
     //UI 초기화
