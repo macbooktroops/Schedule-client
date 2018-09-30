@@ -26,7 +26,7 @@ public class RequestFCMToken {
     private RequestFCMToken() {
 
     }
-    OkHttpClient httpClient = new OkHttpClient.Builder()
+  /*  OkHttpClient httpClient = new OkHttpClient.Builder()
             .addInterceptor(new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
@@ -36,7 +36,7 @@ public class RequestFCMToken {
                     return chain.proceed(ongoing.build());
                 }
             })
-            .build();
+            .build();*/
     //fcm_token
     Retrofit retrofit = new Retrofit.Builder()
 //            .client(httpClient)

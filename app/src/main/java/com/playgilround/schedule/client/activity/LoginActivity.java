@@ -433,9 +433,13 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         String authToken =pref.getString("loginToken", "default");
 
         Log.d(TAG, "authToken --->" + authToken);
-        Call<TokenSerialized> res = RequestFCMToken.getInstance().getService().postToken(jsonObject, authToken);
+
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface tokenAPI = retrofit.create(APIInterface.class);
+        Call<TokenSerialized> result = tokenAPI.postToken(jsonObject, authToken);
+//        Call<TokenSerialized> res = RequestFCMToken.getInstance().getService().postToken(jsonObject, authToken);
 //        Log.d(TAG, "res --->" + res.toString());
-        res.enqueue(new Callback<TokenSerialized>() {
+        result.enqueue(new Callback<TokenSerialized>() {
             @Override
             public void onResponse(Call<TokenSerialized> call, Response<TokenSerialized> response) {
 
