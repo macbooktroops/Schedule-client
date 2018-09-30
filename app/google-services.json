@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "247008093105",
+    "firebase_url": "https://schedule-86acd.firebaseio.com",
+    "project_id": "schedule-86acd",
+    "storage_bucket": "schedule-86acd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247008093105:android:b2ff63b529681323",
+        "android_client_info": {
+          "package_name": "com.playgilround.schedule.client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247008093105-u4cl6ddcfpb4mppknctk608jkib2a7r9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_CeAplKeuG6WsEcY9EZ1EOVuzhZc4aj4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
