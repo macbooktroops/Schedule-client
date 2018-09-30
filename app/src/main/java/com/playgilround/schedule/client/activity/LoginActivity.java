@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.playgilround.common.holiday.HolidayJsonData;
 import com.playgilround.common.holiday.RequestHoliday;
 import com.playgilround.common.realm.ScheduleR;
@@ -21,6 +22,7 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 
+import com.playgilround.schedule.client.firebase.FirebaseInstance;
 import com.playgilround.schedule.client.login.LoginJsonData;
 import com.playgilround.schedule.client.login.RequestLogin;
 import com.playgilround.schedule.client.login.Result;
@@ -229,6 +231,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                 @Override
                                 public void onSuccess(String result) {
                                     Log.d(TAG, "로그인 성공 ----");
+
+                                    sendFirebaseToken();
                                     Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                                     mainIntent.putExtra("SuccessLogin", "OK");
                                     startActivity(mainIntent);
@@ -431,6 +435,37 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     @Override
     public void onFindSet() {
         Log.d(TAG, "onFindSet check...");
+    }
+
+    //Firebase Token Retrofit
+    /**
+     * 등록 토큰이 변경되는 경우
+     * 앱에서 인스턴스 ID 삭제
+     * 새 기기에서 앱 복원
+     * 사용자가 앱 삭제/재설치
+     * 사용자가 앱 데이터 소거
+     */
+    private void sendFirebaseToken() {
+        String resToken = null;
+        Log.d(TAG, "sendFirebase Token start..");
+        //get Token
+        FirebaseInstanceId.getInstance().getToken();
+
+        if (FirebaseInstanceId.getInstance().getToken() != null) {
+            Log.d(TAG, "token result -->" + FirebaseInstanceId.getInstance().getToken());
+
+            resToken = FirebaseInstanceId.getInstance().getToken();
+        }
+        JsonObject jsonObject = new JsonObject();
+        JsonObject userJsonObject = new JsonObject();
+
+        Log.d(TAG, "resultToken ->" + resToken);
+
+        userJsonObject.addProperty("fcm_token", resToken);
+
+        jsonObject.add("user", userJsonObject);
+
+        Log.d(TAG, "user jsonbody ->" + jsonObject);
     }
     public interface ApiCallback{
         void onSuccess(String result);

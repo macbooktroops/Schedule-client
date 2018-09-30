@@ -138,7 +138,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchViewById(R.id.tvMenuAddEventSet).setOnClickListener(this);
 
 
-        getToken();
+//        getToken();
         initUI();
         initEventSetList();
         goScheduleFragment();
