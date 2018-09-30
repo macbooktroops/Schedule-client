@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.login.Result;
-import com.playgilround.schedule.client.login.RequestRegister;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;

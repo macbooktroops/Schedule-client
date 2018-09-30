@@ -24,7 +24,6 @@ import com.playgilround.schedule.client.dialog.SelectFindDialog;
 import com.playgilround.schedule.client.firebase.RequestFCMToken;
 import com.playgilround.schedule.client.firebase.TokenSerialized;
 import com.playgilround.schedule.client.login.LoginJsonData;
-import com.playgilround.schedule.client.login.RequestLogin;
 import com.playgilround.schedule.client.login.Result;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
