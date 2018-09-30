@@ -11,10 +11,11 @@ import android.widget.Toast;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.login.Result;
-import com.playgilround.schedule.client.login.RequestRegister;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.playgilround.schedule.client.retrofit.APIClient;
+import com.playgilround.schedule.client.retrofit.APIInterface;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class RegisterActivity extends Activity {
     Button regBtn;
@@ -129,8 +131,14 @@ public class RegisterActivity extends Activity {
 
         jsonObject.add("user", userJsonObject);
 
-        Call<Result> res = RequestRegister.getInstance().getService().postSignUp(jsonObject);
-        res.enqueue(new Callback<Result>() {
+//        Call<Result> res = RequestRegister.getInstance().getService().postSignUp(jsonObject);
+//        res.enqueue(new Callback<Result>() {
+
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface registAPI = retrofit.create(APIInterface.class);
+        Call<Result> result = registAPI.postSignUp(jsonObject);
+
+        result.enqueue(new Callback<Result>() {
             String error;
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
