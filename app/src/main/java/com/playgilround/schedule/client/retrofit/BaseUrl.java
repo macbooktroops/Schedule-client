@@ -6,4 +6,10 @@ public class BaseUrl {
     // private static final String BASE_URL = "http://localhost:3000/";
 
     public static final String PATH_HOLIDAYS = "v1/holidays";
+
+    public static final String PARAM_YEAR = "year";
+
+    public static final String PARAM_SIGNUP = "users";
+
+    public static final String PARAM_SIGNIN = "users/sign_in";
 }

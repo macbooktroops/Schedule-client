@@ -318,8 +318,13 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
          *   Parameters: {"_json"=>"{\"user\":{\"email\":\"c004245@naver.com\",\"password\":\"whgusdnr1!\"}}",
          *   "session"=>{"_json"=>"{\"user\":{\"email\":\"c004245@naver.com\",\"password\":\"whgusdnr1!\"}}"}}
          */
-        Call<JsonObject> res = RequestLogin.getInstance().getService().postSignIn(jsonObject);
-        res.enqueue(new Callback<JsonObject>() {
+//        Call<JsonObject> res = RequestLogin.getInstance().getService().postSignIn(jsonObject);
+//        res.enqueue(new Callback<JsonObject>() {
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface loginAPI = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = loginAPI.postSignIn(jsonObject);
+
+        result.enqueue(new Callback<JsonObject>() {
 
             String error;
             @Override
