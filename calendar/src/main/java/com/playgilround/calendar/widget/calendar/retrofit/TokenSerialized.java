@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.firebase;
+package com.playgilround.calendar.widget.calendar.retrofit;
 
 import com.google.gson.annotations.SerializedName;
 

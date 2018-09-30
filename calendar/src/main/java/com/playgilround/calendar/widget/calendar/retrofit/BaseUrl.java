@@ -1,9 +1,9 @@
-package com.playgilround.schedule.client.retrofit;
+package com.playgilround.calendar.widget.calendar.retrofit;
 
 public class BaseUrl {
 
 //    public static final String BASE_URL = "http://schedule.mactroops.com/";
-    public static final String BASE_URL = "http://172.16.7.125:3000/";
+    public static final String BASE_URL = "http://192.168.219.104:3000/";
 //     public static final String BASE_URL = "http://localhost:3000/";
 
     public static final String PATH_HOLIDAYS = "v1/holidays";

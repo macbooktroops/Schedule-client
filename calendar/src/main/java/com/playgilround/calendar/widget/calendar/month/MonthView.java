@@ -16,6 +16,8 @@ import android.view.View;
 
 import com.playgilround.calendar.R;
 import com.playgilround.calendar.widget.calendar.CalendarUtils;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.common.data.ScheduleDB;
 import com.playgilround.common.holiday.HolidayJsonData;
 import com.playgilround.common.holiday.RequestHoliday;
@@ -40,6 +42,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 /**
@@ -189,7 +192,7 @@ public class MonthView extends View {
 
         //현재 년도와, 스케줄상에 년도가 2년이상 차이일 경우
         //1월, 12월 = 작년, 다음년도가 되기 1달전에 실행됨.
-        if (resultYear <= -2 || resultYear >= 2) {
+        if (resultYear <= -1 || resultYear >= 1) {
             Log.d(TAG, "check try holiday info");
 
             //먼저 공휴일 데이터가 있는지 검사
@@ -205,7 +208,11 @@ public class MonthView extends View {
                     if (size == 0) {
                         //공휴일 정보를 mSelYear 기준으로 얻어옴
                         Log.d(TAG, "Try mSelYear getHoliday.... -->" +mSelYear);
-                        final retrofit2.Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(mSelYear);
+
+                        Retrofit retrofit = APIClient.getClient();
+                        APIInterface moreHolidayAPI = retrofit.create(APIInterface.class);
+                        retrofit2.Call<ArrayList<JsonObject>> res = moreHolidayAPI.getListHoliday(mSelYear);
+//                        final retrofit2.Call<ArrayList<JsonObject>> res = RequestHoliday.getInstance().getService().getListHoliday(mSelYear);
 
                         res.enqueue(new retrofit2.Callback<ArrayList<JsonObject>>() {
                             @Override

@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.retrofit;
+package com.playgilround.calendar.widget.calendar.retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
