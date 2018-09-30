@@ -1,9 +1,6 @@
-package com.playgilround.schedule.client.login;
+package com.playgilround.calendar.widget.calendar.retrofit;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-
-
 
 import java.util.List;
 

@@ -1,8 +1,6 @@
-package com.playgilround.schedule.client.retrofit;
+package com.playgilround.calendar.widget.calendar.retrofit;
 
 import com.google.gson.JsonObject;
-import com.playgilround.schedule.client.firebase.TokenSerialized;
-import com.playgilround.schedule.client.login.Result;
 
 import java.util.ArrayList;
 

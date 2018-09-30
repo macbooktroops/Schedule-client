@@ -9,13 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.schedule.client.R;
-import com.playgilround.schedule.client.login.Result;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.playgilround.schedule.client.retrofit.APIClient;
-import com.playgilround.schedule.client.retrofit.APIInterface;
+
 
 import java.lang.reflect.Type;
 import java.util.List;
