@@ -34,6 +34,7 @@ import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.dialog.SelectColorDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
+import com.playgilround.schedule.client.fragment.FriendFragment;
 import com.playgilround.schedule.client.fragment.ScheduleFragment;
 
 import com.playgilround.schedule.client.holiday.InitHoliday;
@@ -68,7 +69,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private List<EventSetR> mEventSets;
 
-    private BaseFragment mScheduleFragment, mEventSetFragment;
+    private BaseFragment mScheduleFragment, mEventSetFragment, mFriendFragment;
     private EventSetR mCurrentEventSet;
 
     static final String TAG = MainActivity.class.getSimpleName();
@@ -134,6 +135,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         //각각 클릭 리스너 적용
         searchViewById(R.id.imgBtnMain).setOnClickListener(this);
         searchViewById(R.id.linearMenuSchedule).setOnClickListener(this);
+        searchViewById(R.id.linearMenuFriends).setOnClickListener(this);
         searchViewById(R.id.linearMenuNoCategory).setOnClickListener(this);
         searchViewById(R.id.tvMenuAddEventSet).setOnClickListener(this);
 
@@ -265,6 +267,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 //        }
 
         ft.hide(mScheduleFragment); //스케줄 은 숨기고.
+        ft.hide(mFriendFragment);
         ft.show(mEventSetFragment); //스케줄 항목 프래그로.
         ft.commit();
 
@@ -307,6 +310,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
 
             ft.hide(mScheduleFragment); //스케줄 은 숨기고.
+            ft.hide(mFriendFragment);
             ft.show(mEventSetFragment); //스케줄 항목 프래그로.
             ft.commit();
 
@@ -315,6 +319,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             drawMain.closeDrawer(Gravity.START);
             mCurrentEventSet = eventSet;
         }
+    }
+
+    //친구 관련 프레그먼트
+    public void goFriendFragment() {
+        Log.d(TAG, "goFriendFragment ----->" + mFriendFragment);
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+
+        if (mFriendFragment != null) {
+            ft.remove(mFriendFragment);
+        }
+
+        mFriendFragment = FriendFragment.getInstance();
+        ft.add(R.id.frameContainer, mFriendFragment);
+
+        ft.hide(mScheduleFragment);
+//        ft.hide(mEventSetFragment);
+        ft.show(mFriendFragment);
+        ft.commit();
+
+
     }
 
     private void initBroadcastReceiver() {
@@ -336,7 +362,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
 
             case R.id.linearMenuSchedule:
+                Log.d(TAG, "linearMenu");
                 goScheduleFragment();
+                break;
+
+            case R.id.linearMenuFriends:
+                Log.d(TAG, "linear Friend");
+                goFriendFragment();
                 break;
 
             case R.id.linearMenuNoCategory:
