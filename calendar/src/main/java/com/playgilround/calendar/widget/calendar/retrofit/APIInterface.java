@@ -21,16 +21,16 @@ public interface APIInterface {
 
     //회원가입
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST(BaseUrl.PARAM_SIGNUP)
+    @POST(BaseUrl.PATH_SIGN_UP)
     Call<Result> postSignUp(@Body JsonObject login);
 
     //로그인
     @Headers({"Content-Type: application/json", "Accept: application/json"})
-    @POST(BaseUrl.PARAM_SIGNIN)
+    @POST(BaseUrl.PATH_SIGN_IN)
     Call<JsonObject> postSignIn(@Body JsonObject login);
 
     //토큰
     @Headers({"Accept: application/json", "Content-Type: application/json"})
-    @POST(BaseUrl.PARAM_TOKEN)
+    @POST(BaseUrl.PATH_FCM_TOKEN)
     Call<TokenSerialized> postToken(@Body JsonObject token, @Header("Authorization") String tokenData);
 }

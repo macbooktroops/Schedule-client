@@ -3,6 +3,7 @@
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
 
     <string name="menu_schedule">Schedule</string>
+    <string name="menu_friend">Friend</string>
 
     <string name="calendar_today">Today</string>
     <string name="menu_schedule_category">스케줄 </string>

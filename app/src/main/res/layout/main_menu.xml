@@ -71,6 +71,35 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="@dimen/menu_item_height"
+                    android:id="@+id/linearMenuFriends"
+                    android:background="@drawable/menu_item_border"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space_16dp"
+                        android:src="@mipmap/ic_friend" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space_10dp"
+                        android:layout_weight="1"
+                        android:text="@string/menu_friend"
+                        android:textColor="@color/colorWrite"
+                        android:textSize="@dimen/text_size_18sp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/space_10dp"
+                        android:src="@mipmap/ic_menu_go"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_menu_border_with_arrow"
                     android:gravity="center_vertical"
