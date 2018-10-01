@@ -24,6 +24,7 @@ public class SelectFindDialog extends Dialog implements View.OnClickListener {
     private Button  findEmail, findPw;
     private TextView cancel, confirm, check;
 
+    private String strClick;
     private boolean isChecked = false;
     public SelectFindDialog(Context context, OnFindSetListener onFindSetListener) {
         super(context, R.style.DialogFullScreen);
@@ -51,18 +52,20 @@ public class SelectFindDialog extends Dialog implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.findEmail:
                 check.setText("이메일을 찾으시겠어요?");
+                strClick = "Email";
                 isChecked = true;
                 break;
 
             case R.id.findPw:
                 check.setText("비밀번호를 찾으시겠어요?");
+                strClick = "Password";
                 isChecked = true;
                 break;
 
             case R.id.tvConfirm:
                 if (isChecked) {
                     if (mOnFindSetListener != null) {
-                        mOnFindSetListener.onFindSet();
+                        mOnFindSetListener.onFindSet(strClick);
                     }
                     dismiss();
                 } else {
@@ -74,6 +77,6 @@ public class SelectFindDialog extends Dialog implements View.OnClickListener {
 
 
         public interface OnFindSetListener {
-            void onFindSet();
+            void onFindSet(String chk);
         }
 }

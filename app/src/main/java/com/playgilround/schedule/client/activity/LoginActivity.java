@@ -395,8 +395,17 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     }
 
     @Override
-    public void onFindSet() {
-        Log.d(TAG, "onFindSet check...");
+    public void onFindSet(String check) {
+        Log.d(TAG, "onFindSet check..." + check);
+
+        Intent intent = new Intent(this, FindAccountActivity.class);
+        intent.putExtra("check", check);
+        startActivity(intent);
+      /*  if (check.equals("Email")) {
+            Intent intent = new Intent(this, )
+        } else if (check.equals("Password")) {
+
+        }*/
     }
 
     //Firebase Token Retrofit
