@@ -31,6 +31,16 @@
         android:layout_alignParentLeft="true" />
 
     </LinearLayout>
+        <ImageButton
+            android:id="@+id/btnAddFriend"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@mipmap/add_friend"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/space_10dp"
+            android:layout_marginBottom="@dimen/space_10dp"
+            android:layout_alignParentBottom="true"/>
+
 
 
 </RelativeLayout>
