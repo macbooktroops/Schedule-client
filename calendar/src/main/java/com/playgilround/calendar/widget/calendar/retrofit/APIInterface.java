@@ -33,4 +33,9 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_FCM_TOKEN)
     Call<TokenSerialized> postToken(@Body JsonObject token, @Header("Authorization") String tokenData);
+
+    //유저검색
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_USER_SEARCH)
+    Call<JsonObject> postUserSearch(@Body JsonObject user, @Header("Authorization") String tokenData);
 }

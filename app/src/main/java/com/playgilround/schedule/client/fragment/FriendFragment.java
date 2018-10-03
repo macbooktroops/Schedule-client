@@ -12,11 +12,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.schedule.client.R;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * 18-10-01
@@ -32,6 +40,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     SharedPreferences pref;
 
     private TextView mainText;
+
+    private boolean isInit = true;
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
         return fragment;
@@ -67,6 +77,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Log.d("LOG_TAG", getClass().getSimpleName() + " text changed " + searchBar.getText());
+                isInit = true;
             }
 
             @Override
@@ -102,7 +113,47 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
-        Log.d(TAG, "Confirmed --->" + text.toString());
+
+        if (isInit) {
+            Log.d(TAG, "Confirmed --->" + text.toString());
+
+            JsonObject jsonObject = new JsonObject();
+            JsonObject userJsonObject = new JsonObject();
+
+            userJsonObject.addProperty("name", text.toString());
+
+            jsonObject.add("user", userJsonObject);
+            String authToken = pref.getString("loginToken", "default");
+
+            Log.d(TAG, "authToken ->" + authToken);
+
+            Log.d(TAG, "friend body ->" + jsonObject);
+
+            Retrofit retrofit = APIClient.getClient();
+            APIInterface userAPI = retrofit.create(APIInterface.class);
+            Call<JsonObject> result = userAPI.postUserSearch(jsonObject, authToken);
+
+            result.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "response FCM -> " + response.body().toString());
+                    } else {
+                        try {
+                            Log.d(TAG, "response error FCM - >" + response.errorBody().string());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.d(TAG, "fail FCM ->" + t.toString());
+                }
+            });
+            isInit = false;
+        }
     }
 
     @Override
