@@ -36,6 +36,7 @@ dependencies {
     implementation "com.android.support:design:27.1.1"
     implementation "com.android.support:support-v4:27.1.1"
 
+
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
@@ -59,4 +60,8 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-messaging:17.3.2'
+
+    //MaterialSearchBar
+    //https://github.com/mancj/MaterialSearchBar
+    implementation 'com.github.mancj:MaterialSearchBar:0.7.6'
 }
