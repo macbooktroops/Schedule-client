@@ -40,6 +40,7 @@
         style="@style/MaterialSearchBarDark"
         app:mt_speechMode="false"
         app:mt_hint="유저 검색"
+        app:mt_placeholder="유저 검색"
         app:mt_maxSuggestionsCount="30"
         android:id="@+id/searchBar"
         android:layout_width="wrap_content"

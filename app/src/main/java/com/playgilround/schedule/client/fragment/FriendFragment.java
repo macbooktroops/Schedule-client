@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.schedule.client.Friend.UserJsonData;
 import com.playgilround.schedule.client.Friend.UserSearchFragment;
@@ -123,7 +124,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     @Override
     public void onSearchStateChanged(boolean enabled) {
         String s = enabled ? "enabled" : "disabled";
-        Toast.makeText(getContext(), "Search " + s, Toast.LENGTH_LONG).show();
+//        Toast.makeText(getContext(), "Search " + s, Toast.LENGTH_LONG).show();
     }
 
 
@@ -150,6 +151,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
             Call<JsonObject> result = userAPI.postUserSearch(jsonObject, authToken);
 
             result.enqueue(new Callback<JsonObject>() {
+                String error;
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
@@ -199,10 +201,30 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                             final android.app.FragmentManager fm = getActivity().getFragmentManager();
                             us.show(fm, "TAG");
 //                            mUserSearchFragment.show(fm, "TAG");
+                        } else {
+                            Log.d(TAG, "user is null");
                         }
+
                     } else {
                         try {
-                            Log.d(TAG, "response error FCM - >" + response.errorBody().string());
+                            error = response.errorBody().string();
+                            Log.d(TAG, "response error FCM - >" + error);
+
+
+
+                            Result result = new Gson().fromJson(error, Result.class);
+
+                            int code = result.code;
+                            List<String> message = result.message;
+
+                            Log.d(TAG, "Friends fail ----> " + code +"--"+ message);
+
+
+                            if (message.contains("Not found user.") || message.contains("Unauthorized auth_token.")) {
+                                Log.d(TAG, "message ->" + message);
+                                Toast.makeText(getContext(), "그런 유저는 없어요 ㅋ", Toast.LENGTH_LONG).show();
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
