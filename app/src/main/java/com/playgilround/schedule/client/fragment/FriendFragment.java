@@ -57,6 +57,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     private boolean isInit = true;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+    String nickName;
 //    private DialogFragment mUserSearchFragment;
 
     public static FriendFragment getInstance() {
@@ -74,7 +75,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     protected void bindView() {
         pref = getContext().getSharedPreferences("loginData", Context.MODE_PRIVATE);
 
-        String nickName = pref.getString("loginName", "");
+        nickName = pref.getString("loginName", "");
         Log.d(TAG, "friend nickName -->" + nickName);
 
         mainText = searchViewById(R.id.mainNickName);

@@ -1,14 +1,19 @@
 package com.playgilround.schedule.client.Friend;
 
 import android.app.DialogFragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.playgilround.schedule.client.R;
 
 /**
@@ -20,7 +25,11 @@ public class UserSearchFragment extends DialogFragment {
 
     static String resName, resBirth;
 
+    String nickName;
+    SharedPreferences pref;
+
     TextView tvName, tvBirth;
+    Button btnOK, btnCancel;
     public static UserSearchFragment getInstance(String name, String birth) {
 
         resName = name;
@@ -40,6 +49,26 @@ public class UserSearchFragment extends DialogFragment {
 
         tvName.setText(resName);
         tvBirth.setText(resBirth);
+        pref = getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
+        nickName = pref.getString("loginName", "");
+
+        btnOK = rootView.findViewById(R.id.btnUserReq);
+        btnOK.setOnClickListener(l -> {
+            if (nickName.equals(resName)) {
+                Log.d(TAG, "same nickname");
+                Toast.makeText(getActivity(), "자기 자신은 친구 추가할 수 없습니다.", Toast.LENGTH_LONG).show();
+            } else {
+//                JsonObject
+            }
+
+        });
+        btnCancel = rootView.findViewById(R.id.btnUserCancel);
+        btnCancel.setOnClickListener(c -> {
+            Log.d(TAG, "cancel btn");
+            getDialog().dismiss();
+        });
+
+
 
         return rootView;
     }
