@@ -1,10 +1,14 @@
 package com.playgilround.schedule.client.fragment;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +16,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.common.base.app.BaseFragment;
+import com.playgilround.schedule.client.Friend.UserJsonData;
+import com.playgilround.schedule.client.Friend.UserSearchFragment;
 import com.playgilround.schedule.client.R;
 
+import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +54,10 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     private TextView mainText;
 
     private boolean isInit = true;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+//    private DialogFragment mUserSearchFragment;
+
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
         return fragment;
@@ -65,7 +81,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
         searchBar = searchViewById(R.id.searchBar);
         searchBar.setHint("유저 검색");
-        searchBar.setSpeechMode(true);
+        searchBar.setSpeechMode(false);
 
         //enable SearchBar callbacks
         searchBar.setOnSearchActionListener(this);
@@ -137,7 +153,53 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                 @Override
                 public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "response FCM -> " + response.body().toString());
+                        String strResponse = response.body().toString();
+
+                        Type list = new TypeToken<UserJsonData>() {
+                        }.getType();
+                        Log.d(TAG, "response FCM -> " + strResponse);
+
+                        UserJsonData userList = new Gson().fromJson(strResponse, list);
+
+                        int userId = userList.id;
+                        String userName = userList.name;
+                        String userEmail = userList.email;
+                        long userBirth = userList.birth;
+
+
+//                        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+
+//                        String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date(userBirth));
+
+                            Date date = new Date(userBirth * 1000L);
+                            // GMT(그리니치 표준시 +9 시가 한국의 표준시
+                            sdf.setTimeZone(TimeZone.getTimeZone("GMT+9"));
+                            String formattedDate = sdf.format(date);
+
+
+//                        long millisecond = Long.parseLong(userBirth);
+                        // or you already have long value of date, use this instead of milliseconds variable.
+                        Log.d(TAG, "result set ->" + userId + "--" + userName + "--" + userEmail + "--" + userBirth + "--" + formattedDate);
+
+                        if (userList != null) {
+                            //해당 유저가 존재
+                            Log.d(TAG, "userList --->" + userName);
+
+//                            android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                            ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+//
+//                            if (mUserSearchFragment != null) {
+//                                ft.remove(mUserSearchFragment);
+//                            }
+//                            mUserSearchFragment = UserSearchFragment.getInstance(userName, formattedDate);
+
+
+//                            final UserSearchFragment us = new UserSearchFragment(userName, formattedDate);
+                            final UserSearchFragment us = UserSearchFragment.getInstance(userName, formattedDate);
+                            final android.app.FragmentManager fm = getActivity().getFragmentManager();
+                            us.show(fm, "TAG");
+//                            mUserSearchFragment.show(fm, "TAG");
+                        }
                     } else {
                         try {
                             Log.d(TAG, "response error FCM - >" + response.errorBody().string());
