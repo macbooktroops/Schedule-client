@@ -135,6 +135,13 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         if (isInit) {
             Log.d(TAG, "Confirmed --->" + text.toString());
 
+            /**
+             * {
+             *   "user" : {
+             *       "email" : "test4@test.com"
+             *     }
+             * }
+             */
             JsonObject jsonObject = new JsonObject();
             JsonObject userJsonObject = new JsonObject();
 
@@ -168,6 +175,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                         String userName = userList.name;
                         String userEmail = userList.email;
                         long userBirth = userList.birth;
+                        boolean userFriend = userList.isFriend;
 
 
 //                        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
@@ -182,11 +190,12 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
 //                        long millisecond = Long.parseLong(userBirth);
                         // or you already have long value of date, use this instead of milliseconds variable.
-                        Log.d(TAG, "result set ->" + userId + "--" + userName + "--" + userEmail + "--" + userBirth + "--" + formattedDate);
+                        Log.d(TAG, "result set ->" + userId + "--" + userName + "--" + userEmail + "--" + userBirth + "--" + formattedDate + "--"+ userFriend);
 
                         if (userList != null) {
                             //해당 유저가 존재
                             Log.d(TAG, "userList --->" + userName);
+
 
 //                            android.support.v4.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 //                            ft.setTransition(FragmentTransaction.TRANSIT_NONE);
@@ -198,7 +207,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
 
 //                            final UserSearchFragment us = new UserSearchFragment(userName, formattedDate);
-                            final UserSearchFragment us = UserSearchFragment.getInstance(userName, formattedDate);
+                            final UserSearchFragment us = UserSearchFragment.getInstance(userId, userName,  formattedDate, userFriend);
                             final android.app.FragmentManager fm = getActivity().getFragmentManager();
                             us.show(fm, "TAG");
 //                            mUserSearchFragment.show(fm, "TAG");

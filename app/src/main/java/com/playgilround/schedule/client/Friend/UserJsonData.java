@@ -20,4 +20,7 @@ public class UserJsonData {
 
     @SerializedName("birth")
     public long birth;
+
+    @SerializedName("is_friend")
+    public boolean isFriend;
 }
