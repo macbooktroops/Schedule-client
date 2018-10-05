@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -27,6 +29,7 @@ import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.schedule.client.Friend.UserJsonData;
 import com.playgilround.schedule.client.Friend.UserSearchFragment;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.adapter.FriendAdapter;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -59,6 +62,10 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     String nickName;
 //    private DialogFragment mUserSearchFragment;
+
+    RecyclerView friendRecycler;
+    FriendAdapter adapter;
+
 
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
@@ -105,8 +112,18 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
         });
 
+        friendRecycler = searchViewById(R.id.friendRecycler);
+        friendRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
+        adapter = new FriendAdapter();
+        friendRecycler.setAdapter(adapter);
+
+
+
         //restore last queries from disk
 //        lastSearches = load
+
+
 
     }
 
