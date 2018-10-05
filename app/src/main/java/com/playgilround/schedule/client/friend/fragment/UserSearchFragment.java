@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.Friend;
+package com.playgilround.schedule.client.friend.fragment;
 
 import android.app.DialogFragment;
 import android.content.Context;
@@ -14,14 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.schedule.client.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,10 +80,10 @@ public class UserSearchFragment extends DialogFragment {
                     Log.d(TAG, "try new friend...-->" + resId);
 
 //                    JsonObject userIds = new JsonObject();
-                    JsonObject userIds = new JsonObject();
+//                    JsonObject userIds = new JsonObject();
                     JsonArray jsonArray = new JsonArray();
                     jsonArray.add(resId);
-                    userIds.add("user_ids", jsonArray);
+//                    userIds.add("user_ids", jsonArray);
 
 
 
@@ -98,17 +94,17 @@ public class UserSearchFragment extends DialogFragment {
                      * "user_ids": [1]
                      * }
                      */
-                    Log.d(TAG, "jsonObject - >" + userIds);
+                    Log.d(TAG, "jsonObject - >" + jsonArray);
 
                     Retrofit retrofit = APIClient.getClient();
                     APIInterface newFriendAPI = retrofit.create(APIInterface.class);
 //                    Call<JsonObject> result = newFriendAPI.postNewFriend(jsonObject, authToken);
-                    Call<JsonObject> result = newFriendAPI.postNewFriend(userIds, authToken);
+                    Call<JsonArray> result = newFriendAPI.postNewFriend(jsonArray, authToken);
 
-                    result.enqueue(new Callback<JsonObject>() {
+                    result.enqueue(new Callback<JsonArray>() {
                         String error;
                         @Override
-                        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                             if (response.isSuccessful()) {
                                 Log.d(TAG, "response new friend -->" + response.body().toString());
                             } else {
@@ -122,7 +118,7 @@ public class UserSearchFragment extends DialogFragment {
                         }
 
                         @Override
-                        public void onFailure(Call<JsonObject> call, Throwable t) {
+                        public void onFailure(Call<JsonArray> call, Throwable t) {
                             Log.d(TAG, "response failure -->" + t.toString());
                         }
                     });
