@@ -8,6 +8,7 @@
     <!-- 추후에 자기 자신 프로필 사진 -->
 
     <LinearLayout
+        android:layout_below="@+id/searchBar"
         android:id="@+id/linearMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,8 +36,8 @@
 
     </LinearLayout>
 
+
     <com.mancj.materialsearchbar.MaterialSearchBar
-        android:layout_toRightOf="@+id/linearMain"
         style="@style/MaterialSearchBarDark"
         app:mt_speechMode="false"
         app:mt_hint="유저 검색"
@@ -45,7 +46,6 @@
         android:id="@+id/searchBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

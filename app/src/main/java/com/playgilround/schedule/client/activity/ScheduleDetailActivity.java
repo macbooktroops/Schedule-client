@@ -96,6 +96,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         searchViewById(R.id.llScheduleEventSet).setOnClickListener(this);
         searchViewById(R.id.llScheduleTime).setOnClickListener(this);
         searchViewById(R.id.llScheduleLocation).setOnClickListener(this);
+        searchViewById(R.id.llAddFriend).setOnClickListener(this);
 
         vSchedule = searchViewById(R.id.vScheduleColor);
         ivEventIcon = searchViewById(R.id.ivScheduleEventSetIcon);
