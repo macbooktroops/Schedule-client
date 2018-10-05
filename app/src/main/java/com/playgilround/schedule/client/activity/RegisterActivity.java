@@ -51,6 +51,36 @@ public class RegisterActivity extends Activity {
         editBirth = (EditText) findViewById(R.id.birthInput);
 
 
+        editBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (editBirth.getText().toString().trim().length() != 9) {
+                        editBirth.setError("8자리로 생년월일 입력해주세요.");
+                        Log.d(TAG, "EditBirth error");
+                    } else {
+                        // your code here
+                        Log.d(TAG, "EditBirth error2");
+
+                        editBirth.setError(null);
+                    }
+                //포커스 해제
+                } else {
+                    if (editBirth.getText().toString().trim().length() != 9) {
+                        Log.d(TAG, "EditBirth error3");
+
+                        editBirth.setError("생년월일은 8자리");
+                    } else {
+                        // your code here
+                        Log.d(TAG, "EditBirth error4");
+
+                        editBirth.setError(null);
+                    }
+                }
+
+            }
+        });
+
 //        editEmail.setText("c004245@naver.com");
 //        editPw.setText("whgusdnr1!");
 //        editConfirmPw.setText("whgusdnr1!");
@@ -84,8 +114,16 @@ public class RegisterActivity extends Activity {
                         if (checkPassWord(strPw)) {
                             if (checkConfirmPassWord(strPw, strConfirmPw)) {
                                 base64Pw = getBase64encode(strPw); //base64
-                                savePreferences();
                                 Log.d(TAG, "Regist Test -->" + strEmail + "--" + strPw + "--" + strNickName + "--" + strPhone + "--"+ strBirth);
+
+                                if (checkBirthSize()) {
+                                    Log.d(TAG, "editBirth ->" + editBirth.getText().toString().trim().length());
+                                    savePreferences();
+
+                                } else {
+                                    Log.d(TAG, "birth need 8");
+                                    Toast.makeText(getApplicationContext(), "생년월일을 8자리로 입력해주세요", Toast.LENGTH_LONG).show();
+                                }
                             } else {
                                 Toast.makeText(getApplicationContext(), "패스워드 확인을 다시해주세요", Toast.LENGTH_LONG).show();
                            }
@@ -103,6 +141,8 @@ public class RegisterActivity extends Activity {
             }
         });
     }
+
+
 
     /**
      * {
@@ -275,6 +315,15 @@ public class RegisterActivity extends Activity {
             return true;
         } else {
             Log.d(TAG, "different password");
+            return false;
+        }
+    }
+
+    //EditBirth 8자리 입력 체크
+    public boolean checkBirthSize() {
+        if (editBirth.getText().toString().trim().length() == 8) {
+            return true;
+        } else {
             return false;
         }
     }

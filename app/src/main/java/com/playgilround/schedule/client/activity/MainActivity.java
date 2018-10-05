@@ -340,6 +340,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ft.show(mFriendFragment);
         ft.commit();
 
+        resetTitleText("친구 관련");
+        drawMain.closeDrawer(Gravity.START);
 
     }
 

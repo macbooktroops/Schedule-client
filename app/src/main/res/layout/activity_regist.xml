@@ -52,6 +52,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/birthInput"
         android:hint="생년월일"
+        android:maxLength="8"
         android:layout_below="@+id/phoneInput"/>
 
     <Button

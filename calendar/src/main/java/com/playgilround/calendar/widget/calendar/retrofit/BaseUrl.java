@@ -13,6 +13,9 @@ public class BaseUrl {
     public static final String PATH_SIGN_UP = "/users";
     public static final String PATH_SIGN_IN = "/users/sign_in";
 
+    public static final String PATH_USER_SEARCH = "/v1/user";
+
+    public static final String PATH_NEW_FRIEND = "/v1/friends/new";
 
     // Note:: Params
     public static final String PARAM_YEAR = "year";

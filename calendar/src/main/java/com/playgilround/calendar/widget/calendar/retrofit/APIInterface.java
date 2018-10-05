@@ -1,5 +1,6 @@
 package com.playgilround.calendar.widget.calendar.retrofit;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -33,4 +34,14 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_FCM_TOKEN)
     Call<TokenSerialized> postToken(@Body JsonObject token, @Header("Authorization") String tokenData);
+
+    //유저검색
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_USER_SEARCH)
+    Call<JsonObject> postUserSearch(@Body JsonObject user, @Header("Authorization") String tokenData);
+
+    //친구추가
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_NEW_FRIEND)
+    Call<JsonObject> postNewFriend(@Body JsonObject friend, @Header("Authorization") String tokenData);
 }

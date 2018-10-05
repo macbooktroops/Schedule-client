@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- 추후에 자기 자신 프로필 사진 -->
 
     <LinearLayout
+        android:id="@+id/linearMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -31,6 +34,27 @@
         android:layout_alignParentLeft="true" />
 
     </LinearLayout>
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        android:layout_toRightOf="@+id/linearMain"
+        style="@style/MaterialSearchBarDark"
+        app:mt_speechMode="false"
+        app:mt_hint="유저 검색"
+        app:mt_placeholder="유저 검색"
+        app:mt_maxSuggestionsCount="30"
+        android:id="@+id/searchBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+        <ImageButton
+            android:id="@+id/btnAddFriend"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@mipmap/add_friend"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/space_10dp"
+            android:layout_marginBottom="@dimen/space_10dp"
+            android:layout_alignParentBottom="true"/>
+
 
 
 </RelativeLayout>
