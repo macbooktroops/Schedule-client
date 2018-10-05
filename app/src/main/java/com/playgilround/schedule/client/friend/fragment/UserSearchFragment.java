@@ -13,11 +13,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.friend.UserJsonData;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,6 +95,7 @@ public class UserSearchFragment extends DialogFragment {
 
 
                     String authToken = pref.getString("loginToken", "default");
+//                    String authToken = "dfqelfwelflasdfl";
 
                     /**
                      * {
@@ -102,15 +110,55 @@ public class UserSearchFragment extends DialogFragment {
                     Call<JsonArray> result = newFriendAPI.postNewFriend(jsonArray, authToken);
 
                     result.enqueue(new Callback<JsonArray>() {
+                        String success;
                         String error;
                         @Override
                         public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                             if (response.isSuccessful()) {
-                                Log.d(TAG, "response new friend -->" + response.body().toString());
+                                success = response.body().toString();
+                                Log.d(TAG, "response new friend -->" + success);
+
+                                /**
+                                 * 친구 추가 완료
+                                 * [{"id":4,"name":"eee","email":"c004112@daum.net","birth":-59087664000}]
+                                 *
+                                 * 이미 친구
+                                 * []
+                                 *
+                                 * auth token error
+                                 * {"code":401,"message":["Unauthorized auth_token."]}
+                                 */
+
+                                if (success.equals("[]")) {
+                                    //이미 친구
+                                    Log.d(TAG, "already friend");
+                                    Toast.makeText(getActivity(), resName + "님과는 이미 친구입니다.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    Log.d(TAG,  "try request friend");
+                                    //지금은 무조건 친구추가,
+                                    // 추후에는 상대쪽에서 수락하면 추가로.
+                                    Toast.makeText(getActivity(), resName + "님에게 친구 요청을 합니다!", Toast.LENGTH_LONG).show();
+
+//                                    Type list = new TypeToken<UserJsonData>() {
+//                                    }.getType();
+//
+//                                    UserJsonData friendList = new Gson().fromJson(success, list)
+
+                                    getDialog().dismiss();
+                                }
                             } else {
                                 try {
                                     error = response.errorBody().string();
                                     Log.d(TAG, "response new friend error ->" + error);
+
+                                    Result result = new Gson().fromJson(error, Result.class);
+
+                                    List<String> message = result.message;
+
+                                    if (message.contains("Unauthorized auth_token.")) {
+                                        Log.d(TAG, "message -->" + message);
+                                        Toast.makeText(getActivity(), "auth token error " , Toast.LENGTH_LONG).show();
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

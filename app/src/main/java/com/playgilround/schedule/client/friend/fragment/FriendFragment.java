@@ -11,10 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mancj.materialsearchbar.MaterialSearchBar;
@@ -45,12 +48,13 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     private List<String> lastSearches;
     private MaterialSearchBar searchBar;
-
+    String authToken;
 
     static final String TAG = FriendFragment.class.getSimpleName();
     SharedPreferences pref;
 
     private TextView mainText;
+    private ImageButton refreshBtn;
 
     private boolean isInit = true;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,6 +84,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         nickName = pref.getString("loginName", "");
         Log.d(TAG, "friend nickName -->" + nickName);
 
+        authToken = pref.getString("loginToken", "default");
+        Log.d(TAG, "friend nickName -->" + nickName + "--" + authToken);
         mainText = searchViewById(R.id.mainNickName);
         mainText.setText(nickName);
 
@@ -113,8 +119,36 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         adapter = new FriendAdapter();
         friendRecycler.setAdapter(adapter);
 
+//        String authToken = pref.getString("loginToken", "default");
 
+        refreshBtn = searchViewById(R.id.btnRefreshF);
+        refreshBtn.setOnClickListener(l -> {
+            Log.d(TAG,"refresh Friend");
+            Retrofit retrofit = APIClient.getClient();
+            APIInterface getFriendAPI = retrofit.create(APIInterface.class);
+            Call<JsonArray> result = getFriendAPI.getFriendSearch(authToken);
 
+            result.enqueue(new Callback<JsonArray>() {
+                @Override
+                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "response search friend -->" + response.body().toString());
+                    } else {
+                        try {
+                            Log.d(TAG, "response search friend error ->" + response.errorBody().string());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonArray> call, Throwable t) {
+                    Log.d(TAG, "response search friend failure ->" + t.toString());
+                }
+            });
+
+        });
         //restore last queries from disk
 //        lastSearches = load
 
@@ -160,7 +194,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
             userJsonObject.addProperty("name", text.toString());
 
             jsonObject.add("user", userJsonObject);
-            String authToken = pref.getString("loginToken", "default");
+//            authToken = pref.getString("loginToken", "default");
 
             Log.d(TAG, "authToken ->" + authToken);
 

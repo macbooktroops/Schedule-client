@@ -2,8 +2,8 @@ package com.playgilround.calendar.widget.calendar.retrofit;
 
 public class BaseUrl {
 
-    public static final String BASE_URL = "http://schedule.mactroops.com";
-//     public static final String BASE_URL = "http://192.168.219.104:3000";
+//    public static final String BASE_URL = "http://schedule.mactroops.com";
+     public static final String BASE_URL = "http://192.168.219.104:3000";
 //     public static final String BASE_URL = "http://175.211.59.133:3000/";
 //     public static final String BASE_URL = "http://localhost:3000";
 
@@ -18,6 +18,7 @@ public class BaseUrl {
 
     public static final String PATH_NEW_FRIEND = "/v1/friends/new";
 
+    public static final String PATH_FRIEND_SEARCH = "/v1/friends";
     // Note:: Params
     public static final String PARAM_YEAR = "year";
 }
