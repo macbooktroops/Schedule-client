@@ -24,35 +24,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.common.listener.OnTaskFinishedListener;
 import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
-import com.playgilround.schedule.client.dialog.SelectColorDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
-import com.playgilround.schedule.client.fragment.FriendFragment;
+import com.playgilround.schedule.client.friend.fragment.FriendFragment;
 import com.playgilround.schedule.client.fragment.ScheduleFragment;
 
 import com.playgilround.schedule.client.holiday.InitHoliday;
-import com.playgilround.schedule.client.task.eventset.AddEventSetRTask;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * 18-05-24

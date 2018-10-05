@@ -43,5 +43,5 @@ public interface APIInterface {
     //친구추가
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_NEW_FRIEND)
-    Call<JsonObject> postNewFriend(@Body JsonObject friend, @Header("Authorization") String tokenData);
+    Call<JsonArray> postNewFriend(@Body JsonArray friend, @Header("Authorization") String tokenData);
 }

@@ -1,16 +1,12 @@
-package com.playgilround.schedule.client.fragment;
+package com.playgilround.schedule.client.friend.fragment;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +22,9 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
-import com.playgilround.schedule.client.Friend.UserJsonData;
-import com.playgilround.schedule.client.Friend.UserSearchFragment;
+import com.playgilround.schedule.client.friend.UserJsonData;
+import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
 import com.playgilround.schedule.client.R;
-import com.playgilround.schedule.client.adapter.FriendAdapter;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
