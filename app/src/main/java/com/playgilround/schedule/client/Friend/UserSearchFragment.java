@@ -83,19 +83,13 @@ public class UserSearchFragment extends DialogFragment {
                     //친구가 안되있는 유저
                     Log.d(TAG, "try new friend...-->" + resId);
 
-
-                    JsonObject jsonObject = new JsonObject();
+//                    JsonObject userIds = new JsonObject();
+                    JsonObject userIds = new JsonObject();
                     JsonArray jsonArray = new JsonArray();
                     jsonArray.add(resId);
-//                    jsonObject.addProperty("user_ids", String.valueOf(jsonArray));
+                    userIds.add("user_ids", jsonArray);
 
-//                    JsonObject userJsonObject = new JsonObject();
-//                    userJsonObject.addProperty("", resId);
-//                    userJsonObject.addProperty();
-//                    JsonArray jsonArray = jsonObject.getAsJsonArray("user_ids");
-//                    jsonArray.add(resId);
-//                    JsonElement element
-                    jsonObject.add("user_ids", jsonArray);
+
 
                     String authToken = pref.getString("loginToken", "default");
 
@@ -104,11 +98,12 @@ public class UserSearchFragment extends DialogFragment {
                      * "user_ids": [1]
                      * }
                      */
-                    Log.d(TAG, "jsonObject - >" + jsonObject);
+                    Log.d(TAG, "jsonObject - >" + userIds);
 
                     Retrofit retrofit = APIClient.getClient();
                     APIInterface newFriendAPI = retrofit.create(APIInterface.class);
-                    Call<JsonObject> result = newFriendAPI.postNewFriend(jsonObject, authToken);
+//                    Call<JsonObject> result = newFriendAPI.postNewFriend(jsonObject, authToken);
+                    Call<JsonObject> result = newFriendAPI.postNewFriend(userIds, authToken);
 
                     result.enqueue(new Callback<JsonObject>() {
                         String error;
