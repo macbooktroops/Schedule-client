@@ -1,6 +1,8 @@
 package com.playgilround.schedule.client.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,7 +11,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.JsonAdapter;
 import com.playgilround.calendar.widget.calendar.CalendarUtils;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.bean.EventSet;
 import com.playgilround.common.bean.Schedule;
@@ -34,6 +41,8 @@ import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 /**
  * 18-06-29
@@ -85,6 +94,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private String resultTime;
     //선택된 스케줄 Primary 데이터
     int curScheduleSeq;
+
+    SharedPreferences pref;
+
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
@@ -228,6 +240,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                             finish();
                         }
                     }, mSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
+                  addScheduleServer();
                 } else {
                     ToastUtils.showShortToast(getApplicationContext(), R.string.schedule_input_content_is_no_null);
                 }
@@ -236,6 +249,47 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
         finish();
 
+    }
+    //서버에 스케줄 추가된 내용 저장
+    private void addScheduleServer() {
+
+        /**
+         * {
+         *     "title": "오늘창업허브 ㅋㅋ",
+         *     "start_time": "2018-09-30 13:00:00",
+         *     "content": "adasdsadasdadsadasadasd",
+         *     "latitude": 37.6237604,
+         *     "longitude": 126.9218479,
+         *     "user_ids" [ 2, 3 ]
+         * }
+         */
+
+        //자기 자신 유저 아이디 얻기
+        pref = getSharedPreferences("loginData", Context.MODE_PRIVATE);
+        String authToken = pref.getString("loginToken", "default");
+
+        String nickName = pref.getString("loginName", "");
+        Log.d(TAG, "friend nickName -->" + nickName);
+
+        JsonObject jsonObject = new JsonObject();
+        JsonObject userJsonObject = new JsonObject();
+
+        userJsonObject.addProperty("name", nickName);
+
+        jsonObject.add("user", userJsonObject);
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface getUserId = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = getUserId.postUserSearch(jsonObject, authToken);
+
+//        result.enqueue(new Callback<JsonObject>);
+
+        Log.d(TAG, "addSchedule ->" + etTitle.getText().toString() + "--" + resTime + "--" + etDesc.getText().toString());
+   /*     JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("title", content);
+        jsonObject.addProperty("start_time", m);
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface postNewSche = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = postNewSche.postNewSchedule()*/
     }
 
     @Override

@@ -49,4 +49,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @GET(BaseUrl.PATH_FRIEND_SEARCH)
     Call<JsonArray> getFriendSearch(@Header("Authorization") String tokenData);
+
+    //스케줄 추가
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_NEW_SCHEDULE)
+    Call<JsonObject> postNewSchedule(@Body JsonObject addSche, @Header("Authorization") String tokenData);
+
 }
