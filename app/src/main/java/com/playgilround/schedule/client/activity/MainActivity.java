@@ -222,6 +222,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         //ScheduleFragment show일때는 EventSetFragment hide.
         if (mEventSetFragment != null) {
             ft.hide(mEventSetFragment);
+
+        }
+
+        if (mFriendFragment != null) {
+            ft.hide(mFriendFragment);
         }
         ft.show(mScheduleFragment);
         ft.commit();
@@ -300,8 +305,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 ft.add(R.id.frameContainer, mEventSetFragment);
             }
 
-            ft.hide(mScheduleFragment); //스케줄 은 숨기고.
-            ft.hide(mFriendFragment);
+            if (mScheduleFragment != null) {
+                ft.hide(mScheduleFragment); //스케줄 은 숨기고.
+            }
+            if (mFriendFragment != null) {
+                ft.hide(mFriendFragment);
+            }
             ft.show(mEventSetFragment); //스케줄 항목 프래그로.
             ft.commit();
 
@@ -326,8 +335,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mFriendFragment = FriendFragment.getInstance();
         ft.add(R.id.frameContainer, mFriendFragment);
 
-        ft.hide(mScheduleFragment);
-//        ft.hide(mEventSetFragment);
+        if (mScheduleFragment != null) {
+            ft.hide(mScheduleFragment);
+        }
+
+        if (mEventSetFragment != null) {
+
+            ft.hide(mEventSetFragment);
+        }
         ft.show(mFriendFragment);
         ft.commit();
 

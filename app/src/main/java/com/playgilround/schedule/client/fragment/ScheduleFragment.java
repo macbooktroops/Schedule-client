@@ -17,7 +17,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.playgilround.common.base.app.BaseFragment;
@@ -41,6 +44,8 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 /**
  * 18-05-25
@@ -71,7 +76,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     private String HUMAN_TIME_FORMAT = "";
 
     private String resultTime;
-
+    String content;
 //    private ScheduleAdapter
 
     Realm realm;
@@ -153,7 +158,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     //스케줄 추가
     private void addSchedule() {
-        final String content = etInputContent.getText().toString();
+        content = etInputContent.getText().toString();
 
         if (TextUtils.isEmpty(content)) {
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_content_is_no_null);
@@ -207,6 +212,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 mTime = 0;
                                 resultTime = "0";
                                 updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+
+//                                addScheduleServer();
                             }
                         }
                     }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -216,7 +223,6 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
         }
     }
-
 
 
     private void closeSoftInput() {
