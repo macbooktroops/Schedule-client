@@ -55,4 +55,8 @@ public interface APIInterface {
     @POST(BaseUrl.PATH_NEW_SCHEDULE)
     Call<JsonObject> postNewSchedule(@Body JsonObject addSche, @Header("Authorization") String tokenData);
 
+    //이메일 찾기
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_FIND_EMAIL)
+    Call<JsonObject> postFindEmail(@Body JsonObject findEmail);
 }

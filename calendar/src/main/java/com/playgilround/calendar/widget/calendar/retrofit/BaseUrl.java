@@ -22,6 +22,10 @@ public class BaseUrl {
     public static final String PATH_FRIEND_SEARCH = "/v1/friends";
 
     public static final String PATH_NEW_SCHEDULE = "/v1/schedule/new";
+
+    public static final String PATH_FIND_EMAIL = "v1/user/email";
+
+
     // Note:: Params
     public static final String PARAM_YEAR = "year";
 }

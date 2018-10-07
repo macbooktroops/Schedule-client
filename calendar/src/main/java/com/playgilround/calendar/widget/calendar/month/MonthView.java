@@ -20,7 +20,6 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.common.data.ScheduleDB;
 import com.playgilround.common.holiday.HolidayJsonData;
-import com.playgilround.common.holiday.RequestHoliday;
 import com.playgilround.common.realm.ScheduleR;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
