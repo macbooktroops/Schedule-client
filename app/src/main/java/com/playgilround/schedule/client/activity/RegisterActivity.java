@@ -55,7 +55,7 @@ public class RegisterActivity extends Activity {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if (editBirth.getText().toString().trim().length() != 9) {
+                    if (editBirth.getText().toString().trim().length() != 8) {
                         editBirth.setError("8자리로 생년월일 입력해주세요.");
                         Log.d(TAG, "EditBirth error");
                     } else {
@@ -66,7 +66,7 @@ public class RegisterActivity extends Activity {
                     }
                 //포커스 해제
                 } else {
-                    if (editBirth.getText().toString().trim().length() != 9) {
+                    if (editBirth.getText().toString().trim().length() != 8) {
                         Log.d(TAG, "EditBirth error3");
 
                         editBirth.setError("생년월일은 8자리");
@@ -190,7 +190,7 @@ public class RegisterActivity extends Activity {
                 } else {
                     try {
                         error = response.errorBody().string();
-                        Log.v(TAG, "response error - " + response.errorBody().string());
+                        Log.v(TAG, "response error - " + error);
                     } catch (Exception e) {
 
                     }
@@ -321,8 +321,14 @@ public class RegisterActivity extends Activity {
 
     //EditBirth 8자리 입력 체크
     public boolean checkBirthSize() {
-        if (editBirth.getText().toString().trim().length() == 8) {
-            return true;
+        String birth = editBirth.getText().toString().trim();
+
+        if (birth.length() == 8) {
+            if (birth.matches("^[0-9]*$")) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
