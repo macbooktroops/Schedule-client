@@ -262,8 +262,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             ft.add(R.id.frameContainer, mEventSetFragment);
 //        }
 
-        ft.hide(mScheduleFragment); //스케줄 은 숨기고.
-        ft.hide(mFriendFragment);
+        if (mScheduleFragment != null) {
+            ft.hide(mScheduleFragment); //스케줄 은 숨기고.
+        }
+        if (mFriendFragment != null) {
+            ft.hide(mFriendFragment);
+        }
         ft.show(mEventSetFragment); //스케줄 항목 프래그로.
         ft.commit();
 
