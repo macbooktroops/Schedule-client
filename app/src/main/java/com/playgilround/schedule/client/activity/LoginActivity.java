@@ -276,7 +276,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
             autoCheck.setChecked(true);
         } else if (autoId.equals("") || autoPw.equals("")) {
             Log.d(TAG, "서버에 저장된 정보가 없어 자동로그인을 체크가 불가능합니다..");
-            autoCheck.setEnabled(false);
+            autoCheck.setEnabled(true);
         } else {
             Log.d(TAG, "체크 안한경우.");
             autoCheck.setChecked(false);
