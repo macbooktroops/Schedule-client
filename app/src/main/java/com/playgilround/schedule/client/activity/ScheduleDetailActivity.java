@@ -10,13 +10,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.reflect.TypeToken;
 import com.playgilround.calendar.widget.calendar.CalendarUtils;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.bean.EventSet;
 import com.playgilround.common.bean.Schedule;
@@ -28,6 +32,7 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.InputLocationDialog;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.dialog.SelectEventSetDialog;
+import com.playgilround.schedule.client.friend.UserJsonData;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetMapTask;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRMapTask;
 import com.playgilround.schedule.client.task.schedule.UpdateScheduleRTask;
@@ -35,13 +40,17 @@ import com.playgilround.schedule.client.task.schedule.UpdateScheduleTask;
 import com.playgilround.schedule.client.utils.CalUtils;
 import com.playgilround.schedule.client.utils.DateUtils;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -97,6 +106,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     SharedPreferences pref;
 
+    //자기자신의 아이디
+    int userId;
+
+    String authToken;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
@@ -240,7 +253,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                             finish();
                         }
                     }, mSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
-                  addScheduleServer();
+                  getMyUserID();
                 } else {
                     ToastUtils.showShortToast(getApplicationContext(), R.string.schedule_input_content_is_no_null);
                 }
@@ -250,23 +263,19 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         finish();
 
     }
-    //서버에 스케줄 추가된 내용 저장
-    private void addScheduleServer() {
+    //공유 유저 칸 입력을 위해, 자기자신의 id 값 얻기
+   private void getMyUserID() {
 
-        /**
-         * {
-         *     "title": "오늘창업허브 ㅋㅋ",
-         *     "start_time": "2018-09-30 13:00:00",
-         *     "content": "adasdsadasdadsadasadasd",
-         *     "latitude": 37.6237604,
-         *     "longitude": 126.9218479,
-         *     "user_ids" [ 2, 3 ]
-         * }
-         */
-
+       /**
+        * {
+        *     "user" : {
+        *        "name" : "test4"
+        *     }
+        * }
+        */
         //자기 자신 유저 아이디 얻기
         pref = getSharedPreferences("loginData", Context.MODE_PRIVATE);
-        String authToken = pref.getString("loginToken", "default");
+        authToken = pref.getString("loginToken", "default");
 
         String nickName = pref.getString("loginName", "");
         Log.d(TAG, "friend nickName -->" + nickName);
@@ -281,15 +290,111 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         APIInterface getUserId = retrofit.create(APIInterface.class);
         Call<JsonObject> result = getUserId.postUserSearch(jsonObject, authToken);
 
-//        result.enqueue(new Callback<JsonObject>);
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    String strResponse = response.body().toString();
 
+                    Type list  = new TypeToken<UserJsonData>() {
+                    }.getType();
+
+                    Log.d(TAG, "get DetailUser Id ->" + strResponse);
+
+                    UserJsonData userList = new Gson().fromJson(strResponse, list);
+
+                    userId = userList.id;
+
+                    if (userList == null) {
+                        Log.d(TAG, "error Detail UserInfo");
+                    } else {
+                        Log.d(TAG, "userId ---->" + userId);
+                        addScheduleServer(userId);
+                    }
+                } else {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Log.d(TAG, "response Detail Error -->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        int code = result.code;
+                        List<String> message = result.message;
+
+                        Log.d(TAG, "Detail Info fail...-->" + code + "--"+ message);
+
+
+                        if (message.contains("Not found user.") || message.contains("Unauthorized auth_token.")) {
+                            Log.d(TAG, "message ->" + message);
+                            Toast.makeText(getApplicationContext(), "그런 유저는 없어요 ㅋ", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "fail Detail Id ->" + t.toString());
+            }
+        });
+    }
+
+    //서버에 스케줄 추가된 내용 저장
+    /**
+     * {
+     *     "title": "오늘창업허브 ㅋㅋ",
+     *     "start_time": "2018-09-30 13:00:00",
+     *     "content": "adasdsadasdadsadasadasd",
+     *     "latitude": 37.6237604,
+     *     "longitude": 126.9218479,
+     *     "user_ids" [ 2, 3 ]
+     * }
+     */
+    public void addScheduleServer(int userId) {
+        Log.d(TAG, "addScheduleServer -->" + userId);
         Log.d(TAG, "addSchedule ->" + etTitle.getText().toString() + "--" + resTime + "--" + etDesc.getText().toString());
-   /*     JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("title", content);
-        jsonObject.addProperty("start_time", m);
+        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        jsonObject.addProperty("title", etTitle.getText().toString());
+        jsonObject.addProperty("start_time", resYear +"-"+resMonth+"-"+resDay);
+        jsonObject.addProperty("content", etDesc.getText().toString());
+        jsonObject.addProperty("latitude", 37.6237604);
+        jsonObject.addProperty("longitude", 126.9218479);
+        jsonArray.add(userId);
+//        jsonObject.addProperty("user_ids", [1]);
+
+        jsonObject.add("users_ids", jsonArray);
+        Log.d(TAG, "jsonObject add ->" + jsonObject + "--" + authToken);
+
         Retrofit retrofit = APIClient.getClient();
         APIInterface postNewSche = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = postNewSche.postNewSchedule()*/
+        Call<JsonObject> result = postNewSche.postNewSchedule(jsonObject,  authToken);
+
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    String success = response.body().toString();
+                    Log.d(TAG, "success schedule -->" + success);
+                } else  {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Log.d(TAG, "error schedule -->" + error);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "fail schedule -> " + t.toString());
+            }
+        });
     }
 
     @Override
