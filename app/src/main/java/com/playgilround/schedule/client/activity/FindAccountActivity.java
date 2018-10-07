@@ -17,6 +17,7 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.find.EmailJsonData;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.dialog.FindEmailDialog;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -38,6 +39,8 @@ public class FindAccountActivity extends Activity {
     EditText editEmail, editNickName, editPhone, editBirth;
 
     Button btnFind;
+
+    private FindEmailDialog mFindEmailDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,23 @@ public class FindAccountActivity extends Activity {
             });
 
             btnFind = findViewById(R.id.findBtn);
-            btnFind.setOnClickListener(l -> findUserEmail());
+            btnFind.setOnClickListener(l -> findUserEmail(new ApiCallback() {
+                @Override
+                public void onSuccess(String retName, String retEmail) {
+                    Log.d(TAG, "onSuccess -->" + retName + "--" + retEmail);
+                    if (mFindEmailDialog == null) {
+                        mFindEmailDialog = new FindEmailDialog(FindAccountActivity.this, retName, retEmail);
+                    }
+
+                    mFindEmailDialog.show();
+
+                }
+
+                @Override
+                public void onFail(String result) {
+                    Toast.makeText(getApplicationContext(), "이메일 찾기 실패", Toast.LENGTH_LONG).show();
+                }
+            }));
         } else if (check.equals("Password")) {
             setContentView(R.layout.activity_find_password);
 
@@ -126,7 +145,7 @@ public class FindAccountActivity extends Activity {
     }
 
     //유저 이메일 찾기
-    protected void findUserEmail() {
+    protected void findUserEmail(final ApiCallback callback) {
         Log.d(TAG, "findUserEmail...");
         String resNick = editNickName.getText().toString().trim();
         String resPhone = editPhone.getText().toString().trim();
@@ -175,12 +194,15 @@ public class FindAccountActivity extends Activity {
 
                                 EmailJsonData emailList = new Gson().fromJson(retResponse, list);
 
+                                String retName = emailList.name;
                                 String retEmail = emailList.email;
 
                                 Log.d(TAG, "retEMail -->" + retEmail);
 
                                 if (retEmail != null) {
 
+                                    Log.d(TAG, "이메일 찾기 성공");
+                                    callback.onSuccess(retName, retEmail);
                                 }
 
 
@@ -207,6 +229,7 @@ public class FindAccountActivity extends Activity {
                         @Override
                         public void onFailure(Call<JsonObject> call, Throwable t) {
                             Log.d(TAG, t.toString());
+                            callback.onFail("fail");
                         }
                     });
                 } else {
@@ -246,5 +269,11 @@ public class FindAccountActivity extends Activity {
         } else {
             return false;
         }
+    }
+
+    //Retrofit Callback
+    public interface ApiCallback {
+        void onSuccess(String name, String email);
+        void onFail(String result);
     }
 }
