@@ -66,7 +66,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
           notifyManager.createNotificationChannel(mChannel);
       }
-
+      
       NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
 
       Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
