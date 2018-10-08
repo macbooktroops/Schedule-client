@@ -19,6 +19,7 @@ import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.find.EmailJsonData;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.FindEmailDialog;
+import com.playgilround.schedule.client.dialog.ResetPasswordDialog;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -46,6 +47,8 @@ public class FindAccountActivity extends Activity {
     Button btnFind;
 
     private FindEmailDialog mFindEmailDialog;
+
+    private ResetPasswordDialog mResetPasswordDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,14 +149,27 @@ public class FindAccountActivity extends Activity {
 
             btnFind.setOnClickListener(l -> findUserPassword(new PassCallback() {
                 @Override
-                public void onSuccess(String retToken){
-                    Log.d(TAG, "onSuccess -->" + retToken);
+                public void onSuccess(String retToken, String name){
+                    Log.d(TAG, "onSuccess -->" + retToken + "--" + name);
+
+                    if (mResetPasswordDialog == null) {
+                        mResetPasswordDialog = new ResetPasswordDialog(FindAccountActivity.this, name);
+                    }
+
+                    mResetPasswordDialog.show();
+
                   /*  if (mFindEmailDialog == null) {
                         mFindEmailDialog = new FindEmailDialog(FindAccountActivity.this, retName, retEmail);
                     }
 
                     mFindEmailDialog.show();*/
 
+                  /*  JsonObject jsonObject = new JsonObject();
+                    JsonObject userJsonObject = new JsonObject();
+
+                    userJsonObject.addProperty("password", resToken);
+
+                    jsonObject.add("user", userJsonObject); */
                 }
 
                 @Override
@@ -333,7 +349,7 @@ public class FindAccountActivity extends Activity {
 
                                     if (retToken != null) {
                                         Log.d(TAG, "success getResult.");
-                                        callback.onSuccess(retToken);
+                                        callback.onSuccess(retToken, resNick);
                                     }
 
                                 } else {
@@ -415,7 +431,7 @@ public class FindAccountActivity extends Activity {
 
     //Retrofit Callback password
     public interface PassCallback {
-        void onSuccess(String passToken);
+        void onSuccess(String passToken, String name);
         void onFail(String result);
     }
 }
