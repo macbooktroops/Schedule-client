@@ -26,7 +26,8 @@
         <activity android:name=".activity.MainActivity"/>
         <activity android:name=".activity.RegisterActivity"/>
         <activity android:name=".activity.FindAccountActivity"/>
-        
+
+        <activity android:name=".activity.ResetPasswordActivity"/>
         <!-- Firebase Service-->
         <service android:name=".firebase.FirebaseMessagingService">
             <intent-filter>

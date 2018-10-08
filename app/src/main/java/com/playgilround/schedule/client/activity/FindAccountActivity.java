@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.PassToken;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.find.EmailJsonData;
 import com.playgilround.schedule.client.R;
@@ -21,6 +22,8 @@ import com.playgilround.schedule.client.dialog.FindEmailDialog;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +44,8 @@ public class FindAccountActivity extends Activity {
     Button btnFind;
 
     private FindEmailDialog mFindEmailDialog;
+
+//    private ResetPasswordDialog mResetPasswordDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +90,7 @@ public class FindAccountActivity extends Activity {
             });
 
             btnFind = findViewById(R.id.findBtn);
-            btnFind.setOnClickListener(l -> findUserEmail(new ApiCallback() {
+            btnFind.setOnClickListener(l -> findUserEmail(new EmailCallback() {
                 @Override
                 public void onSuccess(String retName, String retEmail) {
                     Log.d(TAG, "onSuccess -->" + retName + "--" + retEmail);
@@ -115,8 +120,8 @@ public class FindAccountActivity extends Activity {
             editBirth.setOnFocusChangeListener((View.OnFocusChangeListener) (v, hasFocus) -> {
                 if (hasFocus) {
                     if (editBirth.getText().toString().trim().length() != 8) {
-                        editBirth.setError("yyyy-MM-dd 양식을 맞춰주세요.");
-                        Log.d(TAG, "EditBirth error");
+                        editBirth.setError("8자리로 생년월일 입력해주세요.");
+                        Log.d(TAG, "8자리로 생년월일 입력해주세요.");
                     } else {
                         // your code here
                         Log.d(TAG, "EditBirth error2");
@@ -139,13 +144,45 @@ public class FindAccountActivity extends Activity {
             });
             btnFind = findViewById(R.id.findBtn);
 
-            btnFind.setOnClickListener(l -> findUserPassword());
+            btnFind.setOnClickListener(l -> findUserPassword(new PassCallback() {
+                @Override
+                public void onSuccess(String retToken, String name){
+                    Log.d(TAG, "onSuccess -->" + retToken + "--" + name);
+                    Intent intent = new Intent(FindAccountActivity.this, ResetPasswordActivity.class);
+                    intent.putExtra("resultToken", retToken);
+                    intent.putExtra("resultName", name);
+                    startActivity(intent);
+                   /* if (mResetPasswordDialog == null) {
+                        mResetPasswordDialog = new ResetPasswordDialog(FindAccountActivity.this, name);
+                    }
+
+                    mResetPasswordDialog.show();*/
+
+                  /*  if (mFindEmailDialog == null) {
+                        mFindEmailDialog = new FindEmailDialog(FindAccountActivity.this, retName, retEmail);
+                    }
+
+                    mFindEmailDialog.show();*/
+
+                  /*  JsonObject jsonObject = new JsonObject();
+                    JsonObject userJsonObject = new JsonObject();
+
+                    userJsonObject.addProperty("password", resToken);
+
+                    jsonObject.add("user", userJsonObject); */
+                }
+
+                @Override
+                public void onFail(String result) {
+                    Toast.makeText(getApplicationContext(), "이메일 찾기 실패", Toast.LENGTH_LONG).show();
+                }
+            }));
 
         }
     }
 
     //유저 이메일 찾기
-    protected void findUserEmail(final ApiCallback callback) {
+    protected void findUserEmail(final EmailCallback callback) {
         Log.d(TAG, "findUserEmail...");
         String resNick = editNickName.getText().toString().trim();
         String resPhone = editPhone.getText().toString().trim();
@@ -242,8 +279,115 @@ public class FindAccountActivity extends Activity {
     }
 
     //유저 비밀번호 찾기
-    protected void findUserPassword() {
+    //먼저 패스워드 토큰을 얻음
+     protected void findUserPassword(final PassCallback callback) {
         Log.d(TAG, "findUserPassword");
+
+        String resEmail = editEmail.getText().toString().trim();
+        String resNick = editNickName.getText().toString().trim();
+        String resPhone = editPhone.getText().toString().trim();
+        String resBirth = editBirth.getText().toString().trim();
+
+        Log.d(TAG, "test -->" + resEmail + "--"+ resNick + "--" + resPhone + "--"+ resBirth);
+
+        boolean isValidEmail = checkEmail(resEmail); //이메일 포맷인지
+        boolean isValidPhone = checkPhone(resPhone); //숫자만
+        boolean isValidBirth = checkBirthSize(resBirth); //8자리 숫자만
+
+        if (resEmail.equals("") || resNick.equals("") || resPhone.equals("") || resBirth.equals("")) {
+            Toast.makeText(getApplicationContext(), "비어 있는 항목을 모두 채워주세요.", Toast.LENGTH_LONG).show();
+        } else {
+            if (isValidEmail) {
+                Log.d(TAG, "email ok");
+                if (isValidPhone) {
+                    Log.d(TAG, "phone ok");
+                    if (isValidBirth) {
+                        //yyyyMMdd 포맷을 subString을 이용해 분리
+                        String resYear = resBirth.substring(0, 4);
+                        String resMonth = resBirth.substring(4, 6);
+                        String resDay = resBirth.substring(6,8);
+
+                        Log.d(TAG, "Retrofit get FindPassword ----" + resYear + "-" + resMonth + "-"+ resDay);
+
+                        /**
+                         * {
+                         * "email": "test@test.com",
+                         * "name": "test",
+                         * "phone": "01030211717",
+                         * "birth": "1995-08-18"
+                         }
+                         */
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("email", resEmail);
+                        jsonObject.addProperty("name", resNick);
+                        jsonObject.addProperty("phone", resPhone);
+                        jsonObject.addProperty("birth", resYear+"-"+resMonth+"-"+resDay);
+
+                        Log.d(TAG, "jsonObject -->" + jsonObject);
+
+                        Retrofit retrofit = APIClient.getClient();
+                        APIInterface fPassAPI = retrofit.create(APIInterface.class);
+                        Call<JsonObject> result = fPassAPI.postFindPassWord(jsonObject);
+
+                        result.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                String error;
+                                if (response.isSuccessful()) {
+                                    String retResponse = response.body().toString();
+
+                                    Log.d(TAG, "retResponse -->" + retResponse);
+
+                                    Type list = new TypeToken<PassToken>() {
+                                    }.getType();
+
+                                    PassToken passToken = new Gson().fromJson(retResponse, list);
+
+                                    String retToken = passToken.passToken;
+
+                                    Log.d(TAG, "retToken ----> " + retToken);
+
+                                    if (retToken != null) {
+                                        Log.d(TAG, "success getResult.");
+                                        callback.onSuccess(retToken, resNick);
+                                    }
+
+                                } else {
+                                    try {
+                                        error = response.errorBody().string();
+
+                                        Log.d(TAG, "response error -->" + error);
+
+                                        Result result = new Gson().fromJson(error, Result.class);
+
+                                        List<String> message = result.message;
+
+                                        Log.d(TAG, "message --->" + message);
+
+                                        if (message.contains("Not found user.")) {
+                                            Toast.makeText(getApplicationContext(), "등록되지 않은 유저입니다.", Toast.LENGTH_LONG).show();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                                Log.d(TAG, t.toString());
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getApplicationContext(), "생년월일은 숫자 8자리로만 입력해주세요.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "핸드폰번호는 숫자만 입력해주세요.", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "이메일 양식에맞춰주세요.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     //EditBirth 8자리 입력 체크
@@ -271,9 +415,23 @@ public class FindAccountActivity extends Activity {
         }
     }
 
-    //Retrofit Callback
-    public interface ApiCallback {
+    //이메일 포맷
+    private boolean checkEmail(String email) {
+        String mail = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
+        Pattern p = Pattern.compile(mail);
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
+
+    //Retrofit Callback id
+    public interface EmailCallback {
         void onSuccess(String name, String email);
+        void onFail(String result);
+    }
+
+    //Retrofit Callback password
+    public interface PassCallback {
+        void onSuccess(String passToken, String name);
         void onFail(String result);
     }
 }
