@@ -59,4 +59,14 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_FIND_EMAIL)
     Call<JsonObject> postFindEmail(@Body JsonObject findEmail);
+
+    //1.패스워드 토큰 얻기
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_FIND_PASSWORD)
+    Call<JsonObject> postFindPassWord(@Body JsonObject findPassword);
+
+    //패스워드 리셋
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_RESET_PASSWORD)
+    Call<JsonObject> postResetPassword(@Body JsonObject resetPw, @Header("Authorization") String tokenData);
 }

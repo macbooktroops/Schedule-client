@@ -3,8 +3,8 @@ package com.playgilround.calendar.widget.calendar.retrofit;
 public class BaseUrl {
 
 //    public static final String BASE_URL = "http://schedule.mactroops.com";
-     public static final String BASE_URL = "http://192.168.219.104:3000";
-//     public static final String BASE_URL = "http://192.168.1.3:3000";
+//     public static final String BASE_URL = "http://192.168.219.104:3000";
+     public static final String BASE_URL = "http://192.168.10.91:3000";
 //     public static final String BASE_URL = "http://175.211.59.133:3000/";
 //     public static final String BASE_URL = "http://localhost:3000";
 
@@ -24,6 +24,10 @@ public class BaseUrl {
     public static final String PATH_NEW_SCHEDULE = "/v1/schedule/new";
 
     public static final String PATH_FIND_EMAIL = "v1/user/email";
+
+    public static final String PATH_FIND_PASSWORD = "v1/user/password";
+
+    public static final String PATH_RESET_PASSWORD = "/v1/user/password/new";
 
 
     // Note:: Params
