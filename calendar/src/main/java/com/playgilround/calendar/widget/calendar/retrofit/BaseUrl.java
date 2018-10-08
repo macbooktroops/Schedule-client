@@ -4,8 +4,8 @@ public class BaseUrl {
 
 //    public static final String BASE_URL = "http://schedule.mactroops.com";
 //     public static final String BASE_URL = "http://192.168.219.104:3000";
-     public static final String BASE_URL = "http://192.168.10.91:3000";
-//     public static final String BASE_URL = "http://175.211.59.133:3000/";
+//     public static final String BASE_URL = "http://192.168.10.91:3000";
+     public static final String BASE_URL = "http://192.168.1.246:3000/";
 //     public static final String BASE_URL = "http://localhost:3000";
 
     // Note:: Paths

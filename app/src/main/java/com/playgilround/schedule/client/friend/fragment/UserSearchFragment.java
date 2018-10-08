@@ -171,6 +171,8 @@ public class UserSearchFragment extends DialogFragment {
                         }
                     });
 
+                } else {
+                    Log.d(TAG, "이미 친구 인 유저입니다.");
                 }
 //                JsonObject
             }
