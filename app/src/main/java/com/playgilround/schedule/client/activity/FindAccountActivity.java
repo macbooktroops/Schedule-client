@@ -19,14 +19,11 @@ import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.find.EmailJsonData;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.FindEmailDialog;
-import com.playgilround.schedule.client.dialog.ResetPasswordDialog;
 
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.security.auth.callback.PasswordCallback;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,7 +45,7 @@ public class FindAccountActivity extends Activity {
 
     private FindEmailDialog mFindEmailDialog;
 
-    private ResetPasswordDialog mResetPasswordDialog;
+//    private ResetPasswordDialog mResetPasswordDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,12 +148,15 @@ public class FindAccountActivity extends Activity {
                 @Override
                 public void onSuccess(String retToken, String name){
                     Log.d(TAG, "onSuccess -->" + retToken + "--" + name);
-
-                    if (mResetPasswordDialog == null) {
+//3s2UcPyFPvc5c-TKAmVc--c004245
+                    Intent intent = new Intent(FindAccountActivity.this, ResetPasswordActivity.class);
+                    intent.putExtra("resultName", name);
+                    startActivity(intent);
+                   /* if (mResetPasswordDialog == null) {
                         mResetPasswordDialog = new ResetPasswordDialog(FindAccountActivity.this, name);
                     }
 
-                    mResetPasswordDialog.show();
+                    mResetPasswordDialog.show();*/
 
                   /*  if (mFindEmailDialog == null) {
                         mFindEmailDialog = new FindEmailDialog(FindAccountActivity.this, retName, retEmail);
