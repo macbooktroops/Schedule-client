@@ -148,8 +148,8 @@ public class FindAccountActivity extends Activity {
                 @Override
                 public void onSuccess(String retToken, String name){
                     Log.d(TAG, "onSuccess -->" + retToken + "--" + name);
-//3s2UcPyFPvc5c-TKAmVc--c004245
                     Intent intent = new Intent(FindAccountActivity.this, ResetPasswordActivity.class);
+                    intent.putExtra("resultToken", retToken);
                     intent.putExtra("resultName", name);
                     startActivity(intent);
                    /* if (mResetPasswordDialog == null) {
