@@ -14,9 +14,14 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
+import com.playgilround.schedule.client.friend.FriendPushJsonData;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -26,12 +31,16 @@ import java.util.Map;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     private static final String TAG = FirebaseMessagingService.class.getSimpleName();
-
     //Message Received
     //푸쉬 메세지 수신
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d(TAG, "onMessageReceived =====" + remoteMessage.toString());
+//        Log.d(TAG, "onMessageReceived =====" + remoteMessage.toString());
+//        Log.d(TAG, "onMessageReceived2 =====" + remoteMessage.getData().toString());
+//        Log.d(TAG, "onMessageReceived4 =====" + remoteMessage.toString());
+//        Log.d(TAG, "onMessageReceived5 =====" + remoteMessage.toString());
+
+
 
 //        if (remoteMessage.getData().size() > 0) {
 //            sendNotification(remoteMessage.getData().get("message"));
@@ -49,8 +58,20 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     //푸쉬 메세지를 알림으로 표현하는 처리.
     private void sendNotification(Map<String, String> dataMap)  {
+        Log.d(TAG, "DataMap -->" + dataMap.toString());
 
+        //{type=friend, user={"friend_id":14,"name":"hyun","birth":870480000,"email":"c004112@gmail.com"}}
+        String resPsh = dataMap.toString();
 
+        Type list = new TypeToken<FriendPushJsonData>() {
+        }.getType();
+
+        FriendPushJsonData pushList = new Gson().fromJson(resPsh, list);
+
+        JsonObject type = pushList.type;
+        JsonObject user = pushList.user;
+
+        Log.d(TAG, "type -->" + type + "--" + "user -->" + user);
       String channelId = "channel";
       String channelName = "channel Name";
 
@@ -66,7 +87,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
           notifyManager.createNotificationChannel(mChannel);
       }
-      
+
       NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
 
       Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
@@ -79,7 +100,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
       PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-      builder.setContentTitle("Title")
+      builder.setContentTitle("친구 신청이 왔습니다.")
               .setContentText("Content")
               .setDefaults(Notification.DEFAULT_ALL)
               .setAutoCancel(true)

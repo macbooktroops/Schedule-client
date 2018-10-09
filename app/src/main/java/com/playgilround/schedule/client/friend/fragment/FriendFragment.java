@@ -215,6 +215,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                         }.getType();
                         Log.d(TAG, "response FCM -> " + strResponse);
 
+                        //{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":870480000,"is_friend":false}
                         UserJsonData userList = new Gson().fromJson(strResponse, list);
 
                         int userId = userList.id;
