@@ -168,6 +168,10 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = getIntent();
+                String resPush = intent.getStringExtra("push");
+                String resPushName = intent.getStringExtra("pushName");
+                int resPushId = intent.getIntExtra("pushId",1);
 
                 loginId = idInput.getText().toString();
                 loginPw = pwInput.getText().toString();
@@ -190,8 +194,13 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                     Log.d(TAG, "로그인 성공 ----");
 
                                     sendFirebaseToken();
+
                                     Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                    mainIntent.putExtra("SuccessLogin", "OK");
+                                    mainIntent.putExtra("pushData", resPush);
+                                    mainIntent.putExtra("pushName", resPushName);
+                                    mainIntent.putExtra("pushId", resPushId);
+                                    Log.d(TAG, "resPush -->" + resPush);
+
                                     startActivity(mainIntent);
                                     finish();
                                 }

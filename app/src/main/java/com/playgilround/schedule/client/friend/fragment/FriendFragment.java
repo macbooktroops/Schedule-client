@@ -24,6 +24,7 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
+import com.playgilround.schedule.client.dialog.FriendAssentDialog;
 import com.playgilround.schedule.client.friend.json.UserJsonData;
 import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
 import com.playgilround.schedule.client.R;
@@ -59,11 +60,14 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     String nickName;
+
+    private FriendAssentDialog mFriendAssentDialog;
 //    private DialogFragment mUserSearchFragment;
 
     RecyclerView friendRecycler;
     FriendAdapter adapter;
 
+    static String resPush;
 
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
@@ -150,10 +154,9 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         });
         //restore last queries from disk
 //        lastSearches = load
-
-
-
     }
+
+
 
     @Override
     public void onButtonClicked(int buttonCode) {

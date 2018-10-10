@@ -80,6 +80,7 @@ public class UserSearchFragment extends DialogFragment {
                 Log.d(TAG, "check is Friends? ->" + resIsFriend);
                 if (!resIsFriend) {
                     //친구가 안되있는 유저
+
                     Log.d(TAG, "try new friend...-->" + resId);
 
 //                    JsonObject userIds = new JsonObject();
@@ -115,11 +116,11 @@ public class UserSearchFragment extends DialogFragment {
                                 Log.d(TAG, "response new friend -->" + success);
 
                                 /**
-                                 * 친구 추가 신청
-                                 * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
-                                 *
-                                 * 친구 요청 중
-                                 * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
+                                     * 친구 추가 신청
+                                     * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
+                                     *
+                                     * 친구 요청 중
+                                     * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
                                  * 이미 친구
                                  * []
                                  *

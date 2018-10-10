@@ -9,7 +9,7 @@ public class BaseUrl {
 //     public static final String BASE_URL = "http://localhost:3000";
 
     // Note:: Paths
-    public static final String PATH_HOLIDAYS = "/v1/holidays";
+    public static final String PATH_HOLIDAYS = "/v1/holidays"; //v1/holidays?year=2018
     public static final String PATH_FCM_TOKEN = "/v1/fcm_token";
 
     public static final String PATH_SIGN_UP = "/users";
@@ -29,7 +29,10 @@ public class BaseUrl {
 
     public static final String PATH_RESET_PASSWORD = "/v1/user/password/new";
 
+    public static final String PATH_FRIEND_ASSENT = "/v1/friends/";
 
     // Note:: Params
     public static final String PARAM_YEAR = "year";
+
+    public static final String PARAM_FRIEND_ID = "/consent";
 }
