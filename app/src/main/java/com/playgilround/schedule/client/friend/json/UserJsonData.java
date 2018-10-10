@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.friend;
+package com.playgilround.schedule.client.friend.json;
 
 import com.google.gson.annotations.SerializedName;
 
