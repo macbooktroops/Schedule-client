@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -19,7 +18,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
-import com.playgilround.schedule.client.friend.FriendPushJsonData;
+import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -68,10 +67,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         FriendPushJsonData pushList = new Gson().fromJson(resPsh, list);
 
-        JsonObject type = pushList.type;
+        String type = pushList.type;
         JsonObject user = pushList.user;
 
-        Log.d(TAG, "type -->" + type + "--" + "user -->" + user);
+        FriendPushJsonData userList = new Gson().fromJson(user, list);
+
+        String name = userList.name;
+
+
+
+
+
+        Log.d(TAG, "type -->" + type + "--" + "user -->" + user + "--" + name);
       String channelId = "channel";
       String channelName = "channel Name";
 
@@ -101,7 +108,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
       PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
       builder.setContentTitle("친구 신청이 왔습니다.")
-              .setContentText("Content")
+              .setContentText(name + "님에게 친구신청이왔습니다.")
               .setDefaults(Notification.DEFAULT_ALL)
               .setAutoCancel(true)
               .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
