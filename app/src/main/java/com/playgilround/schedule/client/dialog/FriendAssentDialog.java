@@ -2,7 +2,9 @@ package com.playgilround.schedule.client.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.playgilround.schedule.client.R;
 
@@ -19,22 +21,47 @@ public class FriendAssentDialog extends Dialog implements View.OnClickListener{
 
     private OnFriendAssentSet mOnFriendAssentSet;
 
-    public FriendAssentDialog(Context context, OnFriendAssentSet onFriendAssentSet) {
+    TextView tvFriend, tvTime, tvNegative, tvPositive;
+    String retName;
+
+    public FriendAssentDialog(Context context, OnFriendAssentSet onFriendAssentSet, String name) {
         super(context, R.style.DialogFullScreen);
         mContext = context;
         mOnFriendAssentSet = onFriendAssentSet;
-
+        retName = name;
         initView();
     }
 
     private void initView() {
         setContentView(R.layout.dialog_friend_assent);
+
+        tvFriend = findViewById(R.id.tvFriends);
+
+      /*  tvNegative = findViewById(R.id.tvNegative);
+        tvPositive = findViewById(R.id.tvPositive);
+*/
+        Log.d(TAG, "retName -->" + retName);
+
+        tvFriend.setText(retName +"님이 \n친구가 되길 원합니다.");
+
+        findViewById(R.id.tvNegative).setOnClickListener(this);
+        findViewById(R.id.tvPositive).setOnClickListener(this);
+
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tvNegative:
+                dismiss();
+                break;
 
+            case R.id.tvPositive:
+                if (mOnFriendAssentSet != null) {
+                    Log.d(TAG, "Click Friend positive...");
+                    mOnFriendAssentSet.onFriendAssent();
+                }
         }
     }
 

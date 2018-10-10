@@ -80,6 +80,7 @@ public class UserSearchFragment extends DialogFragment {
                 Log.d(TAG, "check is Friends? ->" + resIsFriend);
                 if (!resIsFriend) {
                     //친구가 안되있는 유저
+
                     Log.d(TAG, "try new friend...-->" + resId);
 
 //                    JsonObject userIds = new JsonObject();

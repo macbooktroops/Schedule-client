@@ -33,19 +33,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:textSize="20dp"
-            android:layout_gravity="center"
-            android:text="c004245 님이 친구가 되길 원합니다."/>
-
-        <TextView
-            android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:textSize="@dimen/space_16dp"
-            android:layout_gravity="center"
-            android:text="2018-10-10 15:00:00"/>
-
+            android:layout_gravity="center"/>
 
 
         <View
@@ -71,7 +59,7 @@
 
 
             <TextView
-                android:id="@+id/tvCancel"
+                android:id="@+id/tvNegative"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/space_30dp"
@@ -85,7 +73,7 @@
                 android:textColor="@color/colorWrite"/>
 
             <TextView
-                android:id="@+id/tvConfirm"
+                android:id="@+id/tvPositive"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/space_30dp"

@@ -18,7 +18,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.LoginActivity;
-import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
 
 import java.lang.reflect.Type;
@@ -31,6 +30,7 @@ import java.util.Map;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     private static final String TAG = FirebaseMessagingService.class.getSimpleName();
+
     //Message Received
     //푸쉬 메세지 수신
     @Override
@@ -39,7 +39,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 //        Log.d(TAG, "onMessageReceived2 =====" + remoteMessage.getData().toString());
 //        Log.d(TAG, "onMessageReceived4 =====" + remoteMessage.toString());
 //        Log.d(TAG, "onMessageReceived5 =====" + remoteMessage.toString());
-
 
 
 //        if (remoteMessage.getData().size() > 0) {
@@ -57,7 +56,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     }
 
     //푸쉬 메세지를 알림으로 표현하는 처리.
-    private void sendNotification(Map<String, String> dataMap)  {
+    private void sendNotification(Map<String, String> dataMap) {
         Log.d(TAG, "DataMap -->" + dataMap.toString());
 
         //{type=friend, user={"friend_id":14,"name":"hyun","birth":870480000,"email":"c004112@gmail.com"}}
@@ -73,52 +72,51 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         FriendPushJsonData userList = new Gson().fromJson(user, list);
 
+        int id = userList.id;
         String name = userList.name;
 
+        Log.d(TAG, "type -->" + type + "--" + "user -->" + user + "--" + name + "--" + id);
+        String channelId = "channel";
+        String channelName = "channel Name";
 
+        //http://black-jin0427.tistory.com/20 오레오이상 NotificationManager 처리
 
+        NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            //현재 버전이 오레오 이상이면
+            int importance = NotificationManager.IMPORTANCE_HIGH;
 
-        Log.d(TAG, "type -->" + type + "--" + "user -->" + user + "--" + name);
-      String channelId = "channel";
-      String channelName = "channel Name";
+            NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
 
-      //http://black-jin0427.tistory.com/20 오레오이상 NotificationManager 처리
+            notifyManager.createNotificationChannel(mChannel);
+        }
 
-      NotificationManager notifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
 
-      if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-          //현재 버전이 오레오 이상이면
-          int importance = NotificationManager.IMPORTANCE_HIGH;
+        Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        notificationIntent.putExtra("push", "FriendPush");
+        notificationIntent.putExtra("pushName", name);
+        notificationIntent.putExtra("pushId", id);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-          NotificationChannel mChannel = new NotificationChannel(channelId, channelName, importance);
+        int requestId = (int) System.currentTimeMillis();
 
-          notifyManager.createNotificationChannel(mChannel);
-      }
+        Log.d(TAG, "requestId");
 
-      NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-      Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
-      notificationIntent.putExtra("push", "FriendPush");
-      notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        builder.setContentTitle("친구 신청이 왔습니다.")
+                .setContentText(name + "님에게 친구신청이왔습니다.")
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setSmallIcon(android.R.drawable.btn_star)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
+                .setBadgeIconType(R.mipmap.add_friend)
+                .setContentIntent(pendingIntent);
 
-      int requestId = (int) System.currentTimeMillis();
-
-      Log.d(TAG, "requestId");
-
-      PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-      builder.setContentTitle("친구 신청이 왔습니다.")
-              .setContentText(name + "님에게 친구신청이왔습니다.")
-              .setDefaults(Notification.DEFAULT_ALL)
-              .setAutoCancel(true)
-              .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-              .setSmallIcon(android.R.drawable.btn_star)
-              .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
-              .setBadgeIconType(R.mipmap.add_friend)
-              .setContentIntent(pendingIntent);
-
-      notifyManager.notify(0, builder.build());
+        notifyManager.notify(0, builder.build());
 
     }
 }

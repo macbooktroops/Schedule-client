@@ -69,4 +69,8 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_RESET_PASSWORD)
     Call<JsonObject> postResetPassword(@Body JsonObject resetPw, @Header("Authorization") String tokenData);
+
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET(BaseUrl.PATH_FRIEND_ASSENT)
+    Call<JsonObject> getFriendAsset(@Header("Authorization") String tokenData, @Query(BaseUrl.PARAM_FRIEND_ID) int id);
 }

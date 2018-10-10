@@ -24,6 +24,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.common.listener.OnTaskFinishedListener;
@@ -45,13 +48,18 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * 18-05-24
  * Main
  *
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, FriendAssentDialog.OnFriendAssentSet  {
+public class MainActivity extends BaseActivity
+        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, FriendAssentDialog.OnFriendAssentSet  {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -77,7 +85,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     List<EventSetR> resultEvent;
 
-
+    SharedPreferences pref;
     public static String ADD_EVENT_SET_ACTION = "action.add.event.set";
     public static int ADD_EVENT_SET_CODE = 1;
 
@@ -96,7 +104,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private FriendAssentDialog mFriendAssentDialog;
 
-    String resPush; //push 를통해 앱 실
+    String resPush; //push 를통해 앱 실행
+    String resPushName; //푸쉬를 보낸 사람의 닉네임
+    int resPushId; //푸쉬 아이디 friend id column
+
+    String authToken;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
@@ -142,8 +154,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         Intent intent = getIntent();
         resPush = intent.getStringExtra("pushData");
-
-        Log.d(TAG, "resPush -->" + resPush);
+        resPushName = intent.getStringExtra("pushName");
+        resPushId = intent.getIntExtra("pushId", 1);
+        Log.d(TAG, "resPush -->" + resPush + "--"+ resPushName + "--" + resPushId);
         goScheduleFragment();
         initBroadcastReceiver();
 
@@ -160,7 +173,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Log.d(TAG, "mMonthText -->" + mMonthText[Calendar.getInstance().get(Calendar.MONTH)]);
 
         tvTitleDay.setText(getString(R.string.calendar_today));
-        SharedPreferences pref = getSharedPreferences("loginData", Activity.MODE_PRIVATE);
+        pref = getSharedPreferences("loginData", Activity.MODE_PRIVATE);
         Log.d(TAG, "login data check ->" + pref.getString("loginName", "") + "--" + pref.getString("loginToken", ""));
         //kitkat 이하
         if (Build.VERSION.SDK_INT < 19) {
@@ -249,7 +262,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         } else if (resPush.equals("FriendPush")) {
             if (mFriendAssentDialog == null) {
-                mFriendAssentDialog = new FriendAssentDialog(this, this);
+                mFriendAssentDialog = new FriendAssentDialog(this, this, resPushName);
             }
             mFriendAssentDialog.show();
         }
@@ -384,9 +397,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     //FriendAssentDialog interface
+    //친구 수락 하기.
     @Override
     public void onFriendAssent() {
-        Log.d(TAG, "onFriendAssent -----");
+        authToken = pref.getString("loginToken", "default");
+
+        Log.d(TAG, "onFriendAssent -----" + resPushId +"--" + authToken);
+
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface fAssetAPI = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = fAssetAPI.getFriendAsset(authToken, resPushId);
+
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "response assent success ---" + response.body().toString());
+                } else {
+                    try {
+                        Log.d(TAG, "response assent fail -->" + response.errorBody().string());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "response assent error ->" + t.toString());
+            }
+        });
+
     }
     private void initBroadcastReceiver() {
 
