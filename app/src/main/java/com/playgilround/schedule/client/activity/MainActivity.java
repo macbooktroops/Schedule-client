@@ -134,7 +134,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 //        getToken();
         initUI();
         initEventSetList();
-        goScheduleFragment();
+
+        Intent intent = getIntent();
+        String resPush = intent.getStringExtra("push");
+
+        Log.d(TAG, "resPush -->" + resPush);
+
+        if (resPush.equals("friendPush")) {
+            goFriendFragment();
+        } else {
+            goScheduleFragment();
+        }
         initBroadcastReceiver();
 
     }

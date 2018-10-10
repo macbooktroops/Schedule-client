@@ -98,7 +98,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
       NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
 
       Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-
+      notificationIntent.putExtra("push", "friendPush");
       notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
       int requestId = (int) System.currentTimeMillis();
