@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.activity.LoginActivity;
 import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
 
@@ -97,8 +98,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
       NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
 
-      Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-      notificationIntent.putExtra("push", "friendPush");
+      Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+      notificationIntent.putExtra("push", "FriendPush");
       notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
       int requestId = (int) System.currentTimeMillis();

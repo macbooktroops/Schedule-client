@@ -30,6 +30,7 @@ import com.playgilround.common.listener.OnTaskFinishedListener;
 import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
+import com.playgilround.schedule.client.dialog.FriendAssentDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
 import com.playgilround.schedule.client.friend.fragment.FriendFragment;
@@ -50,7 +51,7 @@ import io.realm.RealmResults;
  * Main
  *
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, FriendAssentDialog.OnFriendAssentSet  {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -92,6 +93,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private int mYear;
     private SelectHolidayDialog mSelectHolidayDialog;
+
+    private FriendAssentDialog mFriendAssentDialog;
+
+    String resPush; //push 를통해 앱 실
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
@@ -136,15 +141,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         initEventSetList();
 
         Intent intent = getIntent();
-        String resPush = intent.getStringExtra("push");
+        resPush = intent.getStringExtra("pushData");
 
         Log.d(TAG, "resPush -->" + resPush);
-
-        if (resPush.equals("friendPush")) {
-            goFriendFragment();
-        } else {
-            goScheduleFragment();
-        }
+        goScheduleFragment();
         initBroadcastReceiver();
 
     }
@@ -245,6 +245,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         tvTitle.setVisibility(View.GONE);
         drawMain.closeDrawer(Gravity.START);
 
+        if (resPush == null) {
+
+        } else if (resPush.equals("FriendPush")) {
+            if (mFriendAssentDialog == null) {
+                mFriendAssentDialog = new FriendAssentDialog(this, this);
+            }
+            mFriendAssentDialog.show();
+        }
 
     }
 
@@ -337,7 +345,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     //친구 관련 프레그먼트
     public void goFriendFragment() {
-        Log.d(TAG, "goFriendFragment ----->" + mFriendFragment);
+        Log.d(TAG, "goFriendFragment ----->" + mFriendFragment + "--" + resPush);
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
@@ -346,8 +354,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             ft.remove(mFriendFragment);
         }
 
-        mFriendFragment = FriendFragment.getInstance();
-        ft.add(R.id.frameContainer, mFriendFragment);
+        //친구 추가 push 를 통해 FriendFragment 에 접속 할 경우
+
+//        if (resPush == null) {
+        if (mFriendFragment == null) {
+            mFriendFragment = FriendFragment.getInstance();
+            ft.add(R.id.frameContainer, mFriendFragment);
+        }
+//        else if (resPush.equals("FriendPush")) {
+//            tvTitle.setText("친구 관련");
+//            mFriendFragment = FriendFragment.getInstance(resPush);
+//        }
 
         if (mScheduleFragment != null) {
             ft.hide(mScheduleFragment);
@@ -360,11 +377,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ft.show(mFriendFragment);
         ft.commit();
 
+        Log.d(TAG, "get Text ...->" + tvTitle.getText().toString());
         resetTitleText("친구 관련");
         drawMain.closeDrawer(Gravity.START);
 
     }
 
+    //FriendAssentDialog interface
+    @Override
+    public void onFriendAssent() {
+        Log.d(TAG, "onFriendAssent -----");
+    }
     private void initBroadcastReceiver() {
 
         if (mAddEventSetBroadcastReceiver == null) {
