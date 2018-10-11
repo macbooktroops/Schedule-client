@@ -21,6 +21,6 @@ public class UserSearchJsonData {
     public String birth;
 
     @SerializedName("assent")
-    public boolean isAssent;
+    public int isAssent;
 }
 

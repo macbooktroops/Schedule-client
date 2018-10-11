@@ -137,7 +137,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         notifyManager.notify(0, builder.build());
 
-        //앱을 이미 실행중일 경우 화면에 표시.
+      /*  //앱을 이미 실행중일 경우 화면에 표시.
         if (isAppRunning(getApplicationContext())) {
             Log.d(TAG, "isAppRunning ? " + isAppRunning(getApplicationContext()));
             if (type.equals("friend")) {
@@ -149,18 +149,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 startActivity(intent);
-            /*Looper.prepare();
+            *//*Looper.prepare();
             if (mFriendAssentDialog == null) {
                 mFriendAssentDialog = new FriendAssentDialog(getApplicationContext(), this, name, id);
             }
             mFriendAssentDialog.show();
 
-            Looper.loop();*/
+            Looper.loop();*//*
             }
-        }
+        }*/
     }
 
-    //앱이 실행중인지 아닌지 판단
+  /*  //앱이 실행중인지 아닌지 판단
     boolean isAppRunning(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
@@ -171,6 +171,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         }
 
         return false;
-    }
+    }*/
 
 }

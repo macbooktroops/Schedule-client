@@ -424,9 +424,9 @@ public class MainActivity extends BaseActivity
 //        jsonObject.addProperty("answered_at", );
         Retrofit retrofit = APIClient.getClient();
         APIInterface fAssetAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = fAssetAPI.getFriendAssent(jsonObject, resPushId, authToken);
+        Call<JsonObject> result = fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken);
 
-        Log.d(TAG, "result value -->" + fAssetAPI.getFriendAssent(jsonObject, resPushId, authToken).request().url().toString());
+        Log.d(TAG, "result value -->" + fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken).request().url().toString());
 
         result.enqueue(new Callback<JsonObject>() {
             @Override

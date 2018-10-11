@@ -224,7 +224,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                         String userName = userList.name;
                         String userEmail = userList.email;
                         long userBirth = userList.birth;
-                        boolean userFriend = userList.isFriend;
+                        int userFriend = userList.isFriend;
 
 
 //                        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
@@ -256,6 +256,12 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
 
 //                            final UserSearchFragment us = new UserSearchFragment(userName, formattedDate);
+
+                            /**
+                             * userFriend 0 = 친구 아닌 상태
+                             * userFriend 1 = 친구 요청 중
+                             * userFriend 2 = 친구
+                             */
                             final UserSearchFragment us = UserSearchFragment.getInstance(userId, userName,  formattedDate, userFriend);
                             final android.app.FragmentManager fm = getActivity().getFragmentManager();
                             us.show(fm, "TAG");
