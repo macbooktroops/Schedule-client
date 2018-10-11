@@ -54,18 +54,23 @@ public class FriendAssentDialog extends Dialog implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvNegative:
+                if (mOnFriendAssentSet != null) {
+                    Log.d(TAG, "Click Friend negative...");
+                    mOnFriendAssentSet.onFriendAssent(false);
+                }
                 dismiss();
                 break;
 
             case R.id.tvPositive:
                 if (mOnFriendAssentSet != null) {
                     Log.d(TAG, "Click Friend positive...");
-                    mOnFriendAssentSet.onFriendAssent();
+                    mOnFriendAssentSet.onFriendAssent(true);
                 }
+                dismiss();
         }
     }
 
         public interface OnFriendAssentSet {
-            void onFriendAssent();
+            void onFriendAssent(boolean state);
         }
 }
