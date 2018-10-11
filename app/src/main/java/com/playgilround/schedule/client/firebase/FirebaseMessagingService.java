@@ -26,6 +26,7 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.LoginActivity;
 import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.dialog.FriendAssentDialog;
+import com.playgilround.schedule.client.friend.json.FriendAssentJsonData;
 import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
 
 import org.joda.time.DateTime;
@@ -78,23 +79,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     private void sendNotification(Map<String, String> dataMap) {
         Log.d(TAG, "DataMap -->" + dataMap.toString());
 
-        //{type=friend, user={"friend_id":14,"name":"hyun","birth":870480000,"email":"c004112@gmail.com"}}
-        String resPsh = dataMap.toString();
-
-        Type list = new TypeToken<FriendPushJsonData>() {
-        }.getType();
-
-        FriendPushJsonData pushList = new Gson().fromJson(resPsh, list);
-
-        String type = pushList.type;
-        JsonObject user = pushList.user;
-
-        FriendPushJsonData userList = new Gson().fromJson(user, list);
-
-        int id = userList.id;
-        String name = userList.name;
-
-        Log.d(TAG, "type -->" + type + "--" + "user -->" + user + "--" + name + "--" + id);
         String channelId = "channel";
         String channelName = "channel Name";
 
@@ -111,31 +95,76 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             notifyManager.createNotificationChannel(mChannel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+        // 최초 친구 신청 푸쉬 데이터 {type=friend, user={"friend_id":14,"name":"hyun","birth":870480000,"email":"c004112@gmail.com"}}
 
-        Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
-        notificationIntent.putExtra("push", "FriendPush");
-        notificationIntent.putExtra("pushName", name);
-        notificationIntent.putExtra("pushId", id);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        //승낙 및 거절 푸쉬 데이터 {friend={"user_id":3,"is_friend_at":"2018-10-11 23:30:52","is_friend":2}, type=friend}
+        String resPsh = dataMap.toString();
 
-        int requestId = (int) System.currentTimeMillis();
+        /**
+         * 최초 친구 신청과, 승낙 및 거절 푸쉬 구분을 위해, 앞글자 subString
+         * 최초 친구 --> {typ
+         * 승낙 및 거절 --> {fri
+         */
 
-        Log.d(TAG, "requestId");
+        String retPush = resPsh.substring(0, 4);
+        Log.d(TAG, "retPush -->" + retPush);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //최초 친구 신청
+        if (retPush.equals("{typ")) {
+            Type list = new TypeToken<FriendPushJsonData>() {
+            }.getType();
 
-        builder.setContentTitle("친구 신청이 왔습니다.")
-                .setContentText(name + "님에게 친구신청이왔습니다.")
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setAutoCancel(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setSmallIcon(android.R.drawable.btn_star)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
-                .setBadgeIconType(R.mipmap.add_friend)
-                .setContentIntent(pendingIntent);
+            FriendPushJsonData pushList = new Gson().fromJson(resPsh, list);
 
-        notifyManager.notify(0, builder.build());
+            String type = pushList.type;
+            JsonObject user = pushList.user;
+
+            FriendPushJsonData userList = new Gson().fromJson(user, list);
+
+            int id = userList.id;
+            String name = userList.name;
+
+            Log.d(TAG, "type -->" + type + "--" + "user -->" + user + "--" + name + "--" + id);
+
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
+
+            Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            notificationIntent.putExtra("push", "FriendPush");
+            notificationIntent.putExtra("pushName", name);
+            notificationIntent.putExtra("pushId", id);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            int requestId = (int) System.currentTimeMillis();
+
+            Log.d(TAG, "requestId");
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            builder.setContentTitle("친구 신청이 왔습니다.")
+                    .setContentText(name + "님에게 친구신청이왔습니다.")
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setSmallIcon(android.R.drawable.btn_star)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
+                    .setBadgeIconType(R.mipmap.add_friend)
+                    .setContentIntent(pendingIntent);
+
+            notifyManager.notify(0, builder.build());
+        //승낙 및 거절
+        } else if (retPush.equals("{fri")) {
+            Type list = new TypeToken<FriendAssentJsonData>() {
+            }.getType();
+
+            FriendAssentJsonData assentList = new Gson().fromJson(resPsh, list);
+
+            JsonObject fJson = assentList.fJson;
+
+            Log.d(TAG, "Json Result -->" + fJson.toString());
+
+        }
+
+
 
       /*  //앱을 이미 실행중일 경우 화면에 표시.
         if (isAppRunning(getApplicationContext())) {
