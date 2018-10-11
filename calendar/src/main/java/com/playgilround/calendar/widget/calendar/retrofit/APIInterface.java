@@ -74,5 +74,5 @@ public interface APIInterface {
     //친구 동의
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_FRIEND_ASSENT)
-    Call<JsonObject> getFriendAsset(@Path("pushId") int pushid, @Header("Authorization") String tokenData);
+    Call<JsonObject> getFriendAssent(@Body JsonObject friendAssent,@Path("pushId") int pushid, @Header("Authorization") String tokenData);
 }

@@ -42,6 +42,8 @@ import com.playgilround.schedule.client.fragment.ScheduleFragment;
 import com.playgilround.schedule.client.holiday.InitHoliday;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -405,14 +407,23 @@ public class MainActivity extends BaseActivity
     public void onFriendAssent(boolean state) {
         authToken = pref.getString("loginToken", "default");
 
-        Log.d(TAG, "onFriendAssent -----" + resPushId +"--" + authToken);
+        Log.d(TAG, "onFriendAssent -----" + resPushId +"--" + authToken + "--" + state);
+        DateTime dateTime = new DateTime();
+        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
 
-         
+        Log.d(TAG, "today time -->" + today);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("answer", state);
+        jsonObject.addProperty("answered_at", today);
+
+
+        Log.d(TAG, "jsonObject -->" + jsonObject);
+//        jsonObject.addProperty("answered_at", );
         Retrofit retrofit = APIClient.getClient();
         APIInterface fAssetAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = fAssetAPI.getFriendAsset(resPushId, authToken);
+        Call<JsonObject> result = fAssetAPI.getFriendAssent(jsonObject, resPushId, authToken);
 
-        Log.d(TAG, "result value -->" + fAssetAPI.getFriendAsset(resPushId, authToken).request().url().toString());
+        Log.d(TAG, "result value -->" + fAssetAPI.getFriendAssent(jsonObject, resPushId, authToken).request().url().toString());
 
         result.enqueue(new Callback<JsonObject>() {
             @Override
