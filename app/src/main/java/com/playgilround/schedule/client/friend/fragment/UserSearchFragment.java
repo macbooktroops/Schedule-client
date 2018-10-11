@@ -48,9 +48,14 @@ public class UserSearchFragment extends DialogFragment {
     TextView tvName, tvBirth;
     Button btnOK, btnCancel;
 
-    static boolean resIsFriend;
+    /**
+     * 친구 아닐떄 0
+     * 친구요청중 1
+     * 친구 2
+     */
+    static int resIsFriend;
 
-    public static UserSearchFragment getInstance(int id, String name, String birth, boolean isFriend) {
+    public static UserSearchFragment getInstance(int id, String name, String birth, int isFriend) {
 
         resId = id;
         resName = name;
@@ -76,13 +81,32 @@ public class UserSearchFragment extends DialogFragment {
         nickName = pref.getString("loginName", "");
 
         btnOK = rootView.findViewById(R.id.btnUserReq);
+
+        //친구가 아닐 때
+        if (resIsFriend == 0) {
+            btnOK.setText("친구요청");
+            btnOK.setEnabled(true);
+        } else if (resIsFriend == 1) {
+            //친구 요청 중 일 때
+            btnOK.setText("친구 요청중");
+            btnOK.setEnabled(false);
+            Toast.makeText(getActivity(), resName + "님에게 친구 요청 중입니다.", Toast.LENGTH_LONG).show();
+        } else if (resIsFriend == 2) {
+            //이미 친구
+            btnOK.setText("친구");
+            btnOK.setEnabled(false);
+            Toast.makeText(getActivity(), resName + "님과 이미 친구 입니다.", Toast.LENGTH_LONG).show();
+        } else {
+            btnOK.setText("친구요청");
+            btnOK.setEnabled(true);
+        }
+
         btnOK.setOnClickListener(l -> {
             if (nickName.equals(resName)) {
                 Log.d(TAG, "same nickname");
                 Toast.makeText(getActivity(), "자기 자신은 친구 추가할 수 없습니다.", Toast.LENGTH_LONG).show();
             } else {
                 Log.d(TAG, "check is Friends? ->" + resIsFriend);
-                if (!resIsFriend) {
                     //친구가 안되있는 유저
 
                     Log.d(TAG, "try new friend...-->" + resId);
@@ -144,18 +168,18 @@ public class UserSearchFragment extends DialogFragment {
                                 String friendName = friendList.get(0).name;
                                 String friendEmail = friendList.get(0).email;
                                 String friendBirth = friendList.get(0).birth;
-                                boolean friendAssent = friendList.get(0).isAssent;
+                                int friendAssent = friendList.get(0).isAssent;
 
                                 Log.d(TAG, "friendAssent -->" + friendAssent);
 
-                                if (friendAssent) {
+                              /*  if (friendAssent) {
                                     //이미 친구
                                     Log.d(TAG, "already friend");
                                     Toast.makeText(getActivity(), resName + "님과는 이미 친구입니다.", Toast.LENGTH_LONG).show();
                                 } else if (!friendAssent){
                                     Log.d(TAG,  "try request friend");
                                     //지금은 무조건 친구추가,
-                                    // 추후에는 상대쪽에서 수락하면 추가로.
+                                    // 추후에는 상대쪽에서 수락하면 추가로.*/
                                     Toast.makeText(getActivity(), resName + "님에게 친구 요청을 합니다!", Toast.LENGTH_LONG).show();
 
 //                                    Type list = new TypeToken<UserJsonData>() {
@@ -164,7 +188,7 @@ public class UserSearchFragment extends DialogFragment {
 //                                    UserJsonData friendList = new Gson().fromJson(success, list)
 
                                     getDialog().dismiss();
-                                }
+//                                }
                             } else {
                                 try {
                                     error = response.errorBody().string();
@@ -177,6 +201,9 @@ public class UserSearchFragment extends DialogFragment {
                                     if (message.contains("Unauthorized auth_token.")) {
                                         Log.d(TAG, "message -->" + message);
                                         Toast.makeText(getActivity(), "auth token error " , Toast.LENGTH_LONG).show();
+                                    } else if (message.contains("No have users id")) {
+                                        Log.d(TAG, "No have user id...");
+                                        Toast.makeText(getActivity(), "없는 유저 아이디입니다..", Toast.LENGTH_LONG).show();
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -190,11 +217,9 @@ public class UserSearchFragment extends DialogFragment {
                         }
                     });
 
-                } else {
-                    Log.d(TAG, "이미 친구 인 유저입니다.");
                 }
 //                JsonObject
-            }
+
 
         });
         btnCancel = rootView.findViewById(R.id.btnUserCancel);

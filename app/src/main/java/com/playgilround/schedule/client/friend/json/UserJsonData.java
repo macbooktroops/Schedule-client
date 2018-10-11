@@ -22,5 +22,5 @@ public class UserJsonData {
     public long birth;
 
     @SerializedName("is_friend")
-    public boolean isFriend;
+    public int isFriend;
 }

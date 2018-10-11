@@ -1,14 +1,18 @@
 package com.playgilround.schedule.client.firebase;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -16,12 +20,24 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.LoginActivity;
+import com.playgilround.schedule.client.activity.MainActivity;
+import com.playgilround.schedule.client.dialog.FriendAssentDialog;
 import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
 
+import org.joda.time.DateTime;
+
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * 18-09-30
@@ -30,6 +46,9 @@ import java.util.Map;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     private static final String TAG = FirebaseMessagingService.class.getSimpleName();
+    private FriendAssentDialog mFriendAssentDialog;
+
+    SharedPreferences pref;
 
     //Message Received
     //푸쉬 메세지 수신
@@ -118,5 +137,40 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         notifyManager.notify(0, builder.build());
 
+      /*  //앱을 이미 실행중일 경우 화면에 표시.
+        if (isAppRunning(getApplicationContext())) {
+            Log.d(TAG, "isAppRunning ? " + isAppRunning(getApplicationContext()));
+            if (type.equals("friend")) {
+                Log.d(TAG, "friend dialog -->" + name);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("pushData", "FriendPush");
+                intent.putExtra("pushName", name);
+                intent.putExtra("pushId", id);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                startActivity(intent);
+            *//*Looper.prepare();
+            if (mFriendAssentDialog == null) {
+                mFriendAssentDialog = new FriendAssentDialog(getApplicationContext(), this, name, id);
+            }
+            mFriendAssentDialog.show();
+
+            Looper.loop();*//*
+            }
+        }*/
     }
+
+  /*  //앱이 실행중인지 아닌지 판단
+    boolean isAppRunning(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+        for (int i = 0; i < procInfos.size(); i++) {
+            if (procInfos.get(i).processName.equals(context.getPackageName())) {
+                return true;
+            }
+        }
+
+        return false;
+    }*/
+
 }

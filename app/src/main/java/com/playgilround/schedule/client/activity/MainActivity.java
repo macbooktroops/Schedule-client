@@ -263,6 +263,7 @@ public class MainActivity extends BaseActivity
         if (resPush == null) {
 
         } else if (resPush.equals("FriendPush")) {
+            Log.d(TAG, "friendPush...-->" + mFriendAssentDialog);
             if (mFriendAssentDialog == null) {
                 mFriendAssentDialog = new FriendAssentDialog(this, this, resPushName);
             }
@@ -400,7 +401,9 @@ public class MainActivity extends BaseActivity
 
     //FriendAssentDialog interface
     /**
-     *   친구 요청 버튼 클 하기
+     *  앱이 실행중이 아닐 때
+     *  푸쉬 메세지 도착 후
+     *  친구 요청 버튼 클릭 하기
      *  true 수락 false 거부
      */
     @Override
@@ -421,9 +424,9 @@ public class MainActivity extends BaseActivity
 //        jsonObject.addProperty("answered_at", );
         Retrofit retrofit = APIClient.getClient();
         APIInterface fAssetAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = fAssetAPI.getFriendAssent(jsonObject, resPushId, authToken);
+        Call<JsonObject> result = fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken);
 
-        Log.d(TAG, "result value -->" + fAssetAPI.getFriendAssent(jsonObject, resPushId, authToken).request().url().toString());
+        Log.d(TAG, "result value -->" + fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken).request().url().toString());
 
         result.enqueue(new Callback<JsonObject>() {
             @Override
