@@ -263,6 +263,7 @@ public class MainActivity extends BaseActivity
         if (resPush == null) {
 
         } else if (resPush.equals("FriendPush")) {
+            Log.d(TAG, "friendPush...-->" + mFriendAssentDialog);
             if (mFriendAssentDialog == null) {
                 mFriendAssentDialog = new FriendAssentDialog(this, this, resPushName);
             }
@@ -400,7 +401,9 @@ public class MainActivity extends BaseActivity
 
     //FriendAssentDialog interface
     /**
-     *   친구 요청 버튼 클 하기
+     *  앱이 실행중이 아닐 때
+     *  푸쉬 메세지 도착 후
+     *  친구 요청 버튼 클릭 하기
      *  true 수락 false 거부
      */
     @Override

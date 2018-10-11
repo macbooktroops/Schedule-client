@@ -23,6 +23,7 @@ public class FriendAssentDialog extends Dialog implements View.OnClickListener{
 
     TextView tvFriend, tvTime, tvNegative, tvPositive;
     String retName;
+    String retId;
 
     public FriendAssentDialog(Context context, OnFriendAssentSet onFriendAssentSet, String name) {
         super(context, R.style.DialogFullScreen);
@@ -55,7 +56,7 @@ public class FriendAssentDialog extends Dialog implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.tvNegative:
                 if (mOnFriendAssentSet != null) {
-                    Log.d(TAG, "Click Friend negative...");
+                    Log.d(TAG, "Click Friend negative... -->");
                     mOnFriendAssentSet.onFriendAssent(false);
                 }
                 dismiss();
@@ -63,7 +64,8 @@ public class FriendAssentDialog extends Dialog implements View.OnClickListener{
 
             case R.id.tvPositive:
                 if (mOnFriendAssentSet != null) {
-                    Log.d(TAG, "Click Friend positive...");
+                    Log.d(TAG, "Click Friend positive... -->");
+
                     mOnFriendAssentSet.onFriendAssent(true);
                 }
                 dismiss();
