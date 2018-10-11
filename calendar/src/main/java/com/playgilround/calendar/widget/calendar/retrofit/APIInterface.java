@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIInterface {
@@ -70,7 +71,8 @@ public interface APIInterface {
     @POST(BaseUrl.PATH_RESET_PASSWORD)
     Call<JsonObject> postResetPassword(@Body JsonObject resetPw, @Header("Authorization") String tokenData);
 
+    //친구 동의
     @Headers({"Accept: application/json", "Content-Type: application/json"})
-    @GET(BaseUrl.PATH_FRIEND_ASSENT)
-    Call<JsonObject> getFriendAsset(@Header("Authorization") String tokenData, @Query(BaseUrl.PARAM_FRIEND_ID) int id);
+    @POST(BaseUrl.PATH_FRIEND_ASSENT)
+    Call<JsonObject> getFriendAsset(@Path("pushId") int pushid, @Header("Authorization") String tokenData);
 }

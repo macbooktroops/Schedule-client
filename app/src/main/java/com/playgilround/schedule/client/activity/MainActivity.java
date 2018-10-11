@@ -397,16 +397,22 @@ public class MainActivity extends BaseActivity
     }
 
     //FriendAssentDialog interface
-    //친구 수락 하기.
+    /**
+     *   친구 요청 버튼 클 하기
+     *  true 수락 false 거부
+     */
     @Override
-    public void onFriendAssent() {
+    public void onFriendAssent(boolean state) {
         authToken = pref.getString("loginToken", "default");
 
         Log.d(TAG, "onFriendAssent -----" + resPushId +"--" + authToken);
 
+         
         Retrofit retrofit = APIClient.getClient();
         APIInterface fAssetAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = fAssetAPI.getFriendAsset(authToken, resPushId);
+        Call<JsonObject> result = fAssetAPI.getFriendAsset(resPushId, authToken);
+
+        Log.d(TAG, "result value -->" + fAssetAPI.getFriendAsset(resPushId, authToken).request().url().toString());
 
         result.enqueue(new Callback<JsonObject>() {
             @Override
