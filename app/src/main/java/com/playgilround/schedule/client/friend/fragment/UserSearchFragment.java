@@ -15,11 +15,15 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.friend.json.UserJsonData;
+import com.playgilround.schedule.client.friend.json.UserSearchJsonData;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Call;
@@ -115,24 +119,40 @@ public class UserSearchFragment extends DialogFragment {
                                 success = response.body().toString();
                                 Log.d(TAG, "response new friend -->" + success);
 
+
                                 /**
-                                     * 친구 추가 신청
-                                     * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
-                                     *
-                                     * 친구 요청 중
-                                     * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
+                                 * 친구 추가 신청
+                                 * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
+                                 *
+                                 * 친구 요청 중
+                                 * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":false}]
+                                 *
                                  * 이미 친구
-                                 * []
+                                 * [{"id":3,"name":"hyun","email":"c004112@gmail.com","birth":"1997-08-02T00:00:00.000Z","assent":true}]
                                  *
                                  * auth token error
                                  * {"code":401,"message":["Unauthorized auth_token."]}
                                  */
 
-                                if (success.equals("[]")) {
+                                Type list = new TypeToken<List<UserSearchJsonData>>() {
+                                }.getType();
+
+                                List<UserSearchJsonData> friendList = new Gson().fromJson(success, list);
+
+                                //true 친구 false 친구아님
+                                int friendId = friendList.get(0).id;
+                                String friendName = friendList.get(0).name;
+                                String friendEmail = friendList.get(0).email;
+                                String friendBirth = friendList.get(0).birth;
+                                boolean friendAssent = friendList.get(0).isAssent;
+
+                                Log.d(TAG, "friendAssent -->" + friendAssent);
+
+                                if (friendAssent) {
                                     //이미 친구
                                     Log.d(TAG, "already friend");
                                     Toast.makeText(getActivity(), resName + "님과는 이미 친구입니다.", Toast.LENGTH_LONG).show();
-                                } else {
+                                } else if (!friendAssent){
                                     Log.d(TAG,  "try request friend");
                                     //지금은 무조건 친구추가,
                                     // 추후에는 상대쪽에서 수락하면 추가로.
