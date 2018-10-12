@@ -38,7 +38,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginLeft="160dp">
+        android:layout_marginLeft="180dp">
 
         <TextView
             android:id="@+id/userBirth"
@@ -54,7 +54,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginLeft="260dp">
+        android:layout_marginLeft="280dp">
 
         <TextView
             android:id="@+id/userConnect"
