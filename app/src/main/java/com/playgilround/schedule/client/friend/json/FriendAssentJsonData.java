@@ -11,4 +11,14 @@ public class FriendAssentJsonData {
 
     @SerializedName("friend")
     public JsonObject fJson;
+
+    @SerializedName("user_id")
+    public int id;
+
+    @SerializedName("is_friend_at")
+    public String friendAt;
+
+    @SerializedName("is_friend")
+    public int friend;
+
 }
