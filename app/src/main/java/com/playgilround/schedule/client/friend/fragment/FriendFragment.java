@@ -25,12 +25,14 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.FriendAssentDialog;
+import com.playgilround.schedule.client.friend.ArrayFriend;
 import com.playgilround.schedule.client.friend.json.UserJsonData;
 import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
 import com.playgilround.schedule.client.R;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -68,6 +70,15 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     FriendAdapter adapter;
 
     static String resPush;
+
+    //친구데이터 저장 ArrayList
+    ArrayList<String> arrName;
+    ArrayList<String> arrBirth;
+
+    ArrayList<ArrayFriend> arrFriend;
+
+    String name;
+    String formattedDate;
 
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
@@ -119,11 +130,10 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         friendRecycler = searchViewById(R.id.friendRecycler);
         friendRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        adapter = new FriendAdapter();
-        friendRecycler.setAdapter(adapter);
 
 //        String authToken = pref.getString("loginToken", "default");
 
+        //자신과 친구인 사람 데이터 얻기
         refreshBtn = searchViewById(R.id.btnRefreshF);
         refreshBtn.setOnClickListener(l -> {
             Log.d(TAG,"refresh Friend");
@@ -136,6 +146,43 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                 public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
                     if (response.isSuccessful()) {
                         Log.d(TAG, "response search friend -->" + response.body().toString());
+
+                        arrName = new ArrayList<>(); //친구이름 목록 ArrayList
+                        arrBirth = new ArrayList<>(); //친구생년월일 목록 ArrayList
+                        arrFriend = new ArrayList<>();
+                        String strSearch = response.body().toString();
+
+                        Type list = new TypeToken<List<UserJsonData>>() {
+                        }.getType();
+
+
+                        List<UserJsonData> userData = new Gson().fromJson(strSearch, list);
+
+                        Log.d(TAG, "userData size -->" + userData.size());
+
+                        for (int i = 0; i < userData.size(); i++) {
+                            int id = userData.get(i).id;
+                            name = userData.get(i).name;
+                            String email = userData.get(i).email;
+                            long birth = userData.get(i).birth;
+
+                            Date date = new Date(birth * 1000L);
+                            // GMT(그리니치 표준시 +9 시가 한국의 표준시
+                            sdf.setTimeZone(TimeZone.getTimeZone("GMT+9"));
+                            formattedDate = sdf.format(date);
+
+
+                            Log.d(TAG, "response search data -->" + id + "--" + name + "--" + email + "--" + formattedDate);
+
+                            arrName.add(name);
+                            arrBirth.add(formattedDate);
+
+                            arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
+                        }
+
+                        adapter = new FriendAdapter(getActivity(), arrName, arrBirth);
+                        friendRecycler.setAdapter(adapter);
+
                     } else {
                         try {
                             Log.d(TAG, "response search friend error ->" + response.errorBody().string());
