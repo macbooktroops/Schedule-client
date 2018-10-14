@@ -28,6 +28,11 @@
         <activity android:name=".activity.FindAccountActivity"/>
 
         <activity android:name=".activity.ResetPasswordActivity"/>
+
+        <activity android:name=".activity.FriendAssentActivity"
+                  android:theme="@android:style/Theme.Dialog">
+
+        </activity>
         <!-- Firebase Service-->
         <service android:name=".firebase.FirebaseMessagingService">
             <intent-filter>

@@ -30,6 +30,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendHolder> {
     }
     @Override
     public FriendHolder onCreateViewHolder (ViewGroup parent, int viewType) {
+
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_friend, parent, false);
 
         FriendHolder holder = new FriendHolder(v);

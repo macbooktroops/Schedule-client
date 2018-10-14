@@ -23,9 +23,9 @@ import com.google.gson.reflect.TypeToken;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.activity.FriendAssentActivity;
 import com.playgilround.schedule.client.activity.LoginActivity;
 import com.playgilround.schedule.client.activity.MainActivity;
-import com.playgilround.schedule.client.dialog.FriendAssentDialog;
 import com.playgilround.schedule.client.friend.json.FriendAssentJsonData;
 import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
 
@@ -47,11 +47,14 @@ import retrofit2.Retrofit;
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
     private static final String TAG = FirebaseMessagingService.class.getSimpleName();
-    private FriendAssentDialog mFriendAssentDialog;
+    private FriendAssentActivity mFriendAssentDialog;
 
     SharedPreferences pref;
 
     String assentTitle, assentMessage;
+
+    int id;
+    String name;
     //Message Received
     //푸쉬 메세지 수신
     @Override
@@ -123,8 +126,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             FriendPushJsonData userList = new Gson().fromJson(user, list);
 
-            int id = userList.id;
-            String name = userList.name;
+            id = userList.id;
+            name = userList.name;
 
             Log.d(TAG, "type -->" + type + "--" + "user -->" + user + "--" + name + "--" + id);
 
@@ -153,6 +156,15 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .setContentIntent(pendingIntent);
 
             notifyManager.notify(0, builder.build());
+
+           /* Looper.prepare();
+            if (mFriendAssentDialog == null) {
+                mFriendAssentDialog = new FriendAssentDialog(FirebaseMessagingService.this, this, name);
+            }
+            mFriendAssentDialog.show();
+            Looper.loop();*/
+
+
         //승낙 및 거절
         } else if (retPush.equals("{fri")) {
             Type list = new TypeToken<FriendAssentJsonData>() {
@@ -212,6 +224,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 
 
+
       /*  //앱을 이미 실행중일 경우 화면에 표시.
         if (isAppRunning(getApplicationContext())) {
             Log.d(TAG, "isAppRunning ? " + isAppRunning(getApplicationContext()));
@@ -234,6 +247,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             }
         }*/
     }
+
 
   /*  //앱이 실행중인지 아닌지 판단
     boolean isAppRunning(Context context) {

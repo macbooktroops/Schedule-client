@@ -33,7 +33,6 @@ import com.playgilround.common.listener.OnTaskFinishedListener;
 import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
-import com.playgilround.schedule.client.dialog.FriendAssentDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
 import com.playgilround.schedule.client.friend.fragment.FriendFragment;
@@ -61,7 +60,7 @@ import retrofit2.Retrofit;
  *
  */
 public class MainActivity extends BaseActivity
-        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, FriendAssentDialog.OnFriendAssentSet  {
+        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener  {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -103,8 +102,6 @@ public class MainActivity extends BaseActivity
 
     private int mYear;
     private SelectHolidayDialog mSelectHolidayDialog;
-
-    private FriendAssentDialog mFriendAssentDialog;
 
     String resPush; //push 를통해 앱 실행
     String resPushName; //푸쉬를 보낸 사람의 닉네임
@@ -263,11 +260,10 @@ public class MainActivity extends BaseActivity
         if (resPush == null) {
 
         } else if (resPush.equals("FriendPush")) {
-            Log.d(TAG, "friendPush...-->" + mFriendAssentDialog);
-            if (mFriendAssentDialog == null) {
-                mFriendAssentDialog = new FriendAssentDialog(this, this, resPushName);
-            }
-            mFriendAssentDialog.show();
+            Intent intent = new Intent(this, FriendAssentActivity.class);
+            intent.putExtra("PushName", resPushName);
+            intent.putExtra("PushId", resPushId);
+            startActivity(intent);
         }
 
     }
@@ -399,56 +395,6 @@ public class MainActivity extends BaseActivity
 
     }
 
-    //FriendAssentDialog interface
-    /**
-     *  앱이 실행중이 아닐 때
-     *  푸쉬 메세지 도착 후
-     *  친구 요청 버튼 클릭 하기
-     *  true 수락 false 거부
-     */
-    @Override
-    public void onFriendAssent(boolean state) {
-        authToken = pref.getString("loginToken", "default");
-
-        Log.d(TAG, "onFriendAssent -----" + resPushId +"--" + authToken + "--" + state);
-        DateTime dateTime = new DateTime();
-        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
-
-        Log.d(TAG, "today time -->" + today);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("answer", state);
-        jsonObject.addProperty("answered_at", today);
-
-
-        Log.d(TAG, "jsonObject -->" + jsonObject);
-//        jsonObject.addProperty("answered_at", );
-        Retrofit retrofit = APIClient.getClient();
-        APIInterface fAssetAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken);
-
-        Log.d(TAG, "result value -->" + fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken).request().url().toString());
-
-        result.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "response assent success ---" + response.body().toString());
-                } else {
-                    try {
-                        Log.d(TAG, "response assent fail -->" + response.errorBody().string());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.d(TAG, "response assent error ->" + t.toString());
-            }
-        });
-
-    }
     private void initBroadcastReceiver() {
 
         if (mAddEventSetBroadcastReceiver == null) {

@@ -24,7 +24,6 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
-import com.playgilround.schedule.client.dialog.FriendAssentDialog;
 import com.playgilround.schedule.client.friend.ArrayFriend;
 import com.playgilround.schedule.client.friend.json.UserJsonData;
 import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
@@ -63,7 +62,6 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     String nickName;
 
-    private FriendAssentDialog mFriendAssentDialog;
 //    private DialogFragment mUserSearchFragment;
 
     RecyclerView friendRecycler;
