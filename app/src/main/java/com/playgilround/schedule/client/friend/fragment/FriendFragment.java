@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,6 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
-import com.playgilround.schedule.client.friend.ArrayFriend;
 import com.playgilround.schedule.client.friend.json.UserJsonData;
 import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
 import com.playgilround.schedule.client.R;
@@ -57,6 +57,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     private TextView mainText;
     private ImageButton refreshBtn;
 
+    private Button reqFrientBtn; //친구 요청 온 사람만 체크
+
     private boolean isInit = true;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -73,7 +75,9 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     ArrayList<String> arrName;
     ArrayList<String> arrBirth;
 
-    ArrayList<ArrayFriend> arrFriend;
+    //친구 요청중이고, 친구 요청받은 ArrayList
+    ArrayList<String> arrReqName;
+    ArrayList<String> arrReqBirth;
 
     String name;
     String formattedDate;
@@ -137,6 +141,12 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         refreshBtn.setOnClickListener(l -> {
             refreshFriend();
         });
+
+        //자신에게온 친구요청만 보기
+        reqFrientBtn = searchViewById(R.id.chkFriend);
+        reqFrientBtn.setOnClickListener(l -> {
+            chkRequestFriend();
+        });
         //restore last queries from disk
 //        lastSearches = load
     }
@@ -156,7 +166,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
                     arrName = new ArrayList<>(); //친구이름 목록 ArrayList
                     arrBirth = new ArrayList<>(); //친구생년월일 목록 ArrayList
-                    arrFriend = new ArrayList<>();
+                    arrReqName = new ArrayList<>();
+                    arrReqBirth = new ArrayList<>();
                     String strSearch = response.body().toString();
 
                     Type list = new TypeToken<List<UserJsonData>>() {
@@ -172,19 +183,31 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                         name = userData.get(i).name;
                         String email = userData.get(i).email;
                         long birth = userData.get(i).birth;
+                        int request = userData.get(i).request;
+                        //0 -> 자신한테 온 요청 1-> 자기가 건 요청
 
+                        int assent = userData.get(i).assent;
                         Date date = new Date(birth * 1000L);
                         // GMT(그리니치 표준시 +9 시가 한국의 표준시
                         sdf.setTimeZone(TimeZone.getTimeZone("GMT+9"));
                         formattedDate = sdf.format(date);
 
 
-                        Log.d(TAG, "response search data -->" + id + "--" + name + "--" + email + "--" + formattedDate);
+                        Log.d(TAG, "response search data -->" + id + "--" + name + "--" + email + "--" + formattedDate + "--" +request + "--" + assent);
 
-                        arrName.add(name);
-                        arrBirth.add(formattedDate);
+                        if (assent == 2) {
+                            arrName.add(name);
+                            arrBirth.add(formattedDate);
+//                            arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
+                        } else if (assent == 1 && request == 0) {
+                            arrReqName.add(name);
+                            arrReqBirth.add(formattedDate);
+                            //아직 친구 요청중이고, 내가요청을 받은 상태.
+//                            Log.d(TAG, "arrRequest -->" + arrReqFriend.size());
+//                            arrReqFriend.add(new ArrayRequestFriend(arrName.get(i), arrBirth.get(i)));
 
-                        arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
+                        }
+                        //아직 친구 요청중이고, 내가 친구 요청한 상태는 따로 add하지않음.
                     }
 
                     adapter = new FriendAdapter(getActivity(), arrName, arrBirth);
@@ -221,6 +244,10 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
             }
         });
 
+    }
+
+    public void chkRequestFriend() {
+        Log.d(TAG, "check RequestFriend -->" +arrReqName.size());
     }
 
 
