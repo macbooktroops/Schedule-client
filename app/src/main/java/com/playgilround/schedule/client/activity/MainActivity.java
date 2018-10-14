@@ -399,9 +399,9 @@ public class MainActivity extends BaseActivity
 
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
 
-        if (mFriendFragment != null) {
+       /* if (mFriendFragment != null) {
             ft.remove(mFriendFragment);
-        }
+        }*/
 
         //친구 추가 push 를 통해 FriendFragment 에 접속 할 경우
 
