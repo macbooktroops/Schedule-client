@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public class LoginJsonData {
 
+    @SerializedName("id")
+    public int id;
+
     @SerializedName("name")
     public String name;
 
