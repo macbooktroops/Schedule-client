@@ -55,6 +55,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     int id;
     String name;
+
+    /**
+     * 앱이 실행중이 아닐 때 push가 온경우.
+     * (앱이 실행중이 아닐 때 친구 요청이와서,
+     * Notification Push Message 를 클릭 하지않고,
+     * 앱 실행을 통해 친구 신청을 받으려고 할 경우)
+     */
+    public static boolean isChkPush = false;
     //Message Received
     //푸쉬 메세지 수신
     @Override
@@ -157,7 +165,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             notifyManager.notify(0, builder.build());
 
-            Log.d(TAG, "MainActivity State ---> " + MainActivity.isAppRunning);
             //앱이 실행중일때에만, 다이얼로그 표시
             //기준은 MainActivity onDestroy 상태 기준
             if (MainActivity.isAppRunning) {
@@ -165,7 +172,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 intent.putExtra("PushName", name);
                 intent.putExtra("PushId", id);
                 startActivity(intent);
+//            } else {
+//                isChkPush = true;
             }
+            Log.d(TAG, "MainActivity State ---> " + MainActivity.isAppRunning + "--" + isChkPush);
 
 
         //승낙 및 거절

@@ -34,6 +34,7 @@ import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
+import com.playgilround.schedule.client.firebase.FirebaseMessagingService;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
 import com.playgilround.schedule.client.friend.fragment.FriendFragment;
 import com.playgilround.schedule.client.fragment.ScheduleFragment;
@@ -282,13 +283,24 @@ public class MainActivity extends BaseActivity
         tvTitle.setVisibility(View.GONE);
         drawMain.closeDrawer(Gravity.START);
 
+//        Log.d(TAG, "FirebaseMessage isChkPush 3 -->" + FirebaseMessagingService.isChkPush);
+
         if (resPush == null) {
 
         } else if (resPush.equals("FriendPush")) {
+//            Log.d(TAG, "FirebaseMessage isChkPush 2 -->" + FirebaseMessagingService.isChkPush);
             Intent intent = new Intent(this, FriendAssentActivity.class);
             intent.putExtra("PushName", resPushName);
             intent.putExtra("PushId", resPushId);
             startActivity(intent);
+//        } else {
+//            if (FirebaseMessagingService.isChkPush) {
+//                Log.d(TAG, "FirebaseMessage isChkPush --->" + FirebaseMessagingService.isChkPush);
+//                Intent intent = new Intent(this, FriendAssentActivity.class);
+//                intent.putExtra("PushName", resPushName);
+//                intent.putExtra("PushId", resPushId);
+//                startActivity(intent);
+//            }
         }
 
     }

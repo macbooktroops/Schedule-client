@@ -33,18 +33,20 @@ public class ScheduleR extends RealmObject {
     private int eventSetId;
     private String hTime;
 
+    private String sendServer; //서버 전송여부
 
-   /* public ScheduleR(String content, int state, long time, int year, int month, int day) {
-        this.title = content;
-        this.state = state;
-        this.time = time;
-        this.year = year;
-        this.month = month;
-        this.day = day;
 
-    }
+    /* public ScheduleR(String content, int state, long time, int year, int month, int day) {
+         this.title = content;
+         this.state = state;
+         this.time = time;
+         this.year = year;
+         this.month = month;
+         this.day = day;
 
-*/
+     }
+
+ */
     public int getSeq() {
         return seq;
     }
@@ -132,6 +134,7 @@ public class ScheduleR extends RealmObject {
     public void sethTime(String hTime) {
         this.hTime = hTime;
     }
+
     public int getDay() {
         return day;
     }
@@ -146,4 +149,13 @@ public class ScheduleR extends RealmObject {
 
     public void setEventSetId(int eventSetId) {
         this.eventSetId = eventSetId;
-    }}
+    }
+
+    public String getSendServer() {
+        return sendServer;
+    }
+
+    public void setSendServer(String sendServer) {
+        this.sendServer = sendServer;
+    }
+}

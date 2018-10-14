@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
@@ -45,6 +46,8 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -212,7 +215,6 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 mTime = 0;
                                 resultTime = "0";
                                 updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-
 //                                addScheduleServer();
                             }
                         }
@@ -223,6 +225,62 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
         }
     }
+   /* //서버에 스케줄 추가된 내용 저장
+    *//**
+     * {
+     *     "title": "오늘창업허브 ㅋㅋ",
+     *     "start_time": "2018-09-30 13:00:00",
+     *     "content": "adasdsadasdadsadasadasd",
+     *     "latitude": 37.6237604,
+     *     "longitude": 126.9218479,
+     *     "user_ids" [ 2, 3 ]
+     * }
+     *//*
+    public void addScheduleServer() {
+        Log.d(TAG, "addScheduleServer -->");
+        Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay + "--" + etDesc.getText().toString());
+        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        jsonObject.addProperty("title", content);
+        jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+mCurrentSelectMonth+"-"+mCurrentSelectDay+"00:00:00");
+        jsonObject.addProperty("content", "");
+        jsonObject.addProperty("latitude", 0);
+        jsonObject.addProperty("longitude", 0);
+        jsonArray.add(userId);
+//        jsonObject.addProperty("user_ids", [1]);
+
+        jsonObject.add("users_ids", jsonArray);
+        Log.d(TAG, "jsonObject add ->" + jsonObject + "--" + authToken);
+
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface postNewSche = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = postNewSche.postNewSchedule(jsonObject,  authToken);
+
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    String success = response.body().toString();
+                    Log.d(TAG, "success schedule -->" + success);
+                } else  {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Log.d(TAG, "error schedule -->" + error);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "fail schedule -> " + t.toString());
+            }
+        });
+    }
+
+*/
 
 
     private void closeSoftInput() {
