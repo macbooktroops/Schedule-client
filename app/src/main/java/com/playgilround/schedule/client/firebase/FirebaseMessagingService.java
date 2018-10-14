@@ -145,7 +145,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             notificationIntent.putExtra("push", "FriendPush");
             notificationIntent.putExtra("pushName", name);
             notificationIntent.putExtra("pushId", id);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             int requestId = (int) System.currentTimeMillis();
 
@@ -227,7 +227,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             notificationIntent.putExtra("push", "FriendPush");
             notificationIntent.putExtra("pushName", name);
             notificationIntent.putExtra("pushId", id);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             int requestId = (int) System.currentTimeMillis();
 

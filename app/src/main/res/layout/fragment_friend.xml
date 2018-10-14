@@ -51,7 +51,18 @@
         android:layout_width="match_parent"
         android:id="@+id/friendRecycler"
         android:layout_below="@id/linearMain"
-        android:layout_height="300dp"></android.support.v7.widget.RecyclerView>
+        android:layout_height="300dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <!-- 자기자신에게 온 친구 요청중인 데이터-->
+    <Button
+        android:id="@+id/chkFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/btnRefreshF"
+        android:text="친구 요청"/>
         <ImageButton
             android:id="@+id/btnRefreshF"
             android:layout_width="60dp"
