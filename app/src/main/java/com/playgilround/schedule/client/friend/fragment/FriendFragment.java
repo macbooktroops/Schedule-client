@@ -130,77 +130,83 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         friendRecycler = searchViewById(R.id.friendRecycler);
         friendRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
+        refreshFriend();
 
 //        String authToken = pref.getString("loginToken", "default");
 
         //자신과 친구인 사람 데이터 얻기
         refreshBtn = searchViewById(R.id.btnRefreshF);
         refreshBtn.setOnClickListener(l -> {
-            Log.d(TAG,"refresh Friend");
-            Retrofit retrofit = APIClient.getClient();
-            APIInterface getFriendAPI = retrofit.create(APIInterface.class);
-            Call<JsonArray> result = getFriendAPI.getFriendSearch(authToken);
-
-            result.enqueue(new Callback<JsonArray>() {
-                @Override
-                public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
-                    if (response.isSuccessful()) {
-                        Log.d(TAG, "response search friend -->" + response.body().toString());
-
-                        arrName = new ArrayList<>(); //친구이름 목록 ArrayList
-                        arrBirth = new ArrayList<>(); //친구생년월일 목록 ArrayList
-                        arrFriend = new ArrayList<>();
-                        String strSearch = response.body().toString();
-
-                        Type list = new TypeToken<List<UserJsonData>>() {
-                        }.getType();
-
-
-                        List<UserJsonData> userData = new Gson().fromJson(strSearch, list);
-
-                        Log.d(TAG, "userData size -->" + userData.size());
-
-                        for (int i = 0; i < userData.size(); i++) {
-                            int id = userData.get(i).id;
-                            name = userData.get(i).name;
-                            String email = userData.get(i).email;
-                            long birth = userData.get(i).birth;
-
-                            Date date = new Date(birth * 1000L);
-                            // GMT(그리니치 표준시 +9 시가 한국의 표준시
-                            sdf.setTimeZone(TimeZone.getTimeZone("GMT+9"));
-                            formattedDate = sdf.format(date);
-
-
-                            Log.d(TAG, "response search data -->" + id + "--" + name + "--" + email + "--" + formattedDate);
-
-                            arrName.add(name);
-                            arrBirth.add(formattedDate);
-
-                            arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
-                        }
-
-                        adapter = new FriendAdapter(getActivity(), arrName, arrBirth);
-                        friendRecycler.setAdapter(adapter);
-
-                    } else {
-                        try {
-                            Log.d(TAG, "response search friend error ->" + response.errorBody().string());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<JsonArray> call, Throwable t) {
-                    Log.d(TAG, "response search friend failure ->" + t.toString());
-                }
-            });
-
+            refreshFriend();
         });
         //restore last queries from disk
 //        lastSearches = load
+    }
+
+    //자신과 친구인 사람 리스트 얻기
+    public void refreshFriend() {
+        Log.d(TAG,"refresh Friend");
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface getFriendAPI = retrofit.create(APIInterface.class);
+        Call<JsonArray> result = getFriendAPI.getFriendSearch(authToken);
+
+        result.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "response search friend -->" + response.body().toString());
+
+                    arrName = new ArrayList<>(); //친구이름 목록 ArrayList
+                    arrBirth = new ArrayList<>(); //친구생년월일 목록 ArrayList
+                    arrFriend = new ArrayList<>();
+                    String strSearch = response.body().toString();
+
+                    Type list = new TypeToken<List<UserJsonData>>() {
+                    }.getType();
+
+
+                    List<UserJsonData> userData = new Gson().fromJson(strSearch, list);
+
+                    Log.d(TAG, "userData size -->" + userData.size());
+
+                    for (int i = 0; i < userData.size(); i++) {
+                        int id = userData.get(i).id;
+                        name = userData.get(i).name;
+                        String email = userData.get(i).email;
+                        long birth = userData.get(i).birth;
+
+                        Date date = new Date(birth * 1000L);
+                        // GMT(그리니치 표준시 +9 시가 한국의 표준시
+                        sdf.setTimeZone(TimeZone.getTimeZone("GMT+9"));
+                        formattedDate = sdf.format(date);
+
+
+                        Log.d(TAG, "response search data -->" + id + "--" + name + "--" + email + "--" + formattedDate);
+
+                        arrName.add(name);
+                        arrBirth.add(formattedDate);
+
+                        arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
+                    }
+
+                    adapter = new FriendAdapter(getActivity(), arrName, arrBirth);
+                    friendRecycler.setAdapter(adapter);
+
+                } else {
+                    try {
+                        Log.d(TAG, "response search friend error ->" + response.errorBody().string());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Log.d(TAG, "response search friend failure ->" + t.toString());
+            }
+        });
+
     }
 
 
