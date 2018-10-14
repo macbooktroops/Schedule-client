@@ -157,12 +157,15 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             notifyManager.notify(0, builder.build());
 
-           /* Looper.prepare();
-            if (mFriendAssentDialog == null) {
-                mFriendAssentDialog = new FriendAssentDialog(FirebaseMessagingService.this, this, name);
+            Log.d(TAG, "MainActivity State ---> " + MainActivity.isAppRunning);
+            //앱이 실행중일때에만, 다이얼로그 표시
+            //기준은 MainActivity onDestroy 상태 기준
+            if (MainActivity.isAppRunning) {
+                Intent intent = new Intent(getApplicationContext(), FriendAssentActivity.class);
+                intent.putExtra("PushName", name);
+                intent.putExtra("PushId", id);
+                startActivity(intent);
             }
-            mFriendAssentDialog.show();
-            Looper.loop();*/
 
 
         //승낙 및 거절

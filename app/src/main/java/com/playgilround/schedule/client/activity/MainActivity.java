@@ -102,17 +102,22 @@ public class MainActivity extends BaseActivity
 
     private int mYear;
     private SelectHolidayDialog mSelectHolidayDialog;
-
     String resPush; //push 를통해 앱 실행
+
     String resPushName; //푸쉬를 보낸 사람의 닉네임
     int resPushId; //푸쉬 아이디 friend id column
 
     String authToken;
+
+    //foreground, background 판단
+    public static boolean isAppRunning = false;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_main);
 
         activity = this;
+
+        isAppRunning = true;
         drawMain = searchViewById(R.id.dlMain);
         linearDate = searchViewById(R.id.linearTitleDate);
         tvTitleMonth = searchViewById(R.id.tvTitleMonth);
@@ -158,6 +163,9 @@ public class MainActivity extends BaseActivity
         Log.d(TAG, "resPush -->" + resPush + "--"+ resPushName + "--" + resPushId);
         goScheduleFragment();
         initBroadcastReceiver();
+
+        Log.d(TAG, "MainActivity State onCreate ---> " + MainActivity.isAppRunning);
+
 
     }
 
@@ -205,6 +213,23 @@ public class MainActivity extends BaseActivity
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "MainActivity State onResume ---> " + MainActivity.isAppRunning);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "MainActivity State onPause ---> " + MainActivity.isAppRunning);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "MainActivity State onStop ---> " + MainActivity.isAppRunning);
+    }
     //RecyclerView 설정
     private void initEventSetList() {
         Log.d(TAG, "initEventSetList...");
@@ -524,6 +549,9 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
+        isAppRunning = false;
+        Log.d(TAG, "MainActivity State onDestroy---> " + MainActivity.isAppRunning);
+
         if (mAddEventSetBroadcastReceiver != null) {
             unregisterReceiver(mAddEventSetBroadcastReceiver);
             mAddEventSetBroadcastReceiver = null;
