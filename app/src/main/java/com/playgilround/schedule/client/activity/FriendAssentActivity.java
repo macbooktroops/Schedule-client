@@ -129,7 +129,7 @@ public class FriendAssentActivity extends Activity implements View.OnClickListen
 //        jsonObject.addProperty("answered_at", );
         Retrofit retrofit = APIClient.getClient();
         APIInterface fAssetAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = fAssetAPI.postFriendAssent(jsonObject, resPushId, "33333");
+        Call<JsonObject> result = fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken);
 
         Log.d(TAG, "result value -->" + fAssetAPI.postFriendAssent(jsonObject, resPushId, authToken).request().url().toString());
 

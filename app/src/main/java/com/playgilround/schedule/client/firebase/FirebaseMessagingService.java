@@ -222,6 +222,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 //            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+
+            Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            notificationIntent.putExtra("push", "FriendPush");
+            notificationIntent.putExtra("pushName", name);
+            notificationIntent.putExtra("pushId", id);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            int requestId = (int) System.currentTimeMillis();
+
+            Log.d(TAG, "requestId");
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentTitle(assentTitle)
                     .setContentText(assentMessage)
                     .setDefaults(Notification.DEFAULT_ALL)
@@ -229,8 +241,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setSmallIcon(android.R.drawable.btn_star)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
-                    .setBadgeIconType(R.mipmap.add_friend);
-//                    .setContentIntent(pendingIntent);
+                    .setBadgeIconType(R.mipmap.add_friend)
+                    .setContentIntent(pendingIntent);
 
             notifyManager.notify(0, builder.build());
 
