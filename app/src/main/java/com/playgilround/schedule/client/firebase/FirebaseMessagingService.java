@@ -55,6 +55,14 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     int id;
     String name;
+
+    /**
+     * 앱이 실행중이 아닐 때 push가 온경우.
+     * (앱이 실행중이 아닐 때 친구 요청이와서,
+     * Notification Push Message 를 클릭 하지않고,
+     * 앱 실행을 통해 친구 신청을 받으려고 할 경우)
+     */
+    public static boolean isChkPush = false;
     //Message Received
     //푸쉬 메세지 수신
     @Override
@@ -157,7 +165,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             notifyManager.notify(0, builder.build());
 
-            Log.d(TAG, "MainActivity State ---> " + MainActivity.isAppRunning);
             //앱이 실행중일때에만, 다이얼로그 표시
             //기준은 MainActivity onDestroy 상태 기준
             if (MainActivity.isAppRunning) {
@@ -165,7 +172,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 intent.putExtra("PushName", name);
                 intent.putExtra("PushId", id);
                 startActivity(intent);
+//            } else {
+//                isChkPush = true;
             }
+            Log.d(TAG, "MainActivity State ---> " + MainActivity.isAppRunning + "--" + isChkPush);
 
 
         //승낙 및 거절
@@ -181,6 +191,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             int id = assentData.id;
             String friendAt = assentData.friendAt; //친구 수락, 거절 누른 시간
+            String name = assentData.name; //친구를 받아준 사람에 이름.
             int friend = assentData.friend; //0 친구 거부, 2 친구 완료 로 판단
 
             //{"user_id":1,"is_friend_at":"2018-10-12 08:11:28","is_friend":2} 친구 승낙
@@ -200,10 +211,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             if (friend == 2) {
                 //친구 승낙
                 assentTitle = "친구 수락";
-                assentMessage = "ㅇㅇㅇ님과 친구가 되셨습니다!";
+                assentMessage = name + "님과 친구가 되셨습니다!";
             } else if (friend == 0) {
                 assentTitle = "친구 거부";
-                assentMessage = "ㅇㅇㅇ님이 친구맺기를 거부하셨습니다.";
+                assentMessage = name + "님이 친구맺기를 거부하셨습니다.";
             } else {
                 assentTitle = "Assent Error";
                 assentMessage = "Assent Error";
@@ -211,6 +222,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 //            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+
+            Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            notificationIntent.putExtra("push", "FriendPush");
+            notificationIntent.putExtra("pushName", name);
+            notificationIntent.putExtra("pushId", id);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            int requestId = (int) System.currentTimeMillis();
+
+            Log.d(TAG, "requestId");
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setContentTitle(assentTitle)
                     .setContentText(assentMessage)
                     .setDefaults(Notification.DEFAULT_ALL)
@@ -218,8 +241,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setSmallIcon(android.R.drawable.btn_star)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
-                    .setBadgeIconType(R.mipmap.add_friend);
-//                    .setContentIntent(pendingIntent);
+                    .setBadgeIconType(R.mipmap.add_friend)
+                    .setContentIntent(pendingIntent);
 
             notifyManager.notify(0, builder.build());
 

@@ -18,6 +18,9 @@ public class FriendAssentJsonData {
     @SerializedName("is_friend_at")
     public String friendAt;
 
+    @SerializedName("user_name")
+    public String name;
+
     @SerializedName("is_friend")
     public int friend;
 

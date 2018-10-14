@@ -192,7 +192,23 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
                 } else {
                     try {
-                        Log.d(TAG, "response search friend error ->" + response.errorBody().string());
+//                        Log.d(TAG, "response search friend error ->" + response.errorBody().string());
+                            String error = response.errorBody().string();
+
+                            Log.d(TAG, "response Detail Error -->" + error);
+
+                            Result result = new Gson().fromJson(error, Result.class);
+
+//                            int code = result.code;
+                            List<String> message = result.message;
+
+                            Log.d(TAG, "Friend Search Info fail...-->"  + message);
+
+
+                            if (message.contains("Unauthorized auth_token.")) {
+                                Log.d(TAG, "message ->" + message);
+                                Toast.makeText(getContext(), "새로고침에 실패했습니다. 재로그인해주세요.", Toast.LENGTH_LONG).show();
+                            }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

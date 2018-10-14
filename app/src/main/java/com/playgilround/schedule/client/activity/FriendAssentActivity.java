@@ -11,13 +11,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.schedule.client.R;
 
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -135,7 +140,25 @@ public class FriendAssentActivity extends Activity implements View.OnClickListen
                     Log.d(TAG, "response assent success ---" + response.body().toString());
                 } else {
                     try {
-                        Log.d(TAG, "response assent fail -->" + response.errorBody().string());
+//                        Log.d(TAG, "response assent fail -->" + response.errorBody().string());
+                        String error = response.errorBody().string();
+
+                        Log.d(TAG, "response assent Error -->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+//                            int code = result.code;
+                        List<String> message = result.message;
+
+                        Log.d(TAG, "Friend assent Info fail...-->"  + message);
+
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Log.d(TAG, "message ->" + message);
+                            Toast.makeText(getApplicationContext(), "Auth Token error.", Toast.LENGTH_LONG).show();
+                        } else if (message.contains("Not Found Friend.")) {
+                            Toast.makeText(getApplicationContext(), "없는 친구입니다.", Toast.LENGTH_LONG).show();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

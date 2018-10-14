@@ -245,7 +245,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                             finish();
                         }
                     }, mSchedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);*/
-                  getMyUserID();
+//                  getMyUserID();
                 } else {
                     ToastUtils.showShortToast(getApplicationContext(), R.string.schedule_input_content_is_no_null);
                 }

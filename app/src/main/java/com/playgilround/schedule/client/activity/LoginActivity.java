@@ -157,7 +157,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                     });
                 }
             }
-
             @Override
             public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
                 Log.e(TAG, "error - " + t.toString());
@@ -350,11 +349,13 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                     }.getType();
                     LoginJsonData loginList = new Gson().fromJson(jsonArray, list);
 
+                    int loginId = loginList.id;
                     String loginName = loginList.name;
                     String loginToken = loginList.token;
 
                     Log.d(TAG, "result name and token ->" + loginName + "--" + loginToken);
 
+                    editor.putInt("loginId", loginId);
                     editor.putString("loginName", loginName);
                     editor.putString("loginToken", loginToken);
 
