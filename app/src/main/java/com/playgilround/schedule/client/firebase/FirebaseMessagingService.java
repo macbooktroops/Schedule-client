@@ -181,6 +181,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             int id = assentData.id;
             String friendAt = assentData.friendAt; //친구 수락, 거절 누른 시간
+            String name = assentData.name; //친구를 받아준 사람에 이름.
             int friend = assentData.friend; //0 친구 거부, 2 친구 완료 로 판단
 
             //{"user_id":1,"is_friend_at":"2018-10-12 08:11:28","is_friend":2} 친구 승낙
@@ -200,10 +201,10 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             if (friend == 2) {
                 //친구 승낙
                 assentTitle = "친구 수락";
-                assentMessage = "ㅇㅇㅇ님과 친구가 되셨습니다!";
+                assentMessage = name + "님과 친구가 되셨습니다!";
             } else if (friend == 0) {
                 assentTitle = "친구 거부";
-                assentMessage = "ㅇㅇㅇ님이 친구맺기를 거부하셨습니다.";
+                assentMessage = name + "님이 친구맺기를 거부하셨습니다.";
             } else {
                 assentTitle = "Assent Error";
                 assentMessage = "Assent Error";
