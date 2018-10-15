@@ -17,11 +17,15 @@ public class FriendHolder extends RecyclerView.ViewHolder {
     public TextView userNickName; //유저 닉네임
     public TextView userBirth; //유저 생년월일
     public TextView userConnect; //유저 접속 중 여
+    public View userView; //해당 뷰 전체
+    public TextView userId;
     public FriendHolder(View itemView) {
         super(itemView);
         userImage = itemView.findViewById(R.id.userImage);
         userNickName = itemView.findViewById(R.id.userNickName);
         userBirth = itemView.findViewById(R.id.userBirth);
+        userView = itemView.findViewById(R.id.friendCard);
+        userId = itemView.findViewById(R.id.userId);
 
     }
 }

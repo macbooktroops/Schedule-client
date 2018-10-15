@@ -79,6 +79,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     //친구 요청중이고, 친구 요청받은 ArrayList
     ArrayList<String> arrReqName;
+    ArrayList<Integer> arrReqId;
 
     String name;
     String formattedDate;
@@ -184,6 +185,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                     arrName = new ArrayList<>(); //친구이름 목록 ArrayList
                     arrBirth = new ArrayList<>(); //친구생년월일 목록 ArrayList
                     arrReqName = new ArrayList<>();
+                    arrReqId = new ArrayList<>();
                     String strSearch = response.body().toString();
 
                     Type list = new TypeToken<List<UserJsonData>>() {
@@ -216,6 +218,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                             arrBirth.add(formattedDate);
 //                            arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
                         } else if (assent == 1 && request == 0) {
+                            arrReqId.add(id);
                             arrReqName.add(name);
 //                            arrReqBirth.add(formattedDate);
                             //아직 친구 요청중이고, 내가요청을 받은 상태.
@@ -287,7 +290,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                 Log.d(TAG, "check RequestFriend -->" +arrReqName.size());
 
                 if (mRequestFriendDialog == null) {
-                    mRequestFriendDialog = new RequestFriendDialog(getContext(), FriendFragment.this, nickName, arrReqName);
+                    mRequestFriendDialog = new RequestFriendDialog(getContext(), FriendFragment.this, nickName, arrReqName, arrReqId);
                     mRequestFriendDialog.show();
                 }
 
