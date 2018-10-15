@@ -2,10 +2,16 @@ package com.playgilround.schedule.client.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.friend.adapter.RequestFriendAdapter;
+
+import java.util.ArrayList;
 
 /**
  * 18-10-15
@@ -17,29 +23,44 @@ public class RequestFriendDialog extends Dialog implements View.OnClickListener 
     static final String TAG = RequestFriendDialog.class.getSimpleName();
 
     public Context mContext;
+    RequestFriendAdapter reqAdapter;
 
+    RecyclerView requestFriendRecycler;
     private OnRequestFriendSet mOnRequestFriendSet;
     String retName;
 
+    ArrayList retArrName;
+
     private TextView tvTitle;
-    public RequestFriendDialog(Context context, OnRequestFriendSet onRequestFriendSet, String name) {
+    public RequestFriendDialog(Context context, OnRequestFriendSet onRequestFriendSet, String name, ArrayList arrName) {
         super(context, R.style.DialogFullScreen);
         mOnRequestFriendSet = onRequestFriendSet;
 
         mContext = context;
         retName = name;
 
+        retArrName = arrName;
+
         initView();
     }
 
     private void initView() {
         setContentView(R.layout.dialog_request_friend);
+        requestFriendRecycler = findViewById(R.id.reqFriendRecycler);
+        requestFriendRecycler.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
+        reqAdapter = new RequestFriendAdapter(getContext(), retArrName);
+        requestFriendRecycler.setAdapter(reqAdapter);
+
+
+        Log.d(TAG, "initView -->"  + retArrName.size());
         findViewById(R.id.tvCancel).setOnClickListener(this);
         findViewById(R.id.tvConfirm).setOnClickListener(this);
         tvTitle =  findViewById(R.id.tvTitle);
 
-        tvTitle.setText(retName + "님과 친구가 되고싶은 유저입니다.");
+        tvTitle.setText(retName + "님에게 온 친구 요청");
+
+
     }
 
     @Override
@@ -50,7 +71,6 @@ public class RequestFriendDialog extends Dialog implements View.OnClickListener 
                 break;
 
             case R.id.tvConfirm:
-
                 if (mOnRequestFriendSet != null) {
                     mOnRequestFriendSet.onRequestSet();
                 }
