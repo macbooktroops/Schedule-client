@@ -25,6 +25,7 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
+import com.playgilround.schedule.client.dialog.RequestFriendDialog;
 import com.playgilround.schedule.client.friend.json.UserJsonData;
 import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
 import com.playgilround.schedule.client.R;
@@ -45,7 +46,7 @@ import retrofit2.Retrofit;
  * 18-10-01
  * 친구 관련 Fragment
  */
-public class FriendFragment extends BaseFragment implements MaterialSearchBar.OnSearchActionListener {
+public class FriendFragment extends BaseFragment implements MaterialSearchBar.OnSearchActionListener, RequestFriendDialog.OnRequestFriendSet {
 
     private List<String> lastSearches;
     private MaterialSearchBar searchBar;
@@ -81,6 +82,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     String name;
     String formattedDate;
+
+    RequestFriendDialog mRequestFriendDialog;
 
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
@@ -248,7 +251,19 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     public void chkRequestFriend() {
         Log.d(TAG, "check RequestFriend -->" +arrReqName.size());
+
+        if (mRequestFriendDialog == null) {
+            mRequestFriendDialog = new RequestFriendDialog(getContext(), this, nickName);
+        }
+        mRequestFriendDialog.show();
     }
+
+    //친구 요청중인 사람 클릭 후 확인 누르면.
+    @Override
+    public void onRequestSet() {
+        Log.d(TAG, "onRequestSet -----");
+    }
+
 
 
 
