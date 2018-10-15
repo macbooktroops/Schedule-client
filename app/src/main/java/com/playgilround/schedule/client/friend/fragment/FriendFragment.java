@@ -25,6 +25,8 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseFragment;
+import com.playgilround.schedule.client.dialog.RequestFriendDialog;
+import com.playgilround.schedule.client.friend.adapter.RequestFriendAdapter;
 import com.playgilround.schedule.client.friend.json.UserJsonData;
 import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
 import com.playgilround.schedule.client.R;
@@ -45,7 +47,7 @@ import retrofit2.Retrofit;
  * 18-10-01
  * 친구 관련 Fragment
  */
-public class FriendFragment extends BaseFragment implements MaterialSearchBar.OnSearchActionListener {
+public class FriendFragment extends BaseFragment implements MaterialSearchBar.OnSearchActionListener, RequestFriendDialog.OnRequestFriendSet {
 
     private List<String> lastSearches;
     private MaterialSearchBar searchBar;
@@ -77,10 +79,11 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
     //친구 요청중이고, 친구 요청받은 ArrayList
     ArrayList<String> arrReqName;
-    ArrayList<String> arrReqBirth;
 
     String name;
     String formattedDate;
+
+    RequestFriendDialog mRequestFriendDialog;
 
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
@@ -132,14 +135,25 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         friendRecycler = searchViewById(R.id.friendRecycler);
         friendRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        refreshFriend();
+        refreshFriend(new ApiCallback() {
+            @Override
+            public void onSuccess(String result) {
+
+            }
+
+            @Override
+            public void onFail(String result) {
+
+            }
+        });
 
 //        String authToken = pref.getString("loginToken", "default");
 
         //자신과 친구인 사람 데이터 얻기
         refreshBtn = searchViewById(R.id.btnRefreshF);
         refreshBtn.setOnClickListener(l -> {
-            refreshFriend();
+//            refreshFriend();
+            chkNewFriend();
         });
 
         //자신에게온 친구요청만 보기
@@ -151,8 +165,11 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 //        lastSearches = load
     }
 
-    //자신과 친구인 사람 리스트 얻기
-    public void refreshFriend() {
+    /**
+     * 자신과 친구인 사람 리스트 얻기,
+     * 자신에게 요청온 친구 요청중인 리스트 얻기.
+     */
+    public void refreshFriend(final ApiCallback callback) {
         Log.d(TAG,"refresh Friend");
         Retrofit retrofit = APIClient.getClient();
         APIInterface getFriendAPI = retrofit.create(APIInterface.class);
@@ -167,7 +184,6 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                     arrName = new ArrayList<>(); //친구이름 목록 ArrayList
                     arrBirth = new ArrayList<>(); //친구생년월일 목록 ArrayList
                     arrReqName = new ArrayList<>();
-                    arrReqBirth = new ArrayList<>();
                     String strSearch = response.body().toString();
 
                     Type list = new TypeToken<List<UserJsonData>>() {
@@ -201,7 +217,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 //                            arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
                         } else if (assent == 1 && request == 0) {
                             arrReqName.add(name);
-                            arrReqBirth.add(formattedDate);
+//                            arrReqBirth.add(formattedDate);
                             //아직 친구 요청중이고, 내가요청을 받은 상태.
 //                            Log.d(TAG, "arrRequest -->" + arrReqFriend.size());
 //                            arrReqFriend.add(new ArrayRequestFriend(arrName.get(i), arrBirth.get(i)));
@@ -210,8 +226,11 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                         //아직 친구 요청중이고, 내가 친구 요청한 상태는 따로 add하지않음.
                     }
 
+
                     adapter = new FriendAdapter(getActivity(), arrName, arrBirth);
                     friendRecycler.setAdapter(adapter);
+
+                    callback.onSuccess("success");
 
                 } else {
                     try {
@@ -245,10 +264,50 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         });
 
     }
+    //자신과 친구인 데이터 얻기
+    public void chkNewFriend() {
+        refreshFriend(new ApiCallback() {
+            @Override
+            public void onSuccess(String result) {
 
-    public void chkRequestFriend() {
-        Log.d(TAG, "check RequestFriend -->" +arrReqName.size());
+            }
+
+            @Override
+            public void onFail(String result) {
+
+            }
+        });
     }
+
+    //자신에게 온 친구 요청중인 데이터
+    public void chkRequestFriend() {
+        refreshFriend(new ApiCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "check RequestFriend -->" +arrReqName.size());
+
+                if (mRequestFriendDialog == null) {
+                    mRequestFriendDialog = new RequestFriendDialog(getContext(), FriendFragment.this, nickName, arrReqName);
+                    mRequestFriendDialog.show();
+                }
+
+                mRequestFriendDialog = null;
+            }
+
+            @Override
+            public void onFail(String result) {
+
+            }
+        });
+
+    }
+
+    //친구 요청중인 사람 클릭 후 확인 누르면.
+    @Override
+    public void onRequestSet() {
+        Log.d(TAG, "onRequestSet -----");
+    }
+
 
 
 
@@ -404,4 +463,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         super.onDestroy();
     }
 
+    public interface ApiCallback{
+        void onSuccess(String result);
+        void onFail(String result);
+    }
 }
