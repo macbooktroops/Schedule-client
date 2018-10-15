@@ -45,7 +45,6 @@ public class FriendAssentActivity extends Activity implements View.OnClickListen
 
     TextView tvFriend, tvTime, tvNegative, tvPositive;
     String retName;
-    String retId;
 
     SharedPreferences pref;
     Intent intent;

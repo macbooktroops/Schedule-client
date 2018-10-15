@@ -26,9 +26,13 @@ public class UserJsonData {
 
     //0 -> 자신한테 온 요청 1-> 자기가 건 요청
     @SerializedName("request")
-    public int request;
+    public boolean request;
 
     //1 요청중 , 2 친구
     @SerializedName("assent")
     public int assent;
+
+    //id column
+    @SerializedName("friend_id")
+    public int friendId;
 }

@@ -192,7 +192,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                     }.getType();
 
 
-                    List<UserJsonData> userData = new Gson().fromJson(strSearch, list);
+                        List<UserJsonData> userData = new Gson().fromJson(strSearch, list);
 
                     Log.d(TAG, "userData size -->" + userData.size());
 
@@ -201,24 +201,25 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                         name = userData.get(i).name;
                         String email = userData.get(i).email;
                         long birth = userData.get(i).birth;
-                        int request = userData.get(i).request;
+                        boolean request = userData.get(i).request;
                         //0 -> 자신한테 온 요청 1-> 자기가 건 요청
 
                         int assent = userData.get(i).assent;
+                        int friendId = userData.get(i).friendId;
                         Date date = new Date(birth * 1000L);
                         // GMT(그리니치 표준시 +9 시가 한국의 표준시
                         sdf.setTimeZone(TimeZone.getTimeZone("GMT+9"));
                         formattedDate = sdf.format(date);
 
 
-                        Log.d(TAG, "response search data -->" + id + "--" + name + "--" + email + "--" + formattedDate + "--" +request + "--" + assent);
+                        Log.d(TAG, "response search data -->" + id + "--" + name + "--" + email + "--" + formattedDate + "--" +request + "--" + assent + "--" + friendId);
 
                         if (assent == 2) {
                             arrName.add(name);
                             arrBirth.add(formattedDate);
 //                            arrFriend.add(new ArrayFriend(arrName.get(i), arrBirth.get(i)));
-                        } else if (assent == 1 && request == 0) {
-                            arrReqId.add(id);
+                        } else if (assent == 1 && !request) {
+                            arrReqId.add(friendId);
                             arrReqName.add(name);
 //                            arrReqBirth.add(formattedDate);
                             //아직 친구 요청중이고, 내가요청을 받은 상태.
