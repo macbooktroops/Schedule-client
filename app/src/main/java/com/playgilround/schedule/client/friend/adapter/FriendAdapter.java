@@ -43,7 +43,6 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendHolder> {
         holder.userImage.setBackgroundResource(R.mipmap.ic_mainfriend);
         holder.userNickName.setText(retName.get(position).toString());
         holder.userBirth.setText(retBirth.get(position).toString());
-        holder.userConnect.setText("접속 중");
     }
 
     @Override

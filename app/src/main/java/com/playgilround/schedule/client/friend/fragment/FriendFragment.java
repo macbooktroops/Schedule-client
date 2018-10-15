@@ -135,7 +135,17 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         friendRecycler = searchViewById(R.id.friendRecycler);
         friendRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        refreshFriend();
+        refreshFriend(new ApiCallback() {
+            @Override
+            public void onSuccess(String result) {
+
+            }
+
+            @Override
+            public void onFail(String result) {
+
+            }
+        });
 
 //        String authToken = pref.getString("loginToken", "default");
 
@@ -159,7 +169,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
      * 자신과 친구인 사람 리스트 얻기,
      * 자신에게 요청온 친구 요청중인 리스트 얻기.
      */
-    public void refreshFriend() {
+    public void refreshFriend(final ApiCallback callback) {
         Log.d(TAG,"refresh Friend");
         Retrofit retrofit = APIClient.getClient();
         APIInterface getFriendAPI = retrofit.create(APIInterface.class);
@@ -220,6 +230,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                     adapter = new FriendAdapter(getActivity(), arrName, arrBirth);
                     friendRecycler.setAdapter(adapter);
 
+                    callback.onSuccess("success");
+
                 } else {
                     try {
 //                        Log.d(TAG, "response search friend error ->" + response.errorBody().string());
@@ -254,21 +266,39 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     }
     //자신과 친구인 데이터 얻기
     public void chkNewFriend() {
-        refreshFriend();
+        refreshFriend(new ApiCallback() {
+            @Override
+            public void onSuccess(String result) {
+
+            }
+
+            @Override
+            public void onFail(String result) {
+
+            }
+        });
     }
 
     //자신에게 온 친구 요청중인 데이터
     public void chkRequestFriend() {
-        refreshFriend();
+        refreshFriend(new ApiCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "check RequestFriend -->" +arrReqName.size());
 
-        Log.d(TAG, "check RequestFriend -->" +arrReqName.size());
+                if (mRequestFriendDialog == null) {
+                    mRequestFriendDialog = new RequestFriendDialog(getContext(), FriendFragment.this, nickName, arrReqName);
+                    mRequestFriendDialog.show();
+                }
 
-        if (mRequestFriendDialog == null) {
-            mRequestFriendDialog = new RequestFriendDialog(getContext(), this, nickName, arrReqName);
-            mRequestFriendDialog.show();
-        }
+                mRequestFriendDialog = null;
+            }
 
-        mRequestFriendDialog = null;
+            @Override
+            public void onFail(String result) {
+
+            }
+        });
 
     }
 
@@ -433,4 +463,8 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
         super.onDestroy();
     }
 
+    public interface ApiCallback{
+        void onSuccess(String result);
+        void onFail(String result);
+    }
 }
