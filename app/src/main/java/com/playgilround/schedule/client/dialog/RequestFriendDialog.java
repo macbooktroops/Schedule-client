@@ -2,6 +2,7 @@ package com.playgilround.schedule.client.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.activity.FriendAssentActivity;
 import com.playgilround.schedule.client.friend.adapter.RequestFriendAdapter;
 
 import java.util.ArrayList;
@@ -29,10 +31,10 @@ public class RequestFriendDialog extends Dialog implements View.OnClickListener 
     private OnRequestFriendSet mOnRequestFriendSet;
     String retName;
 
-    ArrayList retArrName;
+    ArrayList retArrName, retArrId;
 
     private TextView tvTitle;
-    public RequestFriendDialog(Context context, OnRequestFriendSet onRequestFriendSet, String name, ArrayList arrName) {
+    public RequestFriendDialog(Context context, OnRequestFriendSet onRequestFriendSet, String name, ArrayList arrName, ArrayList arrId) {
         super(context, R.style.DialogFullScreen);
         mOnRequestFriendSet = onRequestFriendSet;
 
@@ -40,7 +42,7 @@ public class RequestFriendDialog extends Dialog implements View.OnClickListener 
         retName = name;
 
         retArrName = arrName;
-
+        retArrId = arrId;
         initView();
     }
 
@@ -49,8 +51,22 @@ public class RequestFriendDialog extends Dialog implements View.OnClickListener 
         requestFriendRecycler = findViewById(R.id.reqFriendRecycler);
         requestFriendRecycler.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-        reqAdapter = new RequestFriendAdapter(getContext(), retArrName);
+        reqAdapter = new RequestFriendAdapter(getContext(), retArrName, retArrId);
         requestFriendRecycler.setAdapter(reqAdapter);
+
+        reqAdapter.setItemClick(new RequestFriendAdapter.ItemClick() {
+            @Override
+            public void onClick(View view, int position, String name, int id) {
+                Log.d(TAG, "Success Click..-->" + name + "--" + id);
+
+                dismiss();
+
+                Intent intent = new Intent(getContext(), FriendAssentActivity.class);
+                intent.putExtra("PushName", name);
+                intent.putExtra("PushId", id);
+                getContext().startActivity(intent);
+            }
+        });
 
 
         Log.d(TAG, "initView -->"  + retArrName.size());
