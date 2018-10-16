@@ -89,6 +89,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     private String resultTime;
     public static String EVENT_SET_OBJ = "event.set.obj";
 
+    public boolean isSetTime = false; //SelectDateDialog 에서 날짜 체크 후 선택 눌렀을 경우
+
     Realm realm;
 
     String content;
@@ -132,7 +134,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         rlNoTask = searchViewById(R.id.rlNoTask);
         etInput = searchViewById(R.id.etInputContent);
 
-        HUMAN_TIME_FORMAT = getString(R.string.human_time_format);
+        HUMAN_TIME_FORMAT = getString(R.string.human_time_format2);
         realm = Realm.getDefaultInstance();
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
@@ -286,10 +288,18 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                         schedule.setEventSetId(mEventSet.getSeq());
                         schedule.setTime(mTime);
                         schedule.sethTime(resultTime);
-                        schedule.setYear(jodaYear);
-                        schedule.setMonth(jodaMonth);
-                        schedule.setDay(jodaDay);
 
+                        if (isSetTime) {
+                            schedule.setYear(mCurrentSelectYear);
+                            schedule.setMonth(mCurrentSelectMonth);
+                            schedule.setDay(mCurrentSelectDay);
+                        } else {
+                            schedule.setYear(jodaYear);
+                            schedule.setMonth(jodaMonth);
+                            schedule.setDay(jodaDay);
+                        }
+
+                        Log.d(TAG, "isSetTime local -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
                         new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                             @Override
                             public void onTaskFinished(ScheduleR data) {
@@ -333,15 +343,19 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
         int retMonth = mCurrentSelectMonth +1;
         Log.d(TAG, "addScheduleServer -->" + resultId);
-
+        Log.d(TAG, "isSetTime server -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay + "/" + resultTime);
         DateTime dateTime = new DateTime();
         String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
-        Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + retMonth + "/" + mCurrentSelectDay);
+        Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         jsonObject.addProperty("title", content);
         jsonObject.addProperty("state", 0); //최초 0
-        jsonObject.addProperty("start_time", today);
+        if (isSetTime) {
+            jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+mCurrentSelectMonth+"-"+mCurrentSelectDay+" " + resultTime);
+        } else {
+            jsonObject.addProperty("start_time", today);
+        }
         jsonObject.addProperty("content", "");
         jsonObject.addProperty("latitude", 0);
         jsonObject.addProperty("longitude", 0);
@@ -408,6 +422,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         resultTime = sdf.format(mTime);
 
         Log.d(TAG, "mTime -->" + mTime + "--" + resultTime);
+
+        isSetTime = true;
         mPosition = position;
     }
 
