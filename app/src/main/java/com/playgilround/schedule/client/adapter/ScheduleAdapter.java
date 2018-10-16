@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.common.realm.ScheduleR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.ConfirmDialog;
@@ -21,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 /**
  * 18-06-16
@@ -388,6 +392,10 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         jsonObject.addProperty("longitude", longitude);
 
         Log.d(TAG, "change jsonObject -->" + jsonObject);
+
+/*        Retrofit retrofit = APIClient.getClient();
+        APIInterface postUpdateSche = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = postUpdateSche.postUpdateSchedule()*/
     }
     //schedule holder
     protected class ScheduleViewHolder extends RecyclerView.ViewHolder {

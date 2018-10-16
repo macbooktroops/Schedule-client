@@ -222,7 +222,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 rlNoTask.setVisibility(View.GONE);
                                 mTime = 0;
                                 updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-                                addScheduleServer();
+                                addScheduleServer(data);
                             }
                         }
                     }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -243,7 +243,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
      *     "user_ids" [ 2, 3 ]
      * }
      */
-    public void addScheduleServer() {
+    public void addScheduleServer(ScheduleR data) {
         SharedPreferences pref =  getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
         int resultId = pref.getInt("loginId", 0);
         String authToken = pref.getString("loginToken", "default");
@@ -256,12 +256,12 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + retMonth + "/" + mCurrentSelectDay + resultTime);
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        jsonObject.addProperty("title", content);
-        jsonObject.addProperty("state", 0); //최초 0
+        jsonObject.addProperty("title", data.getTitle());
+        jsonObject.addProperty("state", data.getState()); //최초 0
 //        jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+retMonth+"-"+mCurrentSelectDay+" 00:00:00");
 
         if (isSetTime) {
-            jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+retMonth+"-"+mCurrentSelectDay+" " + resultTime);
+            jsonObject.addProperty("start_time", data.getYear() +"-"+data.getMonth()+"-"+data.getDay()+" " + data.gethTime());
         } else {
             jsonObject.addProperty("start_time", today);
         }
