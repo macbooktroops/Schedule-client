@@ -43,6 +43,8 @@ import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;
 import com.playgilround.schedule.client.task.schedule.LoadScheduleRTask;
 
+import org.joda.time.DateTime;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -89,6 +91,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     Realm realm;
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
+    public boolean isSetTime = false; //SelectDateDialog 에서 날짜 체크 후 선택 눌렀을 경우
 
     List<ScheduleR> schedule;
 
@@ -112,7 +115,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
         realm = Realm.getDefaultInstance();
 
-        HUMAN_TIME_FORMAT = getString(R.string.human_time_format);
+        HUMAN_TIME_FORMAT = getString(R.string.human_time_format2);
 
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
@@ -218,9 +221,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                 etInputContent.getText().clear();
                                 rlNoTask.setVisibility(View.GONE);
                                 mTime = 0;
-                                resultTime = "0";
                                 updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-                                addScheduleServer();
+                                addScheduleServer(data);
                             }
                         }
                     }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -241,19 +243,28 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
      *     "user_ids" [ 2, 3 ]
      * }
      */
-    public void addScheduleServer() {
+    public void addScheduleServer(ScheduleR data) {
         SharedPreferences pref =  getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
         int resultId = pref.getInt("loginId", 0);
         String authToken = pref.getString("loginToken", "default");
 
+        DateTime dateTime = new DateTime();
+        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+
         int retMonth = mCurrentSelectMonth +1;
-        Log.d(TAG, "addScheduleServer -->" + resultId);
-        Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + retMonth + "/" + mCurrentSelectDay);
+        Log.d(TAG, "addScheduleServer -->" + resultId + isSetTime);
+        Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + retMonth + "/" + mCurrentSelectDay + resultTime);
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        jsonObject.addProperty("title", content);
-        jsonObject.addProperty("state", 0); //최초 0
-        jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+retMonth+"-"+mCurrentSelectDay+" 00:00:00");
+        jsonObject.addProperty("title", data.getTitle());
+        jsonObject.addProperty("state", data.getState()); //최초 0
+//        jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+retMonth+"-"+mCurrentSelectDay+" 00:00:00");
+
+        if (isSetTime) {
+            jsonObject.addProperty("start_time", data.getYear() +"-"+data.getMonth()+"-"+data.getDay()+" " + data.gethTime());
+        } else {
+            jsonObject.addProperty("start_time", today);
+        }
         jsonObject.addProperty("content", "");
         jsonObject.addProperty("latitude", 0);
         jsonObject.addProperty("longitude", 0);
@@ -291,6 +302,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                         e.printStackTrace();
                     }
                 }
+                resultTime = "0";
             }
 
             @Override
@@ -400,6 +412,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
         SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
 
+        isSetTime = true;
         if (mTime == 0) {
             resultTime = null;
         } else {
