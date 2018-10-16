@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.playgilround.common.realm.ScheduleR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.ConfirmDialog;
@@ -330,12 +331,63 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
+    //서버에 스케줄 업데이트
+    /**
+     * {
+     *     "title": "오늘창업허브",
+     *     "state" : 0,
+     *     "start_time": "2018-10-01 13:00:00",
+     *     "content": "내용입니다.",
+     *     "latitude": 37.6237604,
+     *     "longitude": 126.9218479
+     * }
+     * @param schedule
+     */
     private void changeScheduleItem(ScheduleR schedule) {
         int i = mSchedules.indexOf(schedule);
         Log.d(TAG, "changeSchedule --->" + i);
+
+        String title = schedule.getTitle();
+        int state = schedule.getState();
+        int year = schedule.getYear();
+        int month = schedule.getMonth();
+        int day = schedule.getDay();
+        String hTime = schedule.gethTime();
+        String content = schedule.getDesc();
+        long latitude = schedule.getLatitude();
+        long longitude = schedule.getLongitude();
+
+        Log.d(TAG, "change title -->" + title);
+        Log.d(TAG, "change state -->" + state);
+        Log.d(TAG, "change year -->" + year);
+        Log.d(TAG, "change month -->" + month);
+        Log.d(TAG, "change day -->" + day);
+        Log.d(TAG, "change hTime -->" + hTime);
+        Log.d(TAG, "change content -->" + content);
+        Log.d(TAG, "change latitude -->" + latitude);
+        Log.d(TAG, "change longitude -->" + longitude);
+
+
         if (i != -1) {
             notifyDataSetChanged();
         }
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("title", title);
+        jsonObject.addProperty("state", 1);
+
+        if (hTime.equals("0") || hTime == null) {
+            Log.d(TAG, "hTime is 0 ");
+            hTime = "00:00:00";
+            jsonObject.addProperty("start_time", year + "-" + month + "-" + day+ " "+ hTime);
+        } else {
+            jsonObject.addProperty("start_time", year + "-" + month + "-" + day+ " "+ hTime);
+        }
+        jsonObject.addProperty("content", content);
+        jsonObject.addProperty("latitude", latitude);
+        jsonObject.addProperty("longitude", longitude);
+
+        Log.d(TAG, "change jsonObject -->" + jsonObject);
     }
     //schedule holder
     protected class ScheduleViewHolder extends RecyclerView.ViewHolder {

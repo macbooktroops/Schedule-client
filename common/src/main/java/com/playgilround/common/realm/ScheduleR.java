@@ -31,6 +31,9 @@ public class ScheduleR extends RealmObject {
     private int month;
     private int day;
     private int eventSetId;
+
+    private long latitude;
+    private long longitude;
     private String hTime;
 
     private String sendServer; //서버 전송여부
@@ -149,6 +152,22 @@ public class ScheduleR extends RealmObject {
 
     public void setEventSetId(int eventSetId) {
         this.eventSetId = eventSetId;
+    }
+
+    public long getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
+    }
+
+    public long getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
     }
 
     public String getSendServer() {
