@@ -75,4 +75,9 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_FRIEND_ASSENT)
     Call<JsonObject> postFriendAssent(@Body JsonObject friendAssent,@Path("pushId") int pushid, @Header("Authorization") String tokenData);
+
+    //스케줄 업데이트
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_UPDATE_SCHEDULE)
+    Call<JsonObject> postUpdateSchedule(@Body JsonObject updateSche, @Path("scheId") int scheId, @Header("Authorization") String tokenData);
 }

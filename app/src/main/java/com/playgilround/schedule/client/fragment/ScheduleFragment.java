@@ -18,12 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.playgilround.common.base.app.BaseFragment;
@@ -275,6 +278,15 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                         String error = response.errorBody().string();
 
                         Log.d(TAG, "error schedule -->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Log.d(TAG, "message -->" + message);
+                            Toast.makeText(getActivity(), "auth token error ", Toast.LENGTH_LONG).show();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

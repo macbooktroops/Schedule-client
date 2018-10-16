@@ -84,6 +84,7 @@
 
     <string name="human_time_format">a hh:mm:ss</string>
 
+    <string name="human_time_format2">hh:mm:ss</string>
     <string name="holidayDomain">http://schedule.mactroops.com:3000/v1/holiday/</string>
 </resources>
 
