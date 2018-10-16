@@ -1,6 +1,8 @@
 package com.playgilround.schedule.client.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,7 +19,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
+import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.common.listener.OnTaskFinishedListener;
@@ -32,6 +41,8 @@ import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.task.eventset.GetScheduleRTask;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;
 
+import org.joda.time.DateTime;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +50,10 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * 18-06-19
@@ -76,6 +91,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     Realm realm;
 
+    String content;
     static EventSetR resultEvent; //EVENT_SET_OBJ
     static int resultYear;
     /**
@@ -110,6 +126,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     protected void bindView() {
+
+
         rvScheduleList = searchViewById(R.id.rvScheduleList);
         rlNoTask = searchViewById(R.id.rlNoTask);
         etInput = searchViewById(R.id.etInputContent);
@@ -232,7 +250,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
     //ok버튼 클릭 시 스케줄 등록
     private void addSchedule() {
-        final String content = etInput.getText().toString();
+        content = etInput.getText().toString();
         if (TextUtils.isEmpty(content)) {
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_null);
         } else {
@@ -242,7 +260,14 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                         @Override
                         public void execute(Realm realm) {
                         Log.d(TAG, "addSchedule EventSetFragment");
+                        DateTime dateTime = new DateTime();
+                        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
 
+                        int jodaYear = Integer.parseInt(today.substring(0, 4));
+                        int jodaMonth = Integer.parseInt(today.substring(5,7));
+                        int jodaDay = Integer.parseInt(today.substring(8,10));
+
+                        Log.d(TAG, "joda result ->" + today + "--" + jodaYear + "/" +jodaMonth + "/" + jodaDay);
                         Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
                         int nextId;
@@ -261,9 +286,9 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                         schedule.setEventSetId(mEventSet.getSeq());
                         schedule.setTime(mTime);
                         schedule.sethTime(resultTime);
-                        schedule.setYear(mCurrentSelectYear);
-                        schedule.setMonth(mCurrentSelectMonth);
-                        schedule.setDay(mCurrentSelectDay);
+                        schedule.setYear(jodaYear);
+                        schedule.setMonth(jodaMonth);
+                        schedule.setDay(jodaDay);
 
                         new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                             @Override
@@ -275,6 +300,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                                     etInput.getText().clear();
                                     rlNoTask.setVisibility(View.GONE);
                                     mTime = 0;
+                                    addScheduleServer();
+
                                 }
                             }
                         }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -286,6 +313,81 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             });
         }
 
+    }
+
+    //서버에 스케줄 추가된 내용 저장
+    /**
+     * {
+     *     "title": "오늘창업허브 ㅋㅋ",
+     *     "start_time": "2018-09-30 13:00:00",
+     *     "content": "adasdsadasdadsadasadasd",
+     *     "latitude": 37.6237604,
+     *     "longitude": 126.9218479,
+     *     "user_ids" [ 2, 3 ]
+     * }
+     */
+    public void addScheduleServer() {
+        SharedPreferences pref =  getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
+        int resultId = pref.getInt("loginId", 0);
+        String authToken = pref.getString("loginToken", "default");
+
+        int retMonth = mCurrentSelectMonth +1;
+        Log.d(TAG, "addScheduleServer -->" + resultId);
+
+        DateTime dateTime = new DateTime();
+        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+        Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + retMonth + "/" + mCurrentSelectDay);
+        JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        jsonObject.addProperty("title", content);
+        jsonObject.addProperty("state", 0); //최초 0
+        jsonObject.addProperty("start_time", today);
+        jsonObject.addProperty("content", "");
+        jsonObject.addProperty("latitude", 0);
+        jsonObject.addProperty("longitude", 0);
+        jsonArray.add(resultId);
+//        jsonObject.addProperty("user_ids", [1]);
+
+        jsonObject.add("users_ids", jsonArray);
+        Log.d(TAG, "jsonObject add ->" + jsonObject + "--" + authToken);
+
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface postNewSche = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = postNewSche.postNewSchedule(jsonObject,  authToken);
+
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    String success = response.body().toString();
+                    Log.d(TAG, "success schedule -->" + success);
+                } else  {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Log.d(TAG, "error schedule -->" + error);
+
+                        Log.d(TAG, "response new friend error ->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Log.d(TAG, "message -->" + message);
+                            Toast.makeText(getActivity(), "auth token error ", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "fail schedule -> " + t.toString());
+            }
+        });
     }
 
     //현재 날짜
