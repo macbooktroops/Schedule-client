@@ -24,10 +24,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.common.listener.OnTaskFinishedListener;
@@ -287,6 +289,14 @@ public class MainActivity extends BaseActivity
                     try {
                         error = response.errorBody().string();
                         Log.d(TAG, "search schedule error -->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Toast.makeText(getApplicationContext(), "Auth Token Error..", Toast.LENGTH_LONG).show();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
