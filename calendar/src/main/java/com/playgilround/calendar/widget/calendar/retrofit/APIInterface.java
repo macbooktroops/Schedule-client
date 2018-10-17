@@ -80,4 +80,10 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_UPDATE_SCHEDULE)
     Call<JsonObject> postUpdateSchedule(@Body JsonObject updateSche, @Path("scheId") int scheId, @Header("Authorization") String tokenData);
+
+    //해당 유저에게 저장된 스케줄 검색
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET(BaseUrl.PATH_SEARCH_SCHEDULE)
+    Call<ArrayList<JsonObject>> getSearchSchedule(@Header("Authorization") String tokenData, @Query(BaseUrl.PARAM_YEAR) int year);
+
 }
