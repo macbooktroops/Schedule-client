@@ -24,9 +24,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.base.app.BaseFragment;
 import com.playgilround.common.listener.OnTaskFinishedListener;
@@ -46,7 +49,9 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -257,6 +262,53 @@ public class MainActivity extends BaseActivity
 
     //goto ScheduleView Fragment()
     private void goScheduleFragment() {
+        int nYear;
+
+        Calendar calendar = new GregorianCalendar(Locale.KOREA);
+        nYear = calendar.get(Calendar.YEAR);
+
+        Log.d(TAG, "check this year ->" + nYear);
+
+        String authToken = pref.getString("loginToken", "");
+        Log.d(TAG, "goSchedule authToken ->" + authToken);
+        //Search Schedule API
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface searchScheAPI = retrofit.create(APIInterface.class);
+        Call<ArrayList<JsonObject>> result = searchScheAPI.getSearchSchedule(authToken, nYear);
+
+
+        result.enqueue(new Callback<ArrayList<JsonObject>>() {
+
+            String error;
+            @Override
+            public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "search schedule success-->" + response.body().toString());
+                } else {
+                    try {
+                        error = response.errorBody().string();
+                        Log.d(TAG, "search schedule error -->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Toast.makeText(getApplicationContext(), "Auth Token Error..", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+                Log.d(TAG, "search schedule Failure -->" + t);
+            }
+        });
+
         android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE); //Fragment 에서 애니메이션 효과 없이..
 

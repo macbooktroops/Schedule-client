@@ -346,6 +346,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         Log.d(TAG, "isSetTime server -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay + "/" + resultTime);
         DateTime dateTime = new DateTime();
         String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+
+        int jodaYear = Integer.parseInt(today.substring(0, 4));
+        int jodaMonth = Integer.parseInt(today.substring(5,7));
+        int jodaDay = Integer.parseInt(today.substring(8,10));
         Log.d(TAG, "addSchedule ->" + content+ "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
@@ -354,7 +358,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         if (isSetTime) {
             jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+mCurrentSelectMonth+"-"+mCurrentSelectDay+" " + resultTime);
         } else {
-            jsonObject.addProperty("start_time", today);
+            jsonObject.addProperty("start_time", jodaYear + "-" +jodaMonth + "-" +jodaDay + " "+ "00:00:00");
         }
         jsonObject.addProperty("content", "");
         jsonObject.addProperty("latitude", 0);

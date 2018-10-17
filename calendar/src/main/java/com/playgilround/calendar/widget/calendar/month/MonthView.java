@@ -1,6 +1,8 @@
 package com.playgilround.calendar.widget.calendar.month;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,11 +15,13 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.playgilround.calendar.R;
 import com.playgilround.calendar.widget.calendar.CalendarUtils;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.data.ScheduleDB;
 import com.playgilround.common.holiday.HolidayJsonData;
 import com.playgilround.common.realm.ScheduleR;
@@ -90,6 +94,9 @@ public class MonthView extends View {
     static final String TAG = MonthView.class.getSimpleName();
 
     Realm realm;
+
+    SharedPreferences pref;
+
 
     int resultMinHoliday; //해당 연월에 공휴일 min
     ArrayList<Integer> arrHoliday = new ArrayList<Integer>(); //해당 연월에 공휴일 ArrayList
@@ -288,6 +295,48 @@ public class MonthView extends View {
                 }
             });
 
+            //달력이 1월,12월일때 전년,다음년도에 등록된 스케줄 정보 얻기.
+            pref = getContext().getSharedPreferences("loginData", Activity.MODE_PRIVATE);
+
+            String authToken = pref.getString("loginToken", "");
+
+            Log.d(TAG, "monthView authToken -->" + authToken +"/" + mSelYear);
+            Retrofit retrofit = APIClient.getClient();
+            APIInterface searchScheAPI = retrofit.create(APIInterface.class);
+            retrofit2.Call<ArrayList<JsonObject>> result = searchScheAPI.getSearchSchedule(authToken, mSelYear);
+
+
+            result.enqueue(new Callback<ArrayList<JsonObject>>() {
+
+                String error;
+                @Override
+                public void onResponse(retrofit2.Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+
+                    if (response.isSuccessful()) {
+                        Log.d(TAG, "search schedule success-->" + response.body().toString());
+                    } else {
+                        try {
+                            error = response.errorBody().string();
+                            Log.d(TAG, "search schedule error -->" + error);
+
+                            Result result = new Gson().fromJson(error, Result.class);
+
+                            List<String> message = result.message;
+
+                            if (message.contains("Unauthorized auth_token.")) {
+                                Toast.makeText(getContext(), "Auth Token Error..", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<ArrayList<JsonObject>> call, Throwable t) {
+                    Log.d(TAG, "search schedule Failure -->" + t);
+                }
+            });
         }
 
 

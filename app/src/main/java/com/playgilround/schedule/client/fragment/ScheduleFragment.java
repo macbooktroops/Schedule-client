@@ -260,14 +260,14 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         jsonObject.addProperty("state", data.getState()); //최초 0
 //        jsonObject.addProperty("start_time", mCurrentSelectYear +"-"+retMonth+"-"+mCurrentSelectDay+" 00:00:00");
 
-        if (isSetTime) {
+//        if (isSetTime) {
             jsonObject.addProperty("start_time", data.getYear() +"-"+data.getMonth()+"-"+data.getDay()+" " + data.gethTime());
-        } else {
-            jsonObject.addProperty("start_time", today);
-        }
-        jsonObject.addProperty("content", "");
-        jsonObject.addProperty("latitude", 0);
-        jsonObject.addProperty("longitude", 0);
+//        } else {
+//            jsonObject.addProperty("start_time", today);
+//        }
+        jsonObject.addProperty("content", data.getDesc());
+        jsonObject.addProperty("latitude", data.getLatitude());
+        jsonObject.addProperty("longitude", data.getLongitude());
         jsonArray.add(resultId);
 //        jsonObject.addProperty("user_ids", [1]);
 
@@ -411,8 +411,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         mTime = time;
 
         SimpleDateFormat sdf = new SimpleDateFormat(HUMAN_TIME_FORMAT);
-
         isSetTime = true;
+
         if (mTime == 0) {
             resultTime = null;
         } else {
