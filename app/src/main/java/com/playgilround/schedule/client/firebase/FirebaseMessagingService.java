@@ -28,6 +28,7 @@ import com.playgilround.schedule.client.activity.LoginActivity;
 import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.friend.json.FriendAssentJsonData;
 import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
+import com.playgilround.schedule.client.schedule.ScheduleJsonData;
 
 import org.joda.time.DateTime;
 
@@ -245,6 +246,75 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .setContentIntent(pendingIntent);
 
             notifyManager.notify(0, builder.build());
+
+        } else if (retPush.equals("{sch")) {
+          //스케줄 추가
+            Type list = new TypeToken<ScheduleJsonData>() {
+            }.getType();
+
+            ScheduleJsonData scheduleList = new Gson().fromJson(resPsh, list);
+
+            JsonObject fJson = scheduleList.sJson;
+
+//            FriendAssentJsonData assentData = new Gson().fromJson(fJson, list);
+
+//            int id = assentData.id;
+//            String friendAt = assentData.friendAt; //친구 수락, 거절 누른 시간
+//            String name = assentData.name; //친구를 받아준 사람에 이름.
+//            int friend = assentData.friend; //0 친구 거부, 2 친구 완료 로 판단
+
+            //{"user_id":1,"is_friend_at":"2018-10-12 08:11:28","is_friend":2} 친구 승낙
+            //{"user_id":1,"is_friend_at":"2018-10-12 08:12:47","is_friend":0} 친구 거부
+            Log.d(TAG, "Json Result -->" + fJson.toString());
+
+
+//            Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+//            notificationIntent.putExtra("push", "FriendPush");
+//            notificationIntent.putExtra("pushName", name);
+//            notificationIntent.putExtra("pushId", id);
+//            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+//            int requestId = (int) System.currentTimeMillis();
+
+            Log.d(TAG, "requestId");
+            /*if (friend == 2) {
+                //친구 승낙
+                assentTitle = "친구 수락";
+                assentMessage = name + "님과 친구가 되셨습니다!";
+            } else if (friend == 0) {
+                assentTitle = "친구 거부";
+                assentMessage = name + "님이 친구맺기를 거부하셨습니다.";
+            } else {
+                assentTitle = "Assent Error";
+                assentMessage = "Assent Error";
+            }
+*/
+//            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+         /*   Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+            notificationIntent.putExtra("push", "FriendPush");
+            notificationIntent.putExtra("pushName", name);
+            notificationIntent.putExtra("pushId", id);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            int requestId = (int) System.currentTimeMillis();
+
+            Log.d(TAG, "requestId");
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.setContentTitle(assentTitle)
+                    .setContentText(assentMessage)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setAutoCancel(true)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setSmallIcon(android.R.drawable.btn_star)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
+                    .setBadgeIconType(R.mipmap.add_friend)
+                    .setContentIntent(pendingIntent);
+
+            notifyManager.notify(0, builder.build());
+*/
 
         }
 
