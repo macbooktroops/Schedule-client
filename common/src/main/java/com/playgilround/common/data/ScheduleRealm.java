@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.view.View;
 
-import com.playgilround.common.bean.Schedule;
 import com.playgilround.common.realm.RealmArrayList;
 import com.playgilround.common.realm.ScheduleR;
 

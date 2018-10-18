@@ -1,6 +1,5 @@
 package com.playgilround.common.realm;
 
-import com.playgilround.common.bean.Schedule;
 
 import java.util.Date;
 

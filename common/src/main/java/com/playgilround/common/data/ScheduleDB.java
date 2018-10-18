@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.playgilround.common.bean.Schedule;
 import com.playgilround.common.realm.ScheduleR;
 
 import java.util.ArrayList;

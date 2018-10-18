@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.playgilround.common.bean.EventSet;
 import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 

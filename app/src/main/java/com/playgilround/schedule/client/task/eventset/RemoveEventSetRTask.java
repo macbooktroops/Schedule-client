@@ -4,8 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.playgilround.common.base.task.BaseAsyncTask;
-import com.playgilround.common.data.EventSetDB;
-import com.playgilround.common.data.ScheduleDB;
+
 import com.playgilround.common.listener.OnTaskFinishedListener;
 import com.playgilround.common.realm.ScheduleR;
 

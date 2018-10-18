@@ -4,7 +4,6 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 
-import com.playgilround.common.bean.Schedule;
 
 /**
  * 18-07-19

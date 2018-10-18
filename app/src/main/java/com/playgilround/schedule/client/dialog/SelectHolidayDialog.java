@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.playgilround.common.bean.EventSet;
 import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 
