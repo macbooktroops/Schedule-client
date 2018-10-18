@@ -1,4 +1,4 @@
-package com.playgilround.common.util;
+package com.playgilround.schedule.client.utils;
 
 import android.content.Context;
 import android.widget.Toast;

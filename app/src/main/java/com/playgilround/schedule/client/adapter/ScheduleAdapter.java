@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
-import com.playgilround.common.realm.ScheduleR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.ConfirmDialog;
+import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.utils.CalUtils;
 import com.playgilround.schedule.client.widget.StrikeThruTextView;
 

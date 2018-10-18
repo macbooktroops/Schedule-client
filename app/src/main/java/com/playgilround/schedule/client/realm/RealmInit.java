@@ -1,12 +1,9 @@
-package com.playgilround.common.realm;
+package com.playgilround.schedule.client.realm;
 
 import android.app.Application;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
-
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

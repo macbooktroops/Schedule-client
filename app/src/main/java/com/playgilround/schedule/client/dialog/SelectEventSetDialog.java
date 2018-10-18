@@ -11,10 +11,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.playgilround.common.listener.OnTaskFinishedListener;
-import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.AddEventSetActivity;
 import com.playgilround.schedule.client.adapter.SelectEventSetAdapter;
+import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
 
 import java.util.ArrayList;

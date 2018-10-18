@@ -13,11 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.playgilround.common.listener.OnTaskFinishedListener;
-import com.playgilround.common.realm.EventSetR;
-import com.playgilround.common.realm.ScheduleR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.dialog.ConfirmDialog;
+import com.playgilround.schedule.client.realm.EventSetR;
+import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.task.eventset.RemoveEventSetRTask;
 import com.playgilround.schedule.client.utils.CalUtils;
 import com.playgilround.schedule.client.widget.SlideDeleteView;

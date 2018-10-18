@@ -22,9 +22,7 @@ import com.playgilround.calendar.widget.calendar.CalendarUtils;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
-import com.playgilround.common.data.ScheduleDB;
 import com.playgilround.common.holiday.HolidayJsonData;
-import com.playgilround.common.realm.ScheduleR;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -134,16 +132,9 @@ public class MonthView extends View {
         initPaint();
         initMonth();
         initGestureDetector();
-        initTaskHint();
     }
 
-    private void initTaskHint() {
-        if (mIsShowHint) {
-            //DB에서 힌트가져오기.
-            ScheduleDB db = ScheduleDB.getInstance(getContext());
-            CalendarUtils.getInstance(getContext()).addTaskHints(mSelYear, mSelMonth, db.getTaskHintByMonth(mSelYear, mSelMonth));
-        }
-    }
+
 
     //월 뷰 기본색상설정
     private void initAttrs(TypedArray array, int year, int month) {

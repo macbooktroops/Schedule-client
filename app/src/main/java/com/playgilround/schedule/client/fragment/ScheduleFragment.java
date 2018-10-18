@@ -30,18 +30,19 @@ import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 import com.playgilround.common.listener.OnTaskFinishedListener;
-import com.playgilround.common.realm.RealmArrayList;
-import com.playgilround.common.realm.ScheduleR;
-import com.playgilround.common.util.DeviceUtils;
-import com.playgilround.common.util.ToastUtils;
+
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.activity.ScheduleDetailActivity;
 import com.playgilround.schedule.client.adapter.ScheduleAdapter;
 import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
+import com.playgilround.schedule.client.realm.RealmArrayList;
+import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;
 import com.playgilround.schedule.client.task.schedule.LoadScheduleRTask;
+import com.playgilround.schedule.client.utils.DeviceUtils;
+import com.playgilround.schedule.client.utils.ToastUtils;
 
 import org.joda.time.DateTime;
 

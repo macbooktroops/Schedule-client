@@ -31,7 +31,6 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.common.listener.OnTaskFinishedListener;
-import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.base.app.BaseActivity;
@@ -43,6 +42,7 @@ import com.playgilround.schedule.client.friend.fragment.FriendFragment;
 import com.playgilround.schedule.client.fragment.ScheduleFragment;
 
 import com.playgilround.schedule.client.holiday.InitHoliday;
+import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
 
 import org.joda.time.DateTime;

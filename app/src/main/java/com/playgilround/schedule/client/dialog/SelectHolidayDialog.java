@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.realm.EventSetR;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

@@ -1,4 +1,4 @@
-package com.playgilround.common.realm;
+package com.playgilround.schedule.client.realm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

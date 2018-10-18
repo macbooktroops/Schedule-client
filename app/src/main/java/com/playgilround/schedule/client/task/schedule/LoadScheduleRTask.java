@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.playgilround.common.data.ScheduleRealm;
 import com.playgilround.common.listener.OnTaskFinishedListener;
-import com.playgilround.common.realm.ScheduleR;
 import com.playgilround.schedule.client.base.task.BaseAsyncTask;
+import com.playgilround.schedule.client.realm.ScheduleR;
 
 import java.util.List;
 

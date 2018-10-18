@@ -16,7 +16,6 @@ import android.view.View;
 
 import com.playgilround.calendar.R;
 import com.playgilround.calendar.widget.calendar.CalendarUtils;
-import com.playgilround.common.data.ScheduleDB;
 
 import org.joda.time.DateTime;
 
@@ -200,8 +199,8 @@ public class WeekView extends View {
             setSelectYearMonth(mStartDate.getYear(), mStartDate.getMonthOfYear() -1, mStartDate.getMonthOfYear());
         }
 
-        initTaskHint(mStartDate);
-        initTaskHint(endDate);
+//        initTaskHint(mStartDate);
+//        initTaskHint(endDate);
 
     }
 
@@ -371,7 +370,7 @@ public class WeekView extends View {
     }
 
 
-    //데이터베이스에서 도트 프롬프트 데이터 가져 오기
+   /* //데이터베이스에서 도트 프롬프트 데이터 가져 오기
     private void initTaskHint(DateTime date) {
         if (mIsShowHint) {
             ScheduleDB db  = ScheduleDB.getInstance(getContext());
@@ -379,7 +378,7 @@ public class WeekView extends View {
                 CalendarUtils.getInstance(getContext()).addTaskHints(date.getYear(), date.getMonthOfYear() -1, db.getTaskHintByMonth(mSelYear, mSelMonth));
 
         }
-    }
+    }*/
 
     @Override
     public boolean performClick() {

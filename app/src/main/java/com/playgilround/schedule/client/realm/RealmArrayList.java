@@ -1,4 +1,4 @@
-package com.playgilround.common.realm;
+package com.playgilround.schedule.client.realm;
 
 /**
  * 18-08-04

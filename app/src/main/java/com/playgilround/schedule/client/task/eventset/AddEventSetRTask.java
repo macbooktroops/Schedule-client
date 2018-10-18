@@ -3,8 +3,8 @@ package com.playgilround.schedule.client.task.eventset;
 import android.content.Context;
 
 import com.playgilround.common.listener.OnTaskFinishedListener;
-import com.playgilround.common.realm.EventSetR;
 import com.playgilround.schedule.client.base.task.BaseAsyncTask;
+import com.playgilround.schedule.client.realm.EventSetR;
 
 /**
  * 18-08-12
