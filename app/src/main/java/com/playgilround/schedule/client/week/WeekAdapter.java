@@ -8,7 +8,8 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.playgilround.calendar.R;
+
+import com.playgilround.schedule.client.R;
 
 import org.joda.time.DateTime;
 

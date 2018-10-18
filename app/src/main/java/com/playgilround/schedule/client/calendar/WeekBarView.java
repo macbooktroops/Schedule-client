@@ -10,7 +10,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
-import com.playgilround.calendar.R;
+import com.playgilround.schedule.client.R;
+
 
 /**
  * 18-05-25
