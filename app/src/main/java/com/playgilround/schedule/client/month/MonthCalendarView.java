@@ -1,18 +1,14 @@
-package com.playgilround.calendar.widget.calendar.month;
+package com.playgilround.schedule.client.month;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.view.*;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
-import android.widget.ViewFlipper;
 
 import com.playgilround.calendar.R;
 import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
-
-import java.time.Month;
-import java.util.jar.Attributes;
 
 /**
  * 18-05-26

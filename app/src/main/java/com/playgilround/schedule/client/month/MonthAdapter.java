@@ -1,4 +1,4 @@
-package com.playgilround.calendar.widget.calendar.month;
+package com.playgilround.schedule.client.month;
 
 import android.content.Context;
 import android.content.res.TypedArray;

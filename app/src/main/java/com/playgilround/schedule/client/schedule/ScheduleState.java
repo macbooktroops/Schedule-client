@@ -1,4 +1,4 @@
-package com.playgilround.calendar.widget.calendar.schedule;
+package com.playgilround.schedule.client.schedule;
 
 /**
  * 2018-05-25

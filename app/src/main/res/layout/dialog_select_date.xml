@@ -28,13 +28,13 @@
             android:layout_height="@dimen/schedule_hint_dash_line_width"
             android:background="@color/color_select_date_dialog_line"/>
 
-        <com.playgilround.calendar.widget.calendar.WeekBarView
+        <com.playgilround.schedule.client.calendar.WeekBarView
             android:layout_width="match_parent"
             android:layout_height="@dimen/small_week_bar_height"
             app:week_text_color="@color/color_small_calendar_text"
             app:week_text_size="@integer/small_calendar_text_size"/>
 
-        <com.playgilround.calendar.widget.calendar.month.MonthCalendarView
+        <com.playgilround.schedule.client.month.MonthCalendarView
             android:id="@+id/sMonthCalendar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/small_month_calendar_height"

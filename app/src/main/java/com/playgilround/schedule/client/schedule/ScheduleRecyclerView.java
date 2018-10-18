@@ -1,4 +1,4 @@
-package com.playgilround.calendar.widget.calendar.schedule;
+package com.playgilround.schedule.client.schedule;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

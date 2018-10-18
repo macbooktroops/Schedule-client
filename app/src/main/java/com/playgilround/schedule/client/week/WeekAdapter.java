@@ -1,4 +1,4 @@
-package com.playgilround.calendar.widget.calendar.week;
+package com.playgilround.schedule.client.week;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.playgilround.calendar.R;
-import com.playgilround.calendar.widget.calendar.WeekBarView;
 
 import org.joda.time.DateTime;
 

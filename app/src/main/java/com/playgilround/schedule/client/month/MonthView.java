@@ -1,4 +1,4 @@
-package com.playgilround.calendar.widget.calendar.month;
+package com.playgilround.schedule.client.month;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,8 +7,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.telecom.Call;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,16 +15,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.playgilround.calendar.R;
-import com.playgilround.calendar.widget.calendar.CalendarUtils;
-import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
-import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
-import com.playgilround.calendar.widget.calendar.retrofit.Result;
-import com.playgilround.common.holiday.HolidayJsonData;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.playgilround.calendar.R;
+import com.playgilround.calendar.widget.calendar.CalendarUtils;
+
+import com.playgilround.schedule.client.holiday.HolidayJsonData;
+import com.playgilround.schedule.client.realm.ScheduleR;
+import com.playgilround.schedule.client.retrofit.APIClient;
+import com.playgilround.schedule.client.retrofit.APIInterface;
+import com.playgilround.schedule.client.retrofit.Result;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +36,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.jar.Attributes;
 
 import io.realm.Realm;
 import io.realm.RealmResults;

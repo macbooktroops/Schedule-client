@@ -1,4 +1,4 @@
-package com.playgilround.calendar.widget.calendar.schedule;
+package com.playgilround.schedule.client.schedule;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,10 +15,11 @@ import android.widget.RelativeLayout;
 import com.playgilround.calendar.R;
 import com.playgilround.calendar.widget.calendar.CalendarUtils;
 import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
-import com.playgilround.calendar.widget.calendar.month.MonthCalendarView;
-import com.playgilround.calendar.widget.calendar.month.MonthView;
-import com.playgilround.calendar.widget.calendar.week.WeekCalendarView;
-import com.playgilround.calendar.widget.calendar.week.WeekView;
+import com.playgilround.schedule.client.month.MonthCalendarView;
+import com.playgilround.schedule.client.month.MonthView;
+import com.playgilround.schedule.client.week.WeekCalendarView;
+import com.playgilround.schedule.client.week.WeekView;
+
 
 import org.joda.time.DateTime;
 
