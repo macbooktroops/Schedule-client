@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.playgilround.common.base.app.BaseActivity;
 import com.playgilround.common.listener.OnTaskFinishedListener;
 import com.playgilround.common.realm.EventSetR;
 import com.playgilround.common.util.ToastUtils;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.dialog.SelectColorDialog;
 import com.playgilround.schedule.client.task.eventset.AddEventSetRTask;
 import com.playgilround.schedule.client.utils.CalUtils;

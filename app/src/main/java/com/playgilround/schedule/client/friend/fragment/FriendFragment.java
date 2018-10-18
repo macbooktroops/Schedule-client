@@ -24,7 +24,7 @@ import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
-import com.playgilround.common.base.app.BaseFragment;
+import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.RequestFriendDialog;
 import com.playgilround.schedule.client.friend.adapter.RequestFriendAdapter;
 import com.playgilround.schedule.client.friend.json.UserJsonData;

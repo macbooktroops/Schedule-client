@@ -1,4 +1,4 @@
-package com.playgilround.common.base.task;
+package com.playgilround.schedule.client.base.task;
 
 import android.content.Context;
 import android.os.AsyncTask;

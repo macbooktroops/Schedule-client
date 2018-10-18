@@ -23,7 +23,6 @@ public class RealmInit extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Log.d(TAG, "=== RealmInit ===");
         Realm.init(this);
         Realm.setDefaultConfiguration(new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build());
         Stetho.initialize(

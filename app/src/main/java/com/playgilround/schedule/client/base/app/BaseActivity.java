@@ -1,4 +1,4 @@
-package com.playgilround.common.base.app;
+package com.playgilround.schedule.client.base.app;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

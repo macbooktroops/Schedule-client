@@ -1,4 +1,4 @@
-package com.playgilround.common.base.app;
+package com.playgilround.schedule.client.base.app;
 
 import android.app.Activity;
 import android.os.Bundle;
