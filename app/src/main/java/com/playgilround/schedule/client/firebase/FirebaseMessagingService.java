@@ -26,6 +26,8 @@ import com.playgilround.schedule.client.gson.FriendAssentJsonData;
 import com.playgilround.schedule.client.gson.FriendPushJsonData;
 import com.playgilround.schedule.client.schedule.ScheduleJsonData;
 
+import org.joda.time.DateTime;
+
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -240,59 +242,43 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             Type list = new TypeToken<ScheduleJsonData>() {
             }.getType();
 
+            //schedule Json body
             ScheduleJsonData scheduleList = new Gson().fromJson(resPsh, list);
 
             JsonObject fJson = scheduleList.sJson;
 
-//            FriendAssentJsonData assentData = new Gson().fromJson(fJson, list);
+            ScheduleJsonData scheduleJson = new Gson().fromJson(fJson.toString(), list);
+            String title = scheduleJson.title;
+            String startTime = scheduleJson.startTime;
 
-//            int id = assentData.id;
-//            String friendAt = assentData.friendAt; //친구 수락, 거절 누른 시간
-//            String name = assentData.name; //친구를 받아준 사람에 이름.
-//            int friend = assentData.friend; //0 친구 거부, 2 친구 완료 로 판단
-
-            //{"user_id":1,"is_friend_at":"2018-10-12 08:11:28","is_friend":2} 친구 승낙
-            //{"user_id":1,"is_friend_at":"2018-10-12 08:12:47","is_friend":0} 친구 거부
-            Log.d(TAG, "Json Result -->" + fJson.toString());
+            //user Json body
+            JsonObject uJson = scheduleList.uJson;
 
 
-//            Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
-//            notificationIntent.putExtra("push", "FriendPush");
+            ScheduleJsonData userJson = new Gson().fromJson(uJson.toString(), list);
+            String name = userJson.name;
+
+            DateTime dateTime = new DateTime();
+            String setTime = dateTime.toString("yyyy-MM-dd");
+
+            Log.d(TAG, "Json Result -->" +  "--" + title + "--" + setTime + "--" + name);
+
+
+
+            //Push Notification 클릭 시 LoginActivity
+            //추후에 assent 작업때 전달할 값 정의.
+            Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+//            notificationIntent.putExtra("push", "SchedulePush");
 //            notificationIntent.putExtra("pushName", name);
 //            notificationIntent.putExtra("pushId", id);
-//            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-//            int requestId = (int) System.currentTimeMillis();
-
-            Log.d(TAG, "requestId");
-            /*if (friend == 2) {
-                //친구 승낙
-                assentTitle = "친구 수락";
-                assentMessage = name + "님과 친구가 되셨습니다!";
-            } else if (friend == 0) {
-                assentTitle = "친구 거부";
-                assentMessage = name + "님이 친구맺기를 거부하셨습니다.";
-            } else {
-                assentTitle = "Assent Error";
-                assentMessage = "Assent Error";
-            }
-*/
-//            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-         /*   Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
-            notificationIntent.putExtra("push", "FriendPush");
-            notificationIntent.putExtra("pushName", name);
-            notificationIntent.putExtra("pushId", id);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             int requestId = (int) System.currentTimeMillis();
 
-            Log.d(TAG, "requestId");
-
             PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentTitle(assentTitle)
-                    .setContentText(assentMessage)
+
+            builder.setContentTitle(name + "님이 스케줄 추가를 했습니다.")
+                    .setContentText(setTime + "에 " + title + "약속이있으신가요?")
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
@@ -302,7 +288,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .setContentIntent(pendingIntent);
 
             notifyManager.notify(0, builder.build());
-*/
 
         }
 
