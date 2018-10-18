@@ -15,10 +15,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
-import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
-import com.playgilround.calendar.widget.calendar.retrofit.Result;
+
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.retrofit.APIClient;
+import com.playgilround.schedule.client.retrofit.APIInterface;
+import com.playgilround.schedule.client.retrofit.Result;
 
 import org.joda.time.DateTime;
 

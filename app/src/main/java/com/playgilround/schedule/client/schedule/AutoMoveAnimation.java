@@ -1,0 +1,32 @@
+package com.playgilround.schedule.client.schedule;
+
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Transformation;
+
+/**
+ * 18-06-05
+ * 페이지 이동시 애니메이션 클래
+ */
+public class AutoMoveAnimation extends Animation {
+
+    private View mView;
+    private int mDistance;
+    private float mPositionY;
+
+    public AutoMoveAnimation(View view, int distance) {
+        mView = view;
+        mDistance = distance;
+        setDuration(200);
+        setInterpolator(new DecelerateInterpolator(1.5f));
+        mPositionY = mView.getY();
+    }
+
+    //Animator 컨트롤
+    @Override
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
+        super.applyTransformation(interpolatedTime, t);
+        mView.setY(mPositionY + interpolatedTime * mDistance);
+    }
+}

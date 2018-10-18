@@ -9,7 +9,6 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 
-import com.playgilround.calendar.widget.calendar.schedule.AutoMoveAnimation;
 
 /**
  * 18-07-07

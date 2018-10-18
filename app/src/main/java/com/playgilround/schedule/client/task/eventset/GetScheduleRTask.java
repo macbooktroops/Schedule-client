@@ -3,9 +3,9 @@ package com.playgilround.schedule.client.task.eventset;
 import android.content.Context;
 import android.util.Log;
 
-import com.playgilround.common.base.task.BaseAsyncTask;
-import com.playgilround.common.listener.OnTaskFinishedListener;
-import com.playgilround.common.realm.ScheduleR;
+import com.playgilround.schedule.client.base.task.BaseAsyncTask;
+import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
+import com.playgilround.schedule.client.realm.ScheduleR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import io.realm.RealmResults;
  * Seq기준
  */
 
-public class GetScheduleRTask extends BaseAsyncTask<List<ScheduleR>>{
+public class GetScheduleRTask extends BaseAsyncTask<List<ScheduleR>> {
 
     private int mSeq;
 

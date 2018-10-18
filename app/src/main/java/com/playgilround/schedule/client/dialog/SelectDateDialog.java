@@ -12,10 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
-import com.playgilround.calendar.widget.calendar.month.MonthCalendarView;
-import com.playgilround.calendar.widget.calendar.month.MonthView;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.calendar.OnCalendarClickListener;
+import com.playgilround.schedule.client.month.MonthCalendarView;
+import com.playgilround.schedule.client.month.MonthView;
 
 import java.util.Calendar;
 import java.util.regex.Matcher;
