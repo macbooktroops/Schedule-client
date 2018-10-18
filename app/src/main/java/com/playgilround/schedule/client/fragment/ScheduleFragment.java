@@ -29,7 +29,6 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView;
-import com.playgilround.common.listener.OnTaskFinishedListener;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
@@ -37,6 +36,7 @@ import com.playgilround.schedule.client.activity.ScheduleDetailActivity;
 import com.playgilround.schedule.client.adapter.ScheduleAdapter;
 import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
+import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.RealmArrayList;
 import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;

@@ -3,7 +3,8 @@ package com.playgilround.schedule.client.base.task;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.playgilround.common.listener.OnTaskFinishedListener;
+import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
+
 
 /**
  * 18-06-07

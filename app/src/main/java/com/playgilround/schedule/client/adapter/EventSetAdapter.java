@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.playgilround.common.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.dialog.ConfirmDialog;
