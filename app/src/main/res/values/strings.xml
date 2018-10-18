@@ -86,6 +86,17 @@
 
     <string name="human_time_format2">HH:mm:ss</string>
     <string name="holidayDomain">http://schedule.mactroops.com:3000/v1/holiday/</string>
+
+    <string-array name="calendar_week">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tues</item>
+        <item>Wed</item>
+        <item>Thur</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+
 </resources>
 
 
