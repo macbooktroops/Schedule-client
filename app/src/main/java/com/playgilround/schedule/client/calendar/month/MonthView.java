@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.month;
+package com.playgilround.schedule.client.calendar.month;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,11 +22,11 @@ import com.google.gson.reflect.TypeToken;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.calendar.CalendarUtils;
-import com.playgilround.schedule.client.holiday.HolidayJsonData;
+import com.playgilround.schedule.client.gson.HolidayJsonData;
 import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
-import com.playgilround.schedule.client.retrofit.Result;
+import com.playgilround.schedule.client.gson.Result;
 
 import org.json.JSONArray;
 import org.json.JSONException;

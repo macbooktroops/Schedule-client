@@ -14,8 +14,8 @@ import android.widget.Toast;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.calendar.OnCalendarClickListener;
-import com.playgilround.schedule.client.month.MonthCalendarView;
-import com.playgilround.schedule.client.month.MonthView;
+import com.playgilround.schedule.client.calendar.month.MonthCalendarView;
+import com.playgilround.schedule.client.calendar.month.MonthView;
 
 import java.util.Calendar;
 import java.util.regex.Matcher;

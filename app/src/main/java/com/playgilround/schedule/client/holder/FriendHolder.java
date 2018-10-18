@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.friend;
+package com.playgilround.schedule.client.holder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

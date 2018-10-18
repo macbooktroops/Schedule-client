@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.friend.fragment;
+package com.playgilround.schedule.client.fragment;
 
 import android.app.DialogFragment;
 import android.content.Context;
@@ -18,11 +18,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
 import com.playgilround.schedule.client.R;
-import com.playgilround.schedule.client.friend.json.UserJsonData;
-import com.playgilround.schedule.client.friend.json.UserSearchJsonData;
+import com.playgilround.schedule.client.gson.UserSearchJsonData;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
-import com.playgilround.schedule.client.retrofit.Result;
+import com.playgilround.schedule.client.gson.Result;
 
 import java.lang.reflect.Type;
 import java.util.List;

@@ -2,7 +2,6 @@ package com.playgilround.schedule.client.activity;
 
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,7 +18,7 @@ import com.google.gson.JsonObject;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
-import com.playgilround.schedule.client.retrofit.Result;
+import com.playgilround.schedule.client.gson.Result;
 
 import org.joda.time.DateTime;
 

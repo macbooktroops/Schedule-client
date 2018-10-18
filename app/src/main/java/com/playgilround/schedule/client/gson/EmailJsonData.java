@@ -1,13 +1,13 @@
-package com.playgilround.schedule.client.friend.json;
+package com.playgilround.schedule.client.gson;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
- * 18-10-11
- * Json Create User Search Data class
- * id, name, email, birth
+ * 18-10-07
+ * Json Create Find Email Data class
  */
-public class UserSearchJsonData {
+public class EmailJsonData {
+
     @SerializedName("id")
     public int id;
 
@@ -18,9 +18,6 @@ public class UserSearchJsonData {
     public String email;
 
     @SerializedName("birth")
-    public String birth;
+    public long birth;
 
-    @SerializedName("assent")
-    public int isAssent;
 }
-

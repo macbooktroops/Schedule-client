@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/rlMonthCalendar">
 
-                    <com.playgilround.schedule.client.month.MonthCalendarView
+                    <com.playgilround.schedule.client.calendar.month.MonthCalendarView
                         android:id="@+id/monthCalendar"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/month_calendar_height"
@@ -49,7 +49,7 @@
                 </RelativeLayout>
 
                 <!--<com.playgilround.calendar.widget.calendar.week.WeekCalendarView-->
-                <com.playgilround.schedule.client.week.WeekCalendarView
+                <com.playgilround.schedule.client.calendar.week.WeekCalendarView
                     android:id="@+id/weekCalendar"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/week_calendar_height"

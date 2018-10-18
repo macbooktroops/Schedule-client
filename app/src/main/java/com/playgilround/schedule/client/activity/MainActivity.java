@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import com.playgilround.schedule.client.R;
@@ -33,9 +32,8 @@ import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
-import com.playgilround.schedule.client.firebase.FirebaseMessagingService;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
-import com.playgilround.schedule.client.friend.fragment.FriendFragment;
+import com.playgilround.schedule.client.fragment.FriendFragment;
 import com.playgilround.schedule.client.fragment.ScheduleFragment;
 
 import com.playgilround.schedule.client.holiday.InitHoliday;
@@ -43,10 +41,8 @@ import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
-import com.playgilround.schedule.client.retrofit.Result;
+import com.playgilround.schedule.client.gson.Result;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
-
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Calendar;

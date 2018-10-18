@@ -7,7 +7,7 @@ import android.view.animation.Transformation;
 
 /**
  * 18-06-05
- * 페이지 이동시 애니메이션 클래
+ * 페이지 이동시 애니메이션 클래스
  */
 public class AutoMoveAnimation extends Animation {
 

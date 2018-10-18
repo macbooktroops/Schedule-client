@@ -1,7 +1,5 @@
 package com.playgilround.schedule.client.firebase;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,7 +10,6 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Build;
-import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -25,20 +22,12 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.FriendAssentActivity;
 import com.playgilround.schedule.client.activity.LoginActivity;
 import com.playgilround.schedule.client.activity.MainActivity;
-import com.playgilround.schedule.client.friend.json.FriendAssentJsonData;
-import com.playgilround.schedule.client.friend.json.FriendPushJsonData;
+import com.playgilround.schedule.client.gson.FriendAssentJsonData;
+import com.playgilround.schedule.client.gson.FriendPushJsonData;
 import com.playgilround.schedule.client.schedule.ScheduleJsonData;
 
-import org.joda.time.DateTime;
-
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 /**
  * 18-09-30

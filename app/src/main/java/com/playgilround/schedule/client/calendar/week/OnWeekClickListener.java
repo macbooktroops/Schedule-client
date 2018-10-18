@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.week;
+package com.playgilround.schedule.client.calendar.week;
 
 /**
  * 18-06-01

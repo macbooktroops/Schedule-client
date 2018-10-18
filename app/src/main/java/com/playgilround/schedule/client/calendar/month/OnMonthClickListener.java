@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.month;
+package com.playgilround.schedule.client.calendar.month;
 
 /**
  * 18-05-26
