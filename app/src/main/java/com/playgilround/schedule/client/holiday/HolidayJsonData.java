@@ -1,4 +1,4 @@
-package com.playgilround.common.holiday;
+package com.playgilround.schedule.client.holiday;
 
 import com.google.gson.annotations.SerializedName;
 

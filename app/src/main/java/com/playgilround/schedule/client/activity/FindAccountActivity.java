@@ -16,9 +16,9 @@ import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
 import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
 import com.playgilround.calendar.widget.calendar.retrofit.PassToken;
 import com.playgilround.calendar.widget.calendar.retrofit.Result;
-import com.playgilround.common.find.EmailJsonData;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.FindEmailDialog;
+import com.playgilround.schedule.client.login.EmailJsonData;
 
 import java.lang.reflect.Type;
 import java.util.List;
