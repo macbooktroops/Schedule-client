@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.FriendAssentActivity;
-import com.playgilround.schedule.client.friend.adapter.RequestFriendAdapter;
+import com.playgilround.schedule.client.adapter.RequestFriendAdapter;
 
 import java.util.ArrayList;
 

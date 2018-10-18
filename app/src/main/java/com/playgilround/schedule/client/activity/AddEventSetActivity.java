@@ -67,7 +67,7 @@ public class AddEventSetActivity extends BaseActivity implements View.OnClickLis
             case R.id.tvFinish:
                 addEventSet();
                 break;
-            case R.id.rlEventSetColor:
+            case R.id.rlEventSetColor   :
                 Log.d(TAG, "rlEventSetColor ---");
                 showSelectColorDialog();
                 break;

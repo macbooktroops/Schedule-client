@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.login;
+package com.playgilround.schedule.client.gson;
 
 import com.google.gson.annotations.SerializedName;
 

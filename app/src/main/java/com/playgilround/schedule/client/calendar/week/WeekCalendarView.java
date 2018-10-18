@@ -1,4 +1,4 @@
-package com.playgilround.schedule.client.week;
+package com.playgilround.schedule.client.calendar.week;
 
 import android.content.Context;
 import android.content.res.TypedArray;

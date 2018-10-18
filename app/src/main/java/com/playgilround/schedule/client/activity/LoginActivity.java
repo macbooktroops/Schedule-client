@@ -20,13 +20,13 @@ import com.google.gson.reflect.TypeToken;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
-import com.playgilround.schedule.client.holiday.HolidayJsonData;
-import com.playgilround.schedule.client.login.LoginJsonData;
+import com.playgilround.schedule.client.gson.HolidayJsonData;
+import com.playgilround.schedule.client.gson.LoginJsonData;
 import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
-import com.playgilround.schedule.client.retrofit.Result;
-import com.playgilround.schedule.client.retrofit.TokenSerialized;
+import com.playgilround.schedule.client.gson.Result;
+import com.playgilround.schedule.client.gson.TokenSerialized;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

@@ -2,6 +2,8 @@ package com.playgilround.schedule.client.retrofit;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.playgilround.schedule.client.gson.Result;
+import com.playgilround.schedule.client.gson.TokenSerialized;
 
 import java.util.ArrayList;
 

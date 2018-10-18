@@ -34,7 +34,7 @@
             app:week_text_color="@color/color_small_calendar_text"
             app:week_text_size="@integer/small_calendar_text_size"/>
 
-        <com.playgilround.schedule.client.month.MonthCalendarView
+        <com.playgilround.schedule.client.calendar.month.MonthCalendarView
             android:id="@+id/sMonthCalendar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/small_month_calendar_height"

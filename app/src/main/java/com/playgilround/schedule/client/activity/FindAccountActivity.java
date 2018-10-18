@@ -15,11 +15,11 @@ import com.google.gson.reflect.TypeToken;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.FindEmailDialog;
-import com.playgilround.schedule.client.login.EmailJsonData;
+import com.playgilround.schedule.client.gson.EmailJsonData;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
-import com.playgilround.schedule.client.retrofit.PassToken;
-import com.playgilround.schedule.client.retrofit.Result;
+import com.playgilround.schedule.client.gson.PassToken;
+import com.playgilround.schedule.client.gson.Result;
 
 import java.lang.reflect.Type;
 import java.util.List;

@@ -34,7 +34,7 @@ import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
-import com.playgilround.schedule.client.retrofit.Result;
+import com.playgilround.schedule.client.gson.Result;
 import com.playgilround.schedule.client.schedule.ScheduleRecyclerView;
 import com.playgilround.schedule.client.task.eventset.GetScheduleRTask;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;
