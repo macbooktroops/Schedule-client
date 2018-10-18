@@ -14,8 +14,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.playgilround.calendar.R;
-import com.playgilround.calendar.widget.calendar.CalendarUtils;
+
+import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.calendar.CalendarUtils;
 
 import org.joda.time.DateTime;
 
@@ -130,8 +131,6 @@ public class WeekView extends View {
          * 추후에 사용자가 휴일이든, 근무일자든 자기가 선택할 수 있도록 해야됨
          * 지금은 2018년, 2019년 휴일 국가공휴일만 지정해놓은상태.
          */
-        mRestBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.holiday); //휴일 아이콘
-        mWorkBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.work); //근무 일자 아이콘
 
         int holidays[] = CalendarUtils.getInstance(getContext()).getHolidays(mStartDate.getYear(), mStartDate.getMonthOfYear());
         Log.d(TAG, "holiday start date -->" + mStartDate.getYear() +"--" + mStartDate.getMonthOfYear() + "--"+ mStartDate.getDayOfMonth());

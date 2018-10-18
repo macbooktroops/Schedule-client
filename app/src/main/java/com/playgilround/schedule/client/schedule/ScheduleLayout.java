@@ -12,9 +12,9 @@ import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.playgilround.calendar.R;
-import com.playgilround.calendar.widget.calendar.CalendarUtils;
-import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
+import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.calendar.CalendarUtils;
+import com.playgilround.schedule.client.calendar.OnCalendarClickListener;
 import com.playgilround.schedule.client.month.MonthCalendarView;
 import com.playgilround.schedule.client.month.MonthView;
 import com.playgilround.schedule.client.week.WeekCalendarView;

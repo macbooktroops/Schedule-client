@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.playgilround.calendar.R;
-import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
+import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.calendar.OnCalendarClickListener;
 
 /**
  * 18-05-26

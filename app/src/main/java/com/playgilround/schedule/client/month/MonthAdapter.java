@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 
-import com.playgilround.calendar.R;
+
+import com.playgilround.schedule.client.R;
 
 import org.joda.time.DateTime;
 

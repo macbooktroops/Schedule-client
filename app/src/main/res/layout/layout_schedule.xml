@@ -6,13 +6,13 @@
     android:layout_alignWithParentIfMissing="true"
     android:orientation="vertical">
 
-    <com.playgilround.calendar.widget.calendar.WeekBarView
+    <com.playgilround.schedule.client.calendar.WeekBarView
         android:layout_width="match_parent"
         android:layout_height="@dimen/week_bar_height"
         android:background="@color/calendar_bg_color"
         app:week_text_size="@integer/calendar_text_size"/>
 
-    <com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout
+    <com.playgilround.schedule.client.schedule.ScheduleLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/sdLayout"
@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/rlMonthCalendar">
 
-                    <com.playgilround.schedule.client.month.MonthCalendarView
+                    <com.playgilround.
                         android:id="@+id/monthCalendar"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/month_calendar_height"
@@ -71,7 +71,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/colorBackground">
 
-                <com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView
+                <com.playgilround.schedule.client.schedule.ScheduleRecyclerView
                     android:id="@+id/rvScheduleList"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -100,5 +100,5 @@
 
             </RelativeLayout>
         </LinearLayout>
-    </com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout>
+    </com.playgilround.schedule.client.schedule.ScheduleLayout>
 </LinearLayout>
