@@ -1,4 +1,4 @@
-package com.playgilround.calendar.widget.calendar.retrofit;
+package com.playgilround.schedule.client.retrofit;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -74,7 +74,7 @@ public interface APIInterface {
     //친구 동의
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_FRIEND_ASSENT)
-    Call<JsonObject> postFriendAssent(@Body JsonObject friendAssent,@Path("pushId") int pushid, @Header("Authorization") String tokenData);
+    Call<JsonObject> postFriendAssent(@Body JsonObject friendAssent, @Path("pushId") int pushid, @Header("Authorization") String tokenData);
 
     //스케줄 업데이트
     @Headers({"Accept: application/json", "Content-Type: application/json"})

@@ -20,8 +20,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
-import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.FriendAssentActivity;
 import com.playgilround.schedule.client.activity.LoginActivity;

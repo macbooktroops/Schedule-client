@@ -24,9 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.playgilround.calendar.widget.calendar.OnCalendarClickListener;
-import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
-import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
-import com.playgilround.calendar.widget.calendar.retrofit.Result;
+
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleLayout;
 import com.playgilround.calendar.widget.calendar.schedule.ScheduleRecyclerView;
 
@@ -39,6 +37,9 @@ import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.RealmArrayList;
 import com.playgilround.schedule.client.realm.ScheduleR;
+import com.playgilround.schedule.client.retrofit.APIClient;
+import com.playgilround.schedule.client.retrofit.APIInterface;
+import com.playgilround.schedule.client.retrofit.Result;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;
 import com.playgilround.schedule.client.task.schedule.LoadScheduleRTask;
 import com.playgilround.schedule.client.utils.DeviceUtils;

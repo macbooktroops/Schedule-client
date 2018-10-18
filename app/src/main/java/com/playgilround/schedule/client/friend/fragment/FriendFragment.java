@@ -21,15 +21,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.mancj.materialsearchbar.MaterialSearchBar;
-import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
-import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
-import com.playgilround.calendar.widget.calendar.retrofit.Result;
+
 import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.RequestFriendDialog;
 import com.playgilround.schedule.client.friend.adapter.RequestFriendAdapter;
 import com.playgilround.schedule.client.friend.json.UserJsonData;
 import com.playgilround.schedule.client.friend.adapter.FriendAdapter;
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.retrofit.APIClient;
+import com.playgilround.schedule.client.retrofit.APIInterface;
+import com.playgilround.schedule.client.retrofit.Result;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;

@@ -8,10 +8,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
-import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
+
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.base.app.BaseActivity;
+import com.playgilround.schedule.client.retrofit.APIClient;
+import com.playgilround.schedule.client.retrofit.APIInterface;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

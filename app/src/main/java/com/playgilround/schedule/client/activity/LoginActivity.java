@@ -17,15 +17,16 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.playgilround.calendar.widget.calendar.retrofit.APIClient;
-import com.playgilround.calendar.widget.calendar.retrofit.APIInterface;
-import com.playgilround.calendar.widget.calendar.retrofit.Result;
-import com.playgilround.calendar.widget.calendar.retrofit.TokenSerialized;
+
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
 import com.playgilround.schedule.client.holiday.HolidayJsonData;
 import com.playgilround.schedule.client.login.LoginJsonData;
 import com.playgilround.schedule.client.realm.ScheduleR;
+import com.playgilround.schedule.client.retrofit.APIClient;
+import com.playgilround.schedule.client.retrofit.APIInterface;
+import com.playgilround.schedule.client.retrofit.Result;
+import com.playgilround.schedule.client.retrofit.TokenSerialized;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
