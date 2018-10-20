@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.adapter.ChoiceFriendAdapter;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,9 @@ public class ScheduleFriendFragment extends DialogFragment {
 
     static ArrayList<String> retArr = new ArrayList<>();
     RecyclerView rvSchedule;
+
+    ChoiceFriendAdapter adapter;
+
 
 
     public static ScheduleFriendFragment getInstance(ArrayList arrName) {
@@ -39,5 +43,9 @@ public class ScheduleFriendFragment extends DialogFragment {
         rvSchedule = rootView.findViewById(R.id.rvFriend);
         rvSchedule.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
+        adapter = new ChoiceFriendAdapter(getActivity(), retArr);
+        rvSchedule.setAdapter(adapter);
+
+        return rootView;
     }
 }
