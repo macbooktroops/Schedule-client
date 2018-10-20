@@ -3,6 +3,7 @@
     android:id="@+id/friendCard"
     android:layout_width="match_parent"
     android:layout_height="60dp"
+    android:background="@drawable/recycler_click"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/space_10dp"
     card_view:cardCornerRadius="10dp"
