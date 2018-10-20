@@ -1,5 +1,6 @@
 package com.playgilround.schedule.client.fragment;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import com.google.gson.reflect.TypeToken;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.activity.ScheduleDetailActivity;
@@ -31,6 +33,7 @@ import com.playgilround.schedule.client.adapter.ScheduleAdapter;
 import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.calendar.OnCalendarClickListener;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
+import com.playgilround.schedule.client.gson.UserJsonData;
 import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.RealmArrayList;
 import com.playgilround.schedule.client.realm.ScheduleR;
@@ -46,6 +49,7 @@ import com.playgilround.schedule.client.utils.ToastUtils;
 
 import org.joda.time.DateTime;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -95,6 +99,15 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     public boolean isSetTime = false; //SelectDateDialog 에서 날짜 체크 후 선택 눌렀을 경우
 
     List<ScheduleR> schedule;
+    SharedPreferences pref;
+    String authToken;
+
+    //친구 관련 ArrayList
+    ArrayList<String> arrName;
+    ArrayList<String> arrBirth;
+    String name;
+
+
 
     public static ScheduleFragment getInstance() {
         return new ScheduleFragment();
@@ -117,6 +130,9 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         realm = Realm.getDefaultInstance();
 
         HUMAN_TIME_FORMAT = getString(R.string.human_time_format2);
+
+        pref =  getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
+        authToken = pref.getString("loginToken", "default");
 
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
@@ -168,6 +184,78 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         }
     }
 
+    /**
+     * 자신과 친구 인 유저
+     * Friends Search API
+     */
+    public void getMyFriend(final FriendFragment.ApiCallback callback) {
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface getFriendAPI = retrofit.create(APIInterface.class);
+        Call<JsonArray> result = getFriendAPI.getFriendSearch(authToken);
+
+        result.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                if (response.isSuccessful()) {
+
+                    arrName = new ArrayList<>();
+                    arrBirth = new ArrayList<>();
+
+                    String strFriend = response.body().toString();
+
+                    Log.d(TAG, "getMyFriend...-->" + strFriend);
+
+                    Type list = new TypeToken<List<UserJsonData>>() {
+                    }.getType();
+
+                    List<UserJsonData> userData = new Gson().fromJson(strFriend, list);
+
+                    for (int i = 0; i < userData.size(); i++) {
+                        name = userData.get(i).name;
+                        int assent = userData.get(i).assent;
+
+                        Log.d(TAG, "getMyFriend data -->" + name + "--"+ assent);
+
+                        //친구 가 서로 완료된 인원만.
+                        if (assent == 2) {
+                            arrName.add(name);
+                        }
+
+                    }
+
+                    //친구가 없을 경우 처리 해야 함.
+                    final ScheduleFriendFragment sf = ScheduleFriendFragment.getInstance(arrName);
+                    final FragmentManager fm = getActivity().getFragmentManager();
+
+                    sf.show(fm, "TAG");
+                    callback.onSuccess("success");
+//                    final
+
+                } else {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Toast.makeText(getContext(), "친구 목록 얻기에 실패했습니다. 재로그인해주세요.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Log.d(TAG, "response getMyFriend failure..." + t.toString());
+
+            }
+        });
+
+    }
     //스케줄 추가
     private void addSchedule() {
         content = etInputContent.getText().toString();
@@ -177,59 +265,58 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         } else {
             closeSoftInput();
 
-            realm.executeTransaction(new Realm.Transaction() {
+            getMyFriend(new FriendFragment.ApiCallback() {
                 @Override
-                public void execute(Realm realm) {
-                    Log.d(TAG, "Try save");
-
-                    Number currentIdNum = realm.where(ScheduleR.class).max("seq");
-
-                    int nextId;
-
-                    if (currentIdNum == null) {
-                        nextId = 0;
-                    } else {
-                        nextId = currentIdNum.intValue() + 1;
-                    }
-
-                    /**
-                     * 공휴일 임시
-                     */
-//                    ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
-//                    holidayR.setId(1);
-//                    holidayR.setYear(2018);
-//                    holidayR.setMonth(10);
-//                    holidayR.setDay(24);
-//                    holidayR.setTitle("공휴일 테스트");
-//                    holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
-//                    holidayR.setColor(-1); //공휴일 하늘색.
-//                    holidayR.setState(-1); //상태 -1 (좌측 노란색)
-                    ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-                    schedule.setTitle(content);
-                    schedule.setState(0);
-                    schedule.setTime(mTime);
-                    schedule.sethTime(resultTime);
-                    schedule.setYear(mCurrentSelectYear);
-                    schedule.setMonth(mCurrentSelectMonth +1);
-                    schedule.setDay(mCurrentSelectDay);
-//
-                    new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                public void onSuccess(String result) {
+                    realm.executeTransaction(new Realm.Transaction() {
                         @Override
-                        public void onTaskFinished(ScheduleR data) {
-                            Log.d(TAG, "AddScheduleTask finish ->" + data);
-                            if (data != null) {
-                                mScheduleAdapter.insertItem(data);
-                                etInputContent.getText().clear();
-                                rlNoTask.setVisibility(View.GONE);
-                                mTime = 0;
-                                updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-                                addScheduleServer(data);
+                        public void execute(Realm realm) {
+                            Log.d(TAG, "Try save");
+
+                            Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                            int nextId;
+
+                            if (currentIdNum == null) {
+                                nextId = 0;
+                            } else {
+                                nextId = currentIdNum.intValue() + 1;
                             }
+
+                            ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                            schedule.setTitle(content);
+                            schedule.setState(0);
+                            schedule.setTime(mTime);
+                            schedule.sethTime(resultTime);
+                            schedule.setYear(mCurrentSelectYear);
+                            schedule.setMonth(mCurrentSelectMonth +1);
+                            schedule.setDay(mCurrentSelectDay);
+//
+                            new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                                @Override
+                                public void onTaskFinished(ScheduleR data) {
+                                    Log.d(TAG, "AddScheduleTask finish ->" + data);
+                                    if (data != null) {
+                                        mScheduleAdapter.insertItem(data);
+                                        etInputContent.getText().clear();
+                                        rlNoTask.setVisibility(View.GONE);
+                                        mTime = 0;
+                                        updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+                                        addScheduleServer(data);
+                                    }
+                                }
+                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         }
-                    }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//                    }, holidayR).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    });
+
+                }
+
+                @Override
+                public void onFail(String result) {
+
                 }
             });
+
 
         }
     }
@@ -245,9 +332,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
      * }
      */
     public void addScheduleServer(ScheduleR data) {
-        SharedPreferences pref =  getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
         int resultId = pref.getInt("loginId", 0);
-        String authToken = pref.getString("loginToken", "default");
 
         DateTime dateTime = new DateTime();
         String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
