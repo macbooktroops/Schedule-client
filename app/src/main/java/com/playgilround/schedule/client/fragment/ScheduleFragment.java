@@ -45,6 +45,7 @@ import com.playgilround.schedule.client.schedule.ScheduleRecyclerView;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;
 import com.playgilround.schedule.client.task.schedule.LoadScheduleRTask;
 import com.playgilround.schedule.client.utils.DeviceUtils;
+import com.playgilround.schedule.client.utils.ScheduleFriendItem;
 import com.playgilround.schedule.client.utils.ToastUtils;
 
 import org.joda.time.DateTime;
