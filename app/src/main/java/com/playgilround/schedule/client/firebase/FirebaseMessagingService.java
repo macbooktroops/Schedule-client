@@ -248,6 +248,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             JsonObject fJson = scheduleList.sJson;
 
             ScheduleJsonData scheduleJson = new Gson().fromJson(fJson.toString(), list);
+            int id = scheduleJson.id;
             String title = scheduleJson.title;
             String startTime = scheduleJson.startTime;
 
@@ -261,16 +262,17 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             DateTime dateTime = new DateTime();
             String setTime = dateTime.toString("yyyy-MM-dd");
 
-            Log.d(TAG, "Json Result -->" +  "--" + title + "--" + setTime + "--" + name);
+            Log.d(TAG, "Json Result -->" +  "--" +id + "//" + title + "--" + setTime + "--" + name);
 
 
 
             //Push Notification 클릭 시 LoginActivity
             //추후에 assent 작업때 전달할 값 정의.
             Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
-//            notificationIntent.putExtra("push", "SchedulePush");
-//            notificationIntent.putExtra("pushName", name);
-//            notificationIntent.putExtra("pushId", id);
+            notificationIntent.putExtra("push", "SchedulePush");
+            notificationIntent.putExtra("pushTitle", title);
+            notificationIntent.putExtra("pushName", name);
+            notificationIntent.putExtra("pushId", id);
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             int requestId = (int) System.currentTimeMillis();

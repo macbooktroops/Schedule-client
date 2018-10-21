@@ -59,6 +59,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     Boolean loginChecked;
 
     SelectFindDialog mSelectFindDialog;
+
+    String resPushTitle;
     static final String TAG = LoginActivity.class.getSimpleName();
 
     Realm realm;
@@ -173,6 +175,14 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                 String resPushName = intent.getStringExtra("pushName");
                 int resPushId = intent.getIntExtra("pushId",1);
 
+                if (resPush == null) {
+
+                }
+                else if (resPush.equals("SchedulePush")) {
+                    //스케줄 공유 푸쉬일 경우
+                    resPushTitle = intent.getStringExtra("pushTitle");
+                }
+
                 loginId = idInput.getText().toString();
                 loginPw = pwInput.getText().toString();
 //                loginPw = getBase64encode(pwInput.getText().toString());
@@ -195,10 +205,15 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                                     sendFirebaseToken();
 
+                                    Log.d(TAG, "push Title -->" + resPushTitle);
                                     Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                                     mainIntent.putExtra("pushData", resPush);
                                     mainIntent.putExtra("pushName", resPushName);
                                     mainIntent.putExtra("pushId", resPushId);
+
+                                    if (resPushTitle != null) {
+                                        mainIntent.putExtra("pushTitle", resPushTitle);
+                                    }
                                     Log.d(TAG, "resPush -->" + resPush);
 
                                     startActivity(mainIntent);
