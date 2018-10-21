@@ -3,6 +3,7 @@ package com.playgilround.schedule.client.holder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,12 +17,12 @@ public class ChoiceHolder extends RecyclerView.ViewHolder {
 
     public ImageView userImage;
     public TextView userNickName;
-    public CardView friendCard;
+    public CheckBox checkBox;
 
     public ChoiceHolder(View itemView) {
         super(itemView);
 
-        friendCard = itemView.findViewById(R.id.friendCard);
+        checkBox = itemView.findViewById(R.id.checkbox);
         userImage = itemView.findViewById(R.id.userImage);
         userNickName = itemView.findViewById(R.id.userNickName);
     }
