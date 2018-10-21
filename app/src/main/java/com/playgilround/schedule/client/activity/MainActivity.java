@@ -31,6 +31,7 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.base.app.BaseFragment;
+import com.playgilround.schedule.client.dialog.ScheduleAssentDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
 import com.playgilround.schedule.client.fragment.FriendFragment;
@@ -63,7 +64,7 @@ import retrofit2.Retrofit;
  *
  */
 public class MainActivity extends BaseActivity
-        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener  {
+        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, ScheduleAssentDialog.OnScheduleAssentSet{
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -113,6 +114,8 @@ public class MainActivity extends BaseActivity
     String resPushTitle; //스케줄 추가 시, 스케줄 타이틀
 
     String authToken;
+
+    private ScheduleAssentDialog mScheduleAssentDialog;
 
     //foreground, background 판단
     public static boolean isAppRunning = false;
@@ -270,7 +273,7 @@ public class MainActivity extends BaseActivity
 
         Log.d(TAG, "check this year ->" + nYear);
 
-        String authToken = pref.getString("loginToken", "");
+        authToken = pref.getString("loginToken", "");
         Log.d(TAG, "goSchedule authToken ->" + authToken);
         //Search Schedule API
         Retrofit retrofit = APIClient.getClient();
@@ -348,6 +351,14 @@ public class MainActivity extends BaseActivity
             startActivity(intent);
         } else if (resPush.equals("SchedulePush")) {
             Log.d(TAG, "Schedule Assent push -->" + resPush + "--" + resPushId + "--" + resPushTitle);
+
+            if (mScheduleAssentDialog == null) {
+                mScheduleAssentDialog = new ScheduleAssentDialog(this, this, resPushName, resPushTitle);
+                mScheduleAssentDialog.show();
+            }
+
+            mScheduleAssentDialog = null;
+
 //        } else {
 //            if (FirebaseMessagingService.isChkPush) {
 //                Log.d(TAG, "FirebaseMessage isChkPush --->" + FirebaseMessagingService.isChkPush);
@@ -359,7 +370,36 @@ public class MainActivity extends BaseActivity
         }
 
     }
+    //스케줄 수락, 거부 푸쉬 처리
+    @Override
+    public void onScheAssent(boolean state) {
 
+        Log.d(TAG, "onScheAssent ---" + state + authToken + resPushId);
+        /** {
+         *       "answer": true
+         *  }
+         */
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("answer", state);
+
+        Log.d(TAG, "onSche json -->" + jsonObject);
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface assentScheAPI = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = assentScheAPI.postFriendAssent(jsonObject, resPushId, authToken);
+
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                //수락처리, 거절 처리
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+
+    }
     /**
      * SelectHolidayDialog 년도 선택 완료시 호출.
      * SelectHolidayDialog -> EventSetFragment 순

@@ -48,8 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/resultText"
-            android:textSize="@dimen/space_18dp"
-            android:text="이 일정을 공유하시겠어요?"/>
+            android:textSize="@dimen/space_18dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"

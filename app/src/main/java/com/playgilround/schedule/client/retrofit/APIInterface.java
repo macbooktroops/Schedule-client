@@ -88,4 +88,9 @@ public interface APIInterface {
     @GET(BaseUrl.PATH_SEARCH_SCHEDULE)
     Call<ArrayList<JsonObject>> getSearchSchedule(@Header("Authorization") String tokenData, @Query(BaseUrl.PARAM_YEAR) int year);
 
+    //스케줄 수락 ,거절
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @POST(BaseUrl.PATH_ASSENT_SCHEDULE)
+    Call<JsonObject> postScheduleAssent(@Header("Authorization") String tokenData, @Path("scheId") int scheId);
+
 }
