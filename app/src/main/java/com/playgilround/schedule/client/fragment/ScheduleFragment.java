@@ -111,7 +111,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     String name;
     int id;
 
-
+    int resultId;
 
     public static ScheduleFragment getInstance() {
         return new ScheduleFragment();
@@ -211,8 +211,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     String strFriend = response.body().toString();
 
                     //자기 자신도 arrName 에 추가
-                    arrId.add(resultId);
-                    arrName.add(nickName + "(나)");
+//                    arrId.add(resultId);
+//                    arrName.add(nickName + "(나)");
 
                     Log.d(TAG, "getMyFriend...-->" + strFriend);
 
@@ -287,6 +287,12 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
+
+                            //자기자신 추가
+                            resultId = pref.getInt("loginId", 0);
+
+                            arrFriendId.add(resultId);
+
                             for (int i = 0; i < list.size(); i++) {
                                 ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
 
@@ -354,7 +360,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
      * }
      */
     public void addScheduleServer(ScheduleR data) {
-        int resultId = pref.getInt("loginId", 0);
+//        resultId = pref.getInt("loginId", 0);
 
         DateTime dateTime = new DateTime();
         String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");

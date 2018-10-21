@@ -110,6 +110,8 @@ public class MainActivity extends BaseActivity
     String resPushName; //푸쉬를 보낸 사람의 닉네임
     int resPushId; //푸쉬 아이디 friend id column
 
+    String resPushTitle; //스케줄 추가 시, 스케줄 타이틀
+
     String authToken;
 
     //foreground, background 판단
@@ -163,7 +165,9 @@ public class MainActivity extends BaseActivity
         resPush = intent.getStringExtra("pushData");
         resPushName = intent.getStringExtra("pushName");
         resPushId = intent.getIntExtra("pushId", 1);
-        Log.d(TAG, "resPush -->" + resPush + "--"+ resPushName + "--" + resPushId);
+        resPushTitle = intent.getStringExtra("pushTitle");
+
+        Log.d(TAG, "resPush -->" + resPush + "--"+ resPushName + "--" + resPushId + "--" + resPushTitle);
         goScheduleFragment();
         initBroadcastReceiver();
 
@@ -342,6 +346,8 @@ public class MainActivity extends BaseActivity
             intent.putExtra("PushName", resPushName);
             intent.putExtra("PushId", resPushId);
             startActivity(intent);
+        } else if (resPush.equals("SchedulePush")) {
+            Log.d(TAG, "Schedule Assent push -->" + resPush + "--" + resPushId + "--" + resPushTitle);
 //        } else {
 //            if (FirebaseMessagingService.isChkPush) {
 //                Log.d(TAG, "FirebaseMessage isChkPush --->" + FirebaseMessagingService.isChkPush);
