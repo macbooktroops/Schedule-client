@@ -225,11 +225,11 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     }
 
                     //친구가 없을 경우 처리 해야 함.
-                    final ScheduleFriendFragment sf = ScheduleFriendFragment.getInstance(arrName);
+                    final ScheduleFriendFragment sf = ScheduleFriendFragment.getInstance(arrName, callback);
                     final FragmentManager fm = getActivity().getFragmentManager();
 
                     sf.show(fm, "TAG");
-                    callback.onSuccess("success");
+//                    callback.onSuccess("success");
 //                    final
 
                 } else {

@@ -36,10 +36,12 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
     ChoiceFriendAdapter adapter;
 
     TextView tvConfirm;
+    static FriendFragment.ApiCallback retCallback;
 
-    public static ScheduleFriendFragment getInstance(ArrayList arrName) {
+    public static ScheduleFriendFragment getInstance(ArrayList arrName, FriendFragment.ApiCallback callback) {
         retArr = arrName;
 
+        retCallback = callback;
         Log.d(TAG, "retArr -->" + retArr);
 
         ScheduleFriendFragment fragment = new ScheduleFriendFragment();
@@ -72,7 +74,7 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
                 break;
             case R.id.tvConfirm:
                 selectedClick();
-                dismiss();
+//                dismiss();
         }
     }
 
@@ -85,6 +87,9 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
                 sb.append(item.getName()).append("\n");
             }
             Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG).show();
+            Log.d(TAG, "retCallback state ---..");
+            retCallback.onSuccess("success");
+            dismiss();
         } else {
             Toast.makeText(getActivity(), "공유할 친구를 선택해주세요.", Toast.LENGTH_LONG).show();
         }
