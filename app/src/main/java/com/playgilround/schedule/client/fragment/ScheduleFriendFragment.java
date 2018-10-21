@@ -31,14 +31,16 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
     static final String TAG = ScheduleFriendFragment.class.getSimpleName();
 
     static ArrayList retArr = new ArrayList();
+    static ArrayList<Integer> retArrId = new ArrayList<Integer>();
     RecyclerView rvSchedule;
 
     ChoiceFriendAdapter adapter;
 
     TextView tvConfirm;
-    static FriendFragment.ApiCallback retCallback;
+    static ScheduleFragment.ApiCallback retCallback;
 
-    public static ScheduleFriendFragment getInstance(ArrayList arrName, FriendFragment.ApiCallback callback) {
+    public static ScheduleFriendFragment getInstance(ArrayList<Integer> arrId, ArrayList arrName, ScheduleFragment.ApiCallback callback) {
+        retArrId = arrId;
         retArr = arrName;
 
         retCallback = callback;
@@ -81,14 +83,7 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
     public void selectedClick() {
         List list = adapter.getSelectedItem(); //체크 된 리스트
         if (list.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (int index = 0; index < list.size(); index++) {
-                ScheduleFriendItem item = (ScheduleFriendItem) list.get(index);
-                sb.append(item.getName()).append("\n");
-            }
-            Toast.makeText(getActivity(), sb.toString(), Toast.LENGTH_LONG).show();
-            Log.d(TAG, "retCallback state ---..");
-            retCallback.onSuccess("success");
+            retCallback.onSuccess("success", list);
             dismiss();
         } else {
             Toast.makeText(getActivity(), "공유할 친구를 선택해주세요.", Toast.LENGTH_LONG).show();
@@ -104,6 +99,7 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
 
         for (int i = 0; i < retArr.size(); i++) {
             ScheduleFriendItem item = new ScheduleFriendItem();
+            item.setId(retArrId.get(i));
             item.setName(retArr.get(i).toString());
             list.add(item);
         }

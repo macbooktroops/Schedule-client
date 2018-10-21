@@ -105,8 +105,11 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     //친구 관련 ArrayList
     ArrayList<String> arrName;
-    ArrayList<String> arrBirth;
+    ArrayList<Integer> arrId;
+
+    ArrayList<Integer> arrFriendId;
     String name;
+    int id;
 
 
 
@@ -189,7 +192,10 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
      * 자신과 친구 인 유저
      * Friends Search API
      */
-    public void getMyFriend(final FriendFragment.ApiCallback callback) {
+    public void getMyFriend(final ApiCallback callback) {
+        String nickName = pref.getString("loginName", "");
+        int resultId = pref.getInt("loginId", 0);
+
         Retrofit retrofit = APIClient.getClient();
         APIInterface getFriendAPI = retrofit.create(APIInterface.class);
         Call<JsonArray> result = getFriendAPI.getFriendSearch(authToken);
@@ -200,9 +206,13 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 if (response.isSuccessful()) {
 
                     arrName = new ArrayList<>();
-                    arrBirth = new ArrayList<>();
+                    arrId = new ArrayList<>();
 
                     String strFriend = response.body().toString();
+
+                    //자기 자신도 arrName 에 추가
+                    arrId.add(resultId);
+                    arrName.add(nickName + "(나)");
 
                     Log.d(TAG, "getMyFriend...-->" + strFriend);
 
@@ -212,6 +222,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     List<UserJsonData> userData = new Gson().fromJson(strFriend, list);
 
                     for (int i = 0; i < userData.size(); i++) {
+                        id = userData.get(i).id;
                         name = userData.get(i).name;
                         int assent = userData.get(i).assent;
 
@@ -219,13 +230,14 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
                         //친구 가 서로 완료된 인원만.
                         if (assent == 2) {
+                            arrId.add(id);
                             arrName.add(name);
                         }
 
                     }
 
                     //친구가 없을 경우 처리 해야 함.
-                    final ScheduleFriendFragment sf = ScheduleFriendFragment.getInstance(arrName, callback);
+                    final ScheduleFriendFragment sf = ScheduleFriendFragment.getInstance(arrId, arrName, callback);
                     final FragmentManager fm = getActivity().getFragmentManager();
 
                     sf.show(fm, "TAG");
@@ -266,13 +278,22 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         } else {
             closeSoftInput();
 
-            getMyFriend(new FriendFragment.ApiCallback() {
+
+            getMyFriend(new ApiCallback() {
                 @Override
-                public void onSuccess(String result) {
+                public void onSuccess(String result, List list) {
+                    arrFriendId = new ArrayList<Integer>();
+
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            Log.d(TAG, "Try save");
+                            for (int i = 0; i < list.size(); i++) {
+                                ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
+
+//                                Log.d(TAG, "list value ->" + item.getId());
+                                arrFriendId.add(item.getId());
+                            }
+                            Log.d(TAG, "Try save -->" + arrFriendId.size());
 
                             Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
@@ -355,9 +376,10 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
         jsonObject.addProperty("content", data.getDesc());
         jsonObject.addProperty("latitude", data.getLatitude());
         jsonObject.addProperty("longitude", data.getLongitude());
-        jsonArray.add(resultId);
-//        jsonObject.addProperty("user_ids", [1]);
 
+        for (int id : arrFriendId) {
+            jsonArray.add(id);
+        }
         jsonObject.add("users_ids", jsonArray);
         Log.d(TAG, "jsonObject add ->" + jsonObject + "--" + authToken);
 
@@ -569,5 +591,10 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     public void onReset() {
         Log.d(TAG, "onReset");
         resetScheduleList();
+    }
+
+    public interface ApiCallback{
+        void onSuccess(String result, List list);
+        void onFail(String result);
     }
 }
