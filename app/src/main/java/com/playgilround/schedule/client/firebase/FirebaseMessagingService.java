@@ -22,6 +22,7 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.FriendAssentActivity;
 import com.playgilround.schedule.client.activity.LoginActivity;
 import com.playgilround.schedule.client.activity.MainActivity;
+import com.playgilround.schedule.client.activity.ScheduleAssentActivity;
 import com.playgilround.schedule.client.gson.FriendAssentJsonData;
 import com.playgilround.schedule.client.gson.FriendPushJsonData;
 import com.playgilround.schedule.client.schedule.ScheduleJsonData;
@@ -47,6 +48,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     int id;
     String name;
 
+    private ScheduleAssentActivity mScheduleAssentActivity;
     /**
      * 앱이 실행중이 아닐 때 push가 온경우.
      * (앱이 실행중이 아닐 때 친구 요청이와서,
@@ -291,6 +293,22 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             notifyManager.notify(0, builder.build());
 
+
+                //앱이 실행중일때에만, 다이얼로그 표시
+                //기준은 MainActivity onDestroy 상태 기준
+                if (MainActivity.isAppRunning) {
+                    Intent intent = new Intent(getApplicationContext(), ScheduleAssentActivity.class);
+                    intent.putExtra("PushName", name);
+                    intent.putExtra("PushId", id);
+                    intent.putExtra("PushTitle", title);
+                    startActivity(intent);
+//            } else {
+//                isChkPush = true;
+                }
+//            } else {
+//                isChkPush = true;
+
+
         }
 
 
@@ -318,6 +336,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             }
         }*/
     }
+
 
 
   /*  //앱이 실행중인지 아닌지 판단

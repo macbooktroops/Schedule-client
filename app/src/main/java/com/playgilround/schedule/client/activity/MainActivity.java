@@ -31,7 +31,6 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.base.app.BaseFragment;
-import com.playgilround.schedule.client.dialog.ScheduleAssentDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
 import com.playgilround.schedule.client.fragment.FriendFragment;
@@ -64,7 +63,7 @@ import retrofit2.Retrofit;
  *
  */
 public class MainActivity extends BaseActivity
-        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, ScheduleAssentDialog.OnScheduleAssentSet{
+        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -115,7 +114,7 @@ public class MainActivity extends BaseActivity
 
     String authToken;
 
-    private ScheduleAssentDialog mScheduleAssentDialog;
+    private ScheduleAssentActivity mScheduleAssentActivity;
 
     //foreground, background 판단
     public static boolean isAppRunning = false;
@@ -352,12 +351,11 @@ public class MainActivity extends BaseActivity
         } else if (resPush.equals("SchedulePush")) {
             Log.d(TAG, "Schedule Assent push -->" + resPush + "--" + resPushId + "--" + resPushTitle);
 
-            if (mScheduleAssentDialog == null) {
-                mScheduleAssentDialog = new ScheduleAssentDialog(this, this, resPushName, resPushTitle);
-                mScheduleAssentDialog.show();
-            }
-
-            mScheduleAssentDialog = null;
+            Intent intent = new Intent(getApplicationContext(), ScheduleAssentActivity.class);
+            intent.putExtra("PushName", resPushName);
+            intent.putExtra("PushId", resPushId);
+            intent.putExtra("PushTitle", resPushTitle);
+            startActivity(intent);
 
 //        } else {
 //            if (FirebaseMessagingService.isChkPush) {
@@ -370,58 +368,7 @@ public class MainActivity extends BaseActivity
         }
 
     }
-    //스케줄 수락, 거부 푸쉬 처리
-    @Override
-    public void onScheAssent(boolean state) {
 
-        Log.d(TAG, "onScheAssent ---" + state + authToken + resPushId);
-        /** {
-         *       "answer": true
-         *  }
-         */
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("answer", state);
-
-        Log.d(TAG, "onSche json -->" + jsonObject);
-        Retrofit retrofit = APIClient.getClient();
-        APIInterface assentScheAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = assentScheAPI.postScheduleAssent(jsonObject, authToken, resPushId);
-
-        result.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                //수락처리, 거절 처리
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "response schedule assent ----" + response.body().toString());
-                } else {
-                    try {
-                        String error = response.errorBody().string();
-                        Log.d(TAG, "response schedule assent fail..." + error);
-
-
-                        Result result = new Gson().fromJson(error, Result.class);
-
-                        List<String> message = result.message;
-
-                        if (message.contains("Unauthorized auth_token.")) {
-                            Toast.makeText(getApplicationContext(), "Auth Token error.", Toast.LENGTH_LONG).show();
-                        } else if (message.contains("Not found schedule.")) {
-                            Toast.makeText(getApplicationContext(), "스케줄이 없습니다.", Toast.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-            }
-        });
-
-    }
     /**
      * SelectHolidayDialog 년도 선택 완료시 호출.
      * SelectHolidayDialog -> EventSetFragment 순
