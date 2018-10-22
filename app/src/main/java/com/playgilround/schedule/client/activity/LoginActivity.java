@@ -62,7 +62,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
     String resPushTitle;
     static final String TAG = LoginActivity.class.getSimpleName();
-
+    String authToken;
     Realm realm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,81 +90,65 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
          * Retrofit Holiday 로그인하기전에 실행
          * 인터넷 연결 확인필
          */
-
-        int nYear;
-
-        Calendar calendar = new GregorianCalendar(Locale.KOREA);
-        nYear = calendar.get(Calendar.YEAR);
-
-        Log.d(TAG, "check this year ->" + nYear);
-
-        Retrofit retrofit = APIClient.getClient();
-        APIInterface holidayAPI = retrofit.create(APIInterface.class);
-        Call<ArrayList<JsonObject>> result = holidayAPI.getListHoliday(nYear);
-
-        result.enqueue(new Callback<ArrayList<JsonObject>>() {
+        checkHoliday(new ApiCallback() {
             @Override
-            public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
-                // Log.v(TAG, "Response - " + response.code());
-                if (response.isSuccessful() && response.body() != null) {
+            public void onSuccess(String success) {
+                //Holiday가 끝나면 스케줄 수락된 스케줄,
+                //아직 스케줄 요청중인 스케줄 검사
+                int nYear;
 
-                    realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            // Log.d(TAG, "Holiday Check ----");
-                            RealmResults<ScheduleR> holidayRS = realm.where(ScheduleR.class).equalTo("eventSetId", -1).findAll();
-                            // Log.d(TAG, "holidayRS size ->" + holidayRS.size());
-                            if (holidayRS.size() == 0) {
-                                //ScheduleR Table 에 공휴일정보가 저장이 되어있지않음.
-                                /**
-                                 * Use gson json parsing.
-                                 */
-                                Type list = new TypeToken<List<HolidayJsonData>>(){}.getType();
-                                List<HolidayJsonData> holidays = new Gson().fromJson(response.body().toString(), list);
+                Calendar calendar = new GregorianCalendar(Locale.KOREA);
+                nYear = calendar.get(Calendar.YEAR);
 
-                                Log.d(TAG, "holiday response ->" + response.body().toString());
-                                Log.d(TAG, "holidayList ->" + response.body().size());
-                                Log.d(TAG, "holiday gson ->" + holidays.get(0).toString());
+                Log.d(TAG, "check this year ->" + nYear);
 
-                                Log.d(TAG, "Holiday Insert Realm ....");
-                                //print
-                                for (HolidayJsonData resHoliday : holidays) {
+                authToken = pref.getString("loginToken", "");
+                Log.d(TAG, "goSchedule authToken ->" + authToken);
+                //Search Schedule API
+                Retrofit retrofit = APIClient.getClient();
+                APIInterface searchScheAPI = retrofit.create(APIInterface.class);
+                Call<ArrayList<JsonObject>> result = searchScheAPI.getSearchSchedule(authToken, nYear);
 
-                                    Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
-                                    int nextId;
+                result.enqueue(new Callback<ArrayList<JsonObject>>() {
 
-                                    if (currentIdNum == null) {
-                                        nextId = 0;
-                                    } else {
-                                        nextId = currentIdNum.intValue() + 1;
-                                    }
-                                    ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
+                    String error;
+                    @Override
+                    public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
 
-                                    Log.d(TAG, "holiday data id -> " + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
+                        if (response.isSuccessful()) {
+                            Log.d(TAG, "search schedule success-->" + response.body().toString());
+                        } else {
+                            try {
+                                error = response.errorBody().string();
+                                Log.d(TAG, "search schedule error -->" + error);
 
-                                    holidayR.setId(resHoliday.id);
-                                    holidayR.setYear(resHoliday.year);
-                                    holidayR.setMonth(resHoliday.month);
-                                    holidayR.setDay(resHoliday.day);
-                                    holidayR.setTitle(resHoliday.name);
-                                    holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
-                                    holidayR.setColor(-1); //공휴일 하늘색.
-                                    holidayR.setState(-1); //상태 -1 (좌측 노란색)
+                                Result result = new Gson().fromJson(error, Result.class);
+
+                                List<String> message = result.message;
+
+                                if (message.contains("Unauthorized auth_token.")) {
+                                    Toast.makeText(getApplicationContext(), "Auth Token Error..", Toast.LENGTH_LONG).show();
                                 }
-
-                            } else {
-                                Log.d(TAG, "exist HolidayR");
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
-                    });
-                }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+                        Log.d(TAG, "search schedule Failure -->" + t);
+                    }
+                });
             }
+
             @Override
-            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
-                Log.e(TAG, "error - " + t.toString());
+            public void onFail(String result) {
+
             }
         });
+
 
         //로그인 버튼
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -274,6 +258,86 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
         });
 
+    }
+
+    public void checkHoliday(final ApiCallback callback) {
+        int nYear;
+
+        Calendar calendar = new GregorianCalendar(Locale.KOREA);
+        nYear = calendar.get(Calendar.YEAR);
+
+        Log.d(TAG, "check this year start ->" + nYear);
+
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface holidayAPI = retrofit.create(APIInterface.class);
+        Call<ArrayList<JsonObject>> result = holidayAPI.getListHoliday(nYear);
+
+        result.enqueue(new Callback<ArrayList<JsonObject>>() {
+            @Override
+            public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+                // Log.v(TAG, "Response - " + response.code());
+                if (response.isSuccessful() && response.body() != null) {
+
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            // Log.d(TAG, "Holiday Check ----");
+                            RealmResults<ScheduleR> holidayRS = realm.where(ScheduleR.class).equalTo("eventSetId", -1).findAll();
+                            // Log.d(TAG, "holidayRS size ->" + holidayRS.size());
+                            if (holidayRS.size() == 0) {
+                                //ScheduleR Table 에 공휴일정보가 저장이 되어있지않음.
+                                /**
+                                 * Use gson json parsing.
+                                 */
+                                Type list = new TypeToken<List<HolidayJsonData>>(){}.getType();
+                                List<HolidayJsonData> holidays = new Gson().fromJson(response.body().toString(), list);
+
+                                Log.d(TAG, "holiday response ->" + response.body().toString());
+                                Log.d(TAG, "holidayList ->" + response.body().size());
+                                Log.d(TAG, "holiday gson ->" + holidays.get(0).toString());
+
+                                Log.d(TAG, "Holiday Insert Realm ....");
+                                //print
+                                for (HolidayJsonData resHoliday : holidays) {
+
+                                    Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                                    int nextId;
+
+                                    if (currentIdNum == null) {
+                                        nextId = 0;
+                                    } else {
+                                        nextId = currentIdNum.intValue() + 1;
+                                    }
+                                    ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
+
+                                    Log.d(TAG, "holiday data id -> " + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
+
+                                    holidayR.setId(resHoliday.id);
+                                    holidayR.setYear(resHoliday.year);
+                                    holidayR.setMonth(resHoliday.month);
+                                    holidayR.setDay(resHoliday.day);
+                                    holidayR.setTitle(resHoliday.name);
+                                    holidayR.setEventSetId(-1); //공휴일 EventSetId -1 고정
+                                    holidayR.setColor(-1); //공휴일 하늘색.
+                                    holidayR.setState(-1); //상태 -1 (좌측 노란색)
+                                }
+
+                            } else {
+                                Log.d(TAG, "exist HolidayR");
+                            }
+                            Log.d(TAG, "success holidayR");
+                            callback.onSuccess("success");
+
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+                Log.e(TAG, "error - " + t.toString());
+            }
+        });
     }
 
     /**

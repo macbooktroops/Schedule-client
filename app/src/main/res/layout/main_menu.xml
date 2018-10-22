@@ -160,7 +160,69 @@
                         android:src="@mipmap/ic_menu_go"/>
             </LinearLayout>
 
-            <View
+                <!-- 공유된 스케줄 모음-->
+                <LinearLayout
+                    android:id="@+id/llSharedSchedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/menu_item_second_height"
+                    android:layout_marginTop="-9dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space_30dp"
+                        android:src="@mipmap/ic_menu_category"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space_16dp"
+                        android:layout_weight="1"
+                        android:text="@string/menu_schedule_shared"
+                        android:textColor="@color/menu_item_text_color"
+                        android:textSize="@dimen/text_size_16sp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/space_10dp"
+                        android:src="@mipmap/ic_menu_go"/>
+                </LinearLayout>
+
+                <!-- 공유 요청 스케줄 모음-->
+                <LinearLayout
+                    android:id="@+id/llRequestSchedule"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/menu_item_second_height"
+                    android:layout_marginTop="-9dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space_30dp"
+                        android:src="@mipmap/ic_menu_category"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/space_16dp"
+                        android:layout_weight="1"
+                        android:text="@string/menu_schedule_request"
+                        android:textColor="@color/menu_item_text_color"
+                        android:textSize="@dimen/text_size_16sp"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/space_10dp"
+                        android:src="@mipmap/ic_menu_go"/>
+                </LinearLayout>
+
+                <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/line_height"
                 android:background="@color/color_menu_line"/>
