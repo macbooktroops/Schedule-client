@@ -110,8 +110,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     ArrayList<Integer> arrFriendId;
     String name;
     int id;
-
     int resultId;
+
 
     public static ScheduleFragment getInstance() {
         return new ScheduleFragment();
