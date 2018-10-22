@@ -91,6 +91,6 @@ public interface APIInterface {
     //스케줄 수락 ,거절
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_ASSENT_SCHEDULE)
-    Call<JsonObject> postScheduleAssent(@Header("Authorization") String tokenData, @Path("scheId") int scheId);
+    Call<JsonObject> postScheduleAssent(@Body JsonObject scheAssent, @Header("Authorization") String tokenData, @Path("scheId") int scheId);
 
 }

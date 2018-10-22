@@ -1,5 +1,6 @@
 package com.playgilround.schedule.client.fragment;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,11 +25,13 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.ScheduleDetailActivity;
 import com.playgilround.schedule.client.adapter.ScheduleAdapter;
 import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
+import com.playgilround.schedule.client.gson.UserJsonData;
 import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.realm.ScheduleR;
@@ -39,10 +42,12 @@ import com.playgilround.schedule.client.schedule.ScheduleRecyclerView;
 import com.playgilround.schedule.client.task.eventset.GetScheduleRTask;
 import com.playgilround.schedule.client.task.schedule.AddScheduleRTask;
 import com.playgilround.schedule.client.utils.DeviceUtils;
+import com.playgilround.schedule.client.utils.ScheduleFriendItem;
 import com.playgilround.schedule.client.utils.ToastUtils;
 
 import org.joda.time.DateTime;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,8 +85,17 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     private int mCurrentSelectYear, mCurrentSelectMonth, mCurrentSelectDay;
     private long mTime;
 
+    String name;
+    int id;
+
     RealmResults<ScheduleR> resEmp;
     List<ScheduleR> resList = new ArrayList<>();
+
+    //친구 관련 ArrayList
+    ArrayList<String> arrName;
+    ArrayList<Integer> arrId;
+
+    ArrayList<Integer> arrFriendId;
 
 
     //realm 에 time을 보기 편하게 변환
@@ -94,6 +108,11 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     Realm realm;
 
     String content;
+    SharedPreferences pref;
+    String authToken;
+
+    int resultId;
+
     static EventSetR resultEvent; //EVENT_SET_OBJ
     static int resultYear;
     /**
@@ -136,6 +155,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
 
         HUMAN_TIME_FORMAT = getString(R.string.human_time_format2);
         realm = Realm.getDefaultInstance();
+
+        pref =  getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
+        authToken = pref.getString("loginToken", "default");
+
         searchViewById(R.id.ibMainClock).setOnClickListener(this);
         searchViewById(R.id.ibMainOK).setOnClickListener(this);
         initBottomInputBar();
@@ -258,71 +281,90 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         } else {
             closeSoftInput();
 
-            realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                        Log.d(TAG, "addSchedule EventSetFragment");
-                        DateTime dateTime = new DateTime();
-                        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
-
-                        int jodaYear = Integer.parseInt(today.substring(0, 4));
-                        int jodaMonth = Integer.parseInt(today.substring(5,7));
-                        int jodaDay = Integer.parseInt(today.substring(8,10));
-
-                        Log.d(TAG, "joda result ->" + today + "--" + jodaYear + "/" +jodaMonth + "/" + jodaDay);
-                        Number currentIdNum = realm.where(ScheduleR.class).max("seq");
-
-                        int nextId;
-
-                        if (currentIdNum == null) {
-                            nextId = 0;
-                        } else {
-                            nextId = currentIdNum.intValue() + 1;
-                        }
-                        //스케줄 저장
-                        ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-                        Log.d(TAG, "eventFragment content ==>" + content);
-                        schedule.setTitle(content);
-                        schedule.setState(0);
-                        schedule.setColor(mEventSet.getColor());
-                        schedule.setEventSetId(mEventSet.getSeq());
-                        schedule.setTime(mTime);
-                        schedule.sethTime(resultTime);
-
-                        if (isSetTime) {
-                            schedule.setYear(mCurrentSelectYear);
-                            schedule.setMonth(mCurrentSelectMonth);
-                            schedule.setDay(mCurrentSelectDay);
-                        } else {
-                            schedule.setYear(jodaYear);
-                            schedule.setMonth(jodaMonth);
-                            schedule.setDay(jodaDay);
-                        }
-
-                        Log.d(TAG, "isSetTime local -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
-                        new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+            getMyFriend(new ScheduleFragment.ApiCallback() {
                             @Override
-                            public void onTaskFinished(ScheduleR data) {
-                                Log.d(TAG, "EventSetFragment add" + data);
+                            public void onSuccess(String result, List list) {
+                                arrFriendId = new ArrayList<Integer>();
 
-                                if (data != null) {
-                                    mScheduleAdapter.insertItem(data);
-                                    etInput.getText().clear();
-                                    rlNoTask.setVisibility(View.GONE);
-                                    mTime = 0;
-                                    addScheduleServer();
+                                realm.executeTransaction(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        Log.d(TAG, "addSchedule EventSetFragment");
 
-                                }
+
+                                        resultId = pref.getInt("loginId", 0);
+
+                                        arrFriendId.add(resultId);
+
+                                        for (int i = 0; i < list.size(); i++) {
+                                            ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
+
+//                               Log.d(TAG, "list value ->" + item.getId());
+                                            arrFriendId.add(item.getId());
+                                        }
+                                        DateTime dateTime = new DateTime();
+                                        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+
+                                        int jodaYear = Integer.parseInt(today.substring(0, 4));
+                                        int jodaMonth = Integer.parseInt(today.substring(5, 7));
+                                        int jodaDay = Integer.parseInt(today.substring(8, 10));
+
+                                        Log.d(TAG, "joda result ->" + today + "--" + jodaYear + "/" + jodaMonth + "/" + jodaDay);
+                                        Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                                        int nextId;
+
+                                        if (currentIdNum == null) {
+                                            nextId = 0;
+                                        } else {
+                                            nextId = currentIdNum.intValue() + 1;
+                                        }
+                                        //스케줄 저장
+                                        ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                                        Log.d(TAG, "eventFragment content ==>" + content);
+                                        schedule.setTitle(content);
+                                        schedule.setState(0);
+                                        schedule.setColor(mEventSet.getColor());
+                                        schedule.setEventSetId(mEventSet.getSeq());
+                                        schedule.setTime(mTime);
+                                        schedule.sethTime(resultTime);
+
+                                        if (isSetTime) {
+                                            schedule.setYear(mCurrentSelectYear);
+                                            schedule.setMonth(mCurrentSelectMonth);
+                                            schedule.setDay(mCurrentSelectDay);
+                                        } else {
+                                            schedule.setYear(jodaYear);
+                                            schedule.setMonth(jodaMonth);
+                                            schedule.setDay(jodaDay);
+                                        }
+
+                                        Log.d(TAG, "isSetTime local -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
+                                        new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                                            @Override
+                                            public void onTaskFinished(ScheduleR data) {
+                                                Log.d(TAG, "EventSetFragment add" + data);
+
+                                                if (data != null) {
+                                                    mScheduleAdapter.insertItem(data);
+                                                    etInput.getText().clear();
+                                                    rlNoTask.setVisibility(View.GONE);
+                                                    mTime = 0;
+                                                    addScheduleServer();
+
+                                                }
+                                            }
+                                        }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                    }
+                                });
+
                             }
-                        }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            @Override
+                            public void onFail(String result) {
 
-
-
-
-                    }
-            });
+                            }
+                    });
         }
-
     }
 
     //서버에 스케줄 추가된 내용 저장
@@ -337,9 +379,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
      * }
      */
     public void addScheduleServer() {
-        SharedPreferences pref =  getActivity().getSharedPreferences("loginData", Context.MODE_PRIVATE);
         int resultId = pref.getInt("loginId", 0);
-        String authToken = pref.getString("loginToken", "default");
 
         int retMonth = mCurrentSelectMonth +1;
         Log.d(TAG, "addScheduleServer -->" + resultId);
@@ -363,7 +403,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         jsonObject.addProperty("content", "");
         jsonObject.addProperty("latitude", 0);
         jsonObject.addProperty("longitude", 0);
-        jsonArray.add(resultId);
+
+        for (int id : arrFriendId) {
+            jsonArray.add(id);
+        }
 //        jsonObject.addProperty("user_ids", [1]);
 
         jsonObject.add("users_ids", jsonArray);
@@ -408,6 +451,79 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         });
     }
 
+    /**
+     * 자신과 친구 인 유저
+     * Friends Search API
+     */
+    public void getMyFriend(final ScheduleFragment.ApiCallback callback) {
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface getFriendAPI = retrofit.create(APIInterface.class);
+        Call<JsonArray> result = getFriendAPI.getFriendSearch(authToken);
+
+        result.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
+                if (response.isSuccessful()) {
+
+                    arrName = new ArrayList<>();
+                    arrId = new ArrayList<>();
+
+                    String strFriend = response.body().toString();
+
+                    Log.d(TAG, "getMyFriend...-->" + strFriend);
+
+                    Type list = new TypeToken<List<UserJsonData>>(){
+                    }.getType();
+
+                    List<UserJsonData> userData = new Gson().fromJson(strFriend, list);
+
+                    for (int i = 0; i < userData.size(); i++) {
+                        id = userData.get(i).id;
+                        name = userData.get(i).name;
+
+                        int assent = userData.get(i).assent;
+                        Log.d(TAG, "getMyFriend data -->" + name + "--"+ assent);
+
+                        //친구 가 서로 완료된 인원만.
+                        if (assent == 2) {
+                            arrId.add(id);
+                            arrName.add(name);
+                        }
+
+                    }
+                    //친구가 없을 경우 처리 해야 함.
+                    final ScheduleFriendFragment sf = ScheduleFriendFragment.getInstance(arrId, arrName, callback);
+                    final FragmentManager fm = getActivity().getFragmentManager();
+
+                    sf.show(fm, "TAG");
+//                    callback.onSuccess("success");
+//                    final
+
+                } else {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Toast.makeText(getContext(), "친구 목록 얻기에 실패했습니다. 재로그인해주세요.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+
+            }
+        });
+
+
+    }
     //현재 날짜
     private void setCurrentSelectDate(int year, int month, int day) {
         mCurrentSelectYear = year;

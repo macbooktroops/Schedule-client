@@ -33,6 +33,10 @@
                   android:theme="@android:style/Theme.Dialog">
 
         </activity>
+
+        <activity android:name=".activity.ScheduleAssentActivity"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
         <!-- Firebase Service-->
         <service android:name=".firebase.FirebaseMessagingService">
             <intent-filter>
