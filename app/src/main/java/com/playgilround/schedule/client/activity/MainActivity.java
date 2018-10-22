@@ -385,12 +385,34 @@ public class MainActivity extends BaseActivity
         Log.d(TAG, "onSche json -->" + jsonObject);
         Retrofit retrofit = APIClient.getClient();
         APIInterface assentScheAPI = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = assentScheAPI.postFriendAssent(jsonObject, resPushId, authToken);
+        Call<JsonObject> result = assentScheAPI.postScheduleAssent(jsonObject, authToken, resPushId);
 
         result.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 //수락처리, 거절 처리
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "response schedule assent ----" + response.body().toString());
+                } else {
+                    try {
+                        String error = response.errorBody().string();
+                        Log.d(TAG, "response schedule assent fail..." + error);
+
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Toast.makeText(getApplicationContext(), "Auth Token error.", Toast.LENGTH_LONG).show();
+                        } else if (message.contains("Not found schedule.")) {
+                            Toast.makeText(getApplicationContext(), "스케줄이 없습니다.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
 
             @Override
