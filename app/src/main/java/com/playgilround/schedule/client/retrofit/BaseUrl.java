@@ -44,7 +44,7 @@ public class BaseUrl {
 
     public static final String PATH_ARRIVE_SCHEDULE = "/v1/schedule/{scheId}/arrive";
 
-    public static final String PATH_ASSENT_SCHEDULE = "/v1/schedule/{scheId}/assent";
+    public static final String PATH_ASSENT_SCHEDULE = "/v1/schedule/{scheId}/consent";
 
 
     // Note:: Params

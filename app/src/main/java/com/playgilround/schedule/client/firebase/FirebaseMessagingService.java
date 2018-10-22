@@ -250,7 +250,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             JsonObject fJson = scheduleList.sJson;
 
             ScheduleJsonData scheduleJson = new Gson().fromJson(fJson.toString(), list);
-            int id = scheduleJson.id;
+//            int id = scheduleJson.id;
             String title = scheduleJson.title;
             String startTime = scheduleJson.startTime;
 
@@ -260,7 +260,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             ScheduleJsonData userJson = new Gson().fromJson(uJson.toString(), list);
             String name = userJson.name;
-
+            int id = userJson.sche_id;
             DateTime dateTime = new DateTime();
             String setTime = dateTime.toString("yyyy-MM-dd");
 
