@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -22,6 +23,9 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
 import com.playgilround.schedule.client.gson.HolidayJsonData;
 import com.playgilround.schedule.client.gson.LoginJsonData;
+import com.playgilround.schedule.client.gson.ShareScheduleJsonData;
+import com.playgilround.schedule.client.gson.ShareUserScheJsonData;
+import com.playgilround.schedule.client.gson.UserJsonData;
 import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
@@ -116,8 +120,92 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                     @Override
                     public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
 
+                        /**
+                         *[{
+                         * 	"id": 74,
+                         * 	"state": 0,
+                         * 	"title": "ggggg",
+                         * 	"start_time": "2018-10-22 00:00:00",
+                         * 	"latitude": 0.0,
+                         * 	"longitude": 0.0,
+                         * 	"user": [{
+                         * 		"id": 1,
+                         * 		"name": "c004245",
+                         * 		"email": "c004245@naver.com",
+                         * 		"arrive": true
+                         *        }, {
+                         * 		"id": 5,
+                         * 		"name": "hyun123",
+                         * 		"email": "c00@naver.com",
+                         * 		"arrive": false
+                         *    }]
+                         * }]
+                         *
+                         * 자기가 arrive : false 한 스케줄은 보이지 않는거 같음.
+                         * realm 에 eventSetId -2 형태로 저장
+                         * 해당 연도 삭제 후 다시 저장.
+                         *
+                         */
                         if (response.isSuccessful()) {
-                            Log.d(TAG, "search schedule success-->" + response.body().toString());
+
+                            realm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    RealmResults<ScheduleR> shareSchedule = realm.where(ScheduleR.class).equalTo("eventSetId", -2).equalTo("year", nYear).findAll();
+
+                                    Log.d(TAG, "shareSchedule size ->" + shareSchedule.size());
+
+                                    if (shareSchedule.size() == 0) {
+                                        //ScheduleR 에 공유된 스케줄이 저장이 안 되어있음
+
+                                        /**
+                                         * Use gson json Parsing
+                                         */
+                                        String strSearch = response.body().toString();
+                                        Log.d(TAG, "search schedule success-->" + strSearch);
+
+                                        Type list = new TypeToken<List<ShareScheduleJsonData>>() {
+                                        }.getType();
+
+                                        //user jsonArray 이
+                                        Type list2 = new TypeToken<List<ShareUserScheJsonData>>(){
+                                        }.getType();
+
+                                        List<ShareScheduleJsonData> shareData = new Gson().fromJson(strSearch, list);
+
+//                                        Gson userGson = new Gson();
+
+                                        List<ShareUserScheJsonData> shareUserData = new Gson().fromJson(strSearch, list2);
+
+
+//                                        Log.d(TAG, "ShareData size -->" + shareData.size());
+//                                        JsonArray userJson = shareData.get(0).user;
+
+//                                        List<ShareScheduleJsonData> shareUserData = new Gson().fromJson(shareData.get(0).us)
+                                        //shareData만큼 반복
+//                                        for (ShareScheduleJsonData resShare : shareData) {
+
+                                        for (int i = 0; i < shareData.size(); i++) {
+                                            Log.d(TAG, "result S- >" + shareData.get(i).id + "--" + shareData.get(i).state + "--" + shareData.get(i).title + "--"
+                                                + shareData.get(i).startTime + "--" + shareData.get(i).latitude + "--" + shareData.get(i).longitude);
+
+                                            Log.d(TAG, "user Result --> " + shareUserData.get(i).user +"--" +shareUserData.get(i).user_id + "--" + shareUserData.get(i).name + "--" + shareUserData.get(i).email +
+                                                "--" + shareUserData.get(i).arrive);
+//                                            Log.d(TAG, "result -->" + resShare.id + "--" + resShare.state + "--" + resShare.title + "--" + resShare.startTime
+//                                                    + "--" + resShare.latitude + "--" + resShare.longitude + "--");
+
+//                                                    JsonArray resJsonArray = resShare.user;
+
+//                                                        Log.d(TAG, "shareUser -->" + )
+                                                  /*  for (ShareUserScheJsonData resUserShare : shareUserData) {
+                                                        Log.d(TAG, "result To -->" + resUserShare.user + "--" + resUserShare.user_id + "--" + resUserShare.name + "--" + resUserShare.email + "--" + resUserShare.arrive);
+
+                                                    }*/
+                                        }
+                                    }
+                                }
+                            });
+
                         } else {
                             try {
                                 error = response.errorBody().string();
