@@ -285,7 +285,7 @@ public class MonthView extends View {
                 }
             });
 
-            //달력이 1월,12월일때 전년,다음년도에 등록된 스케줄 정보 얻기.
+          /*  //달력이 1월,12월일때 전년,다음년도에 등록된 스케줄 정보 얻기.
             pref = getContext().getSharedPreferences("loginData", Activity.MODE_PRIVATE);
 
             String authToken = pref.getString("loginToken", "");
@@ -326,7 +326,7 @@ public class MonthView extends View {
                 public void onFailure(retrofit2.Call<ArrayList<JsonObject>> call, Throwable t) {
                     Log.d(TAG, "search schedule Failure -->" + t);
                 }
-            });
+            });*/
         }
 
 

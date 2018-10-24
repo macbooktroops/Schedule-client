@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -22,11 +23,18 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
 import com.playgilround.schedule.client.gson.HolidayJsonData;
 import com.playgilround.schedule.client.gson.LoginJsonData;
+import com.playgilround.schedule.client.gson.ShareScheduleJsonData;
+import com.playgilround.schedule.client.gson.ShareUserScheJsonData;
+import com.playgilround.schedule.client.gson.UserJsonData;
 import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
 import com.playgilround.schedule.client.gson.TokenSerialized;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -116,8 +124,117 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                     @Override
                     public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
 
+                        /**
+                         *[{
+                         * 	"id": 74,
+                         * 	"state": 0,
+                         * 	"title": "ggggg",
+                         * 	"start_time": "2018-10-22 00:00:00",
+                         * 	"latitude": 0.0,
+                         * 	"longitude": 0.0,
+                         * 	"user": [{
+                         * 		"id": 1,
+                         * 		"name": "c004245",
+                         * 		"email": "c004245@naver.com",
+                         * 		"arrive": true
+                         *        }, {
+                         * 		"id": 5,
+                         * 		"name": "hyun123",
+                         * 		"email": "c00@naver.com",
+                         * 		"arrive": false
+                         *    }]
+                         * }]
+                         *
+                         * 자기가 arrive : false 한 스케줄은 보이지 않는거 같음.
+                         * realm 에 eventSetId -2 형태로 저장
+                         * 해당 연도 삭제 후 다시 저장.
+                         *
+                         */
                         if (response.isSuccessful()) {
-                            Log.d(TAG, "search schedule success-->" + response.body().toString());
+
+                            realm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    RealmResults<ScheduleR> shareSchedule = realm.where(ScheduleR.class).equalTo("eventSetId", -2).equalTo("year", nYear).findAll();
+
+                                    Log.d(TAG, "shareSchedule size ->" + shareSchedule.size());
+
+//                                    if (shareSchedule.size() == 0) {
+                                        //ScheduleR 에 공유된 스케줄이 저장이 안 되어있음
+
+                                        /**
+                                         * Use gson json Parsing
+                                         */
+                                        String strSearch = response.body().toString();
+                                        Log.d(TAG, "search schedule success-->" + strSearch);
+
+                                        Type list = new TypeToken<List<ShareScheduleJsonData>>() {
+                                        }.getType();
+
+                                        //user jsonArray 이
+                                        Type list2 = new TypeToken<List<ShareUserScheJsonData>>(){
+                                        }.getType();
+
+                                        Gson userGson = new Gson();
+
+                                        List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
+
+                                        for (ShareScheduleJsonData resShare : shareData) {
+
+
+                                            List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
+
+
+                                            //공유된 유저만큼 반복
+                                            for (ShareUserScheJsonData resUserShare : shareUserData) {
+                                                Log.d(TAG, "result s->" + resShare.id + "--" + resShare.state +"--" + resShare.title +
+                                                        "--" + resShare.startTime + "--" + resShare.latitude + "--" + resShare.longitude + "--"
+                                                                + resUserShare.user_id + "--" + resUserShare.name +"--" + resUserShare.email + "--" + resUserShare.arrive);
+
+
+                                                int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
+                                                int resMonth = Integer.valueOf(resShare.startTime.substring(5,7));
+                                                int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
+
+                                                int hour = Integer.valueOf(resShare.startTime.substring(11, 12));
+                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 15));
+//                                                DateTimeFormatter fmt = DateTimeFormat.forPattern("a HH:mm");
+//
+//                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
+                                                Log.d(TAG, "resTime --> " + resYear + "--" + resMonth + "--" + resDay + "--" + hour + "--" + minute);
+                                                Number currentId = realm.where(ScheduleR.class).max("seq");
+                                                int nextId;
+
+                                                if (currentId == null) {
+                                                    nextId = 0;
+                                                } else {
+                                                    nextId = currentId.intValue() + 1;
+                                                }
+
+                                                ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(resUserShare.user_id);
+                                                shareR.setNickName(resUserShare.name);
+                                                shareR.setEmail(resUserShare.email);
+                                                shareR.setArrive(resUserShare.arrive); //arrive 가 아니고 assent..
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-2);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+//                                                shareR.sethTime(ressh);
+
+
+                                            }
+                                        }
+                                    }
+//                                }
+                            });
+
                         } else {
                             try {
                                 error = response.errorBody().string();
