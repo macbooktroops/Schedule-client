@@ -30,6 +30,6 @@ public class ShareScheduleJsonData {
 
 
     //User Json
-//    @SerializedName("user")
-//    public JsonArray user;
+    @SerializedName("user")
+    public JsonArray user;
 }

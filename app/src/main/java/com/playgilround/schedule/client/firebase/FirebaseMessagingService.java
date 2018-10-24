@@ -25,7 +25,7 @@ import com.playgilround.schedule.client.activity.MainActivity;
 import com.playgilround.schedule.client.activity.ScheduleAssentActivity;
 import com.playgilround.schedule.client.gson.FriendAssentJsonData;
 import com.playgilround.schedule.client.gson.FriendPushJsonData;
-import com.playgilround.schedule.client.schedule.ScheduleJsonData;
+import com.playgilround.schedule.client.gson.ScheduleJsonData;
 
 import org.joda.time.DateTime;
 

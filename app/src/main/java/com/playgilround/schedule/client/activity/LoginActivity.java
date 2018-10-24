@@ -32,6 +32,10 @@ import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
 import com.playgilround.schedule.client.gson.TokenSerialized;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -155,7 +159,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                                     Log.d(TAG, "shareSchedule size ->" + shareSchedule.size());
 
-                                    if (shareSchedule.size() == 0) {
+//                                    if (shareSchedule.size() == 0) {
                                         //ScheduleR 에 공유된 스케줄이 저장이 안 되어있음
 
                                         /**
@@ -175,45 +179,60 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                                         List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
 
-
-                                        List<ShareUserScheJsonData> shareUserData = userGson.fromJson(strSearch, list2);
-
+                                        for (ShareScheduleJsonData resShare : shareData) {
 
 
-//                                        Log.d(TAG, "ShareData size -->" + shareData.size());
-//                                        JsonArray userJson = shareData.get(0).user;
-
-//                                        List<ShareScheduleJsonData> shareUserData = new Gson().fromJson(shareData.get(0).us)
-                                        //shareData만큼 반복
-//                                        for (ShareScheduleJsonData resShare : shareData) {
-
-                                        for (int i = 0; i < shareData.size(); i++) {
-                                            Log.d(TAG, "result S- >" + shareData.get(i).id + "--" + shareData.get(i).state + "--" + shareData.get(i).title + "--"
-                                                + shareData.get(i).startTime + "--" + shareData.get(i).latitude + "--" + shareData.get(i).longitude);
-
-                                            Log.d(TAG, "user Result --> " + shareUserData.get(i).user);
-
-                                            List<ShareUserScheJsonData> shareUserData2 = userGson.fromJson(shareUserData.get(i).user, list2);
+                                            List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
 
 
                                             //공유된 유저만큼 반복
-                                            for (int j = 0; j < shareUserData2.size(); j++) {
-                                                Log.d(TAG, "user Final --> " + shareUserData2.get(j).user_id + "--" + shareUserData2.get(j).name + "--" + shareUserData2.get(j).email +
-                                                        "--" + shareUserData2.get(j).arrive);
+                                            for (ShareUserScheJsonData resUserShare : shareUserData) {
+                                                Log.d(TAG, "result s->" + resShare.id + "--" + resShare.state +"--" + resShare.title +
+                                                        "--" + resShare.startTime + "--" + resShare.latitude + "--" + resShare.longitude + "--"
+                                                                + resUserShare.user_id + "--" + resUserShare.name +"--" + resUserShare.email + "--" + resUserShare.arrive);
+
+
+                                                int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
+                                                int resMonth = Integer.valueOf(resShare.startTime.substring(5,7));
+                                                int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
+
+                                                int hour = Integer.valueOf(resShare.startTime.substring(11, 12));
+                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 15));
+//                                                DateTimeFormatter fmt = DateTimeFormat.forPattern("a HH:mm");
+//
+//                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
+                                                Log.d(TAG, "resTime --> " + resYear + "--" + resMonth + "--" + resDay + "--" + hour + "--" + minute);
+                                                Number currentId = realm.where(ScheduleR.class).max("seq");
+                                                int nextId;
+
+                                                if (currentId == null) {
+                                                    nextId = 0;
+                                                } else {
+                                                    nextId = currentId.intValue() + 1;
+                                                }
+
+                                                ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(resUserShare.user_id);
+                                                shareR.setNickName(resUserShare.name);
+                                                shareR.setEmail(resUserShare.email);
+                                                shareR.setArrive(resUserShare.arrive); //arrive 가 아니고 assent..
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-2);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+//                                                shareR.sethTime(ressh);
+
+
                                             }
-//                                            Log.d(TAG, "result -->" + resShare.id + "--" + resShare.state + "--" + resShare.title + "--" + resShare.startTime
-//                                                    + "--" + resShare.latitude + "--" + resShare.longitude + "--");
-
-//                                                    JsonArray resJsonArray = resShare.user;
-
-//                                                        Log.d(TAG, "shareUser -->" + )
-                                                  /*  for (ShareUserScheJsonData resUserShare : shareUserData) {
-                                                        Log.d(TAG, "result To -->" + resUserShare.user + "--" + resUserShare.user_id + "--" + resUserShare.name + "--" + resUserShare.email + "--" + resUserShare.arrive);
-
-                                                    }*/
                                         }
                                     }
-                                }
+//                                }
                             });
 
                         } else {

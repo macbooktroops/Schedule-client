@@ -2,6 +2,8 @@ package com.playgilround.schedule.client.realm;
 
 
 
+import java.util.List;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -18,6 +20,15 @@ public class ScheduleR extends RealmObject {
 
     private int id;
 
+    private int scheId; //schedule table 에 schedule_id (server)
+
+    private int userId; //schedule_user table에 user_id (server)
+
+    private String nickName; //users table에 name (server)
+
+    private String email; //users table에 email (server)
+
+    private boolean arrive; //도착여부
     private int color;
     private String title;
     private String desc;
@@ -62,6 +73,46 @@ public class ScheduleR extends RealmObject {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getScheId() {
+        return scheId;
+    }
+
+    public void setScheId(int scheId) {
+        this.scheId = scheId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean getArrive() {
+        return arrive;
+    }
+
+    public void setArrive(boolean arrive) {
+        this.arrive = arrive;
     }
 
     public int getColor() {
@@ -156,7 +207,7 @@ public class ScheduleR extends RealmObject {
         return latitude;
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(long latitude) {
         this.latitude = latitude;
     }
 
@@ -164,7 +215,7 @@ public class ScheduleR extends RealmObject {
         return longitude;
     }
 
-    public void setLongitude(int longitude) {
+    public void setLongitude(long longitude) {
         this.longitude = longitude;
     }
 
