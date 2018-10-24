@@ -171,11 +171,13 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                         Type list2 = new TypeToken<List<ShareUserScheJsonData>>(){
                                         }.getType();
 
-                                        List<ShareScheduleJsonData> shareData = new Gson().fromJson(strSearch, list);
+                                        Gson userGson = new Gson();
 
-//                                        Gson userGson = new Gson();
+                                        List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
 
-                                        List<ShareUserScheJsonData> shareUserData = new Gson().fromJson(strSearch, list2);
+
+                                        List<ShareUserScheJsonData> shareUserData = userGson.fromJson(strSearch, list2);
+
 
 
 //                                        Log.d(TAG, "ShareData size -->" + shareData.size());
@@ -189,8 +191,16 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                             Log.d(TAG, "result S- >" + shareData.get(i).id + "--" + shareData.get(i).state + "--" + shareData.get(i).title + "--"
                                                 + shareData.get(i).startTime + "--" + shareData.get(i).latitude + "--" + shareData.get(i).longitude);
 
-                                            Log.d(TAG, "user Result --> " + shareUserData.get(i).user +"--" +shareUserData.get(i).user_id + "--" + shareUserData.get(i).name + "--" + shareUserData.get(i).email +
-                                                "--" + shareUserData.get(i).arrive);
+                                            Log.d(TAG, "user Result --> " + shareUserData.get(i).user);
+
+                                            List<ShareUserScheJsonData> shareUserData2 = userGson.fromJson(shareUserData.get(i).user, list2);
+
+
+                                            //공유된 유저만큼 반복
+                                            for (int j = 0; j < shareUserData2.size(); j++) {
+                                                Log.d(TAG, "user Final --> " + shareUserData2.get(j).user_id + "--" + shareUserData2.get(j).name + "--" + shareUserData2.get(j).email +
+                                                        "--" + shareUserData2.get(j).arrive);
+                                            }
 //                                            Log.d(TAG, "result -->" + resShare.id + "--" + resShare.state + "--" + resShare.title + "--" + resShare.startTime
 //                                                    + "--" + resShare.latitude + "--" + resShare.longitude + "--");
 
