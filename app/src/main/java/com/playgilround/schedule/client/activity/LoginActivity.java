@@ -37,8 +37,11 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -72,6 +75,22 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     static final String TAG = LoginActivity.class.getSimpleName();
     String authToken;
     Realm realm;
+
+    public static String getTime(String strDate, String Time, String result) {
+        SimpleDateFormat df;
+        df = new SimpleDateFormat(Time);
+
+        Date date = null;
+        try {
+            date = df.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        df = new SimpleDateFormat(result);
+        return df.format(date);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +111,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         findBtn = findViewById(R.id.findBtn);
 
         realm = Realm.getDefaultInstance();
-
 
         /**
          * Retrofit Holiday 로그인하기전에 실행
@@ -196,11 +214,12 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 int resMonth = Integer.valueOf(resShare.startTime.substring(5,7));
                                                 int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
 
-                                                int hour = Integer.valueOf(resShare.startTime.substring(11, 12));
-                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 15));
+                                                int hour = Integer.valueOf(resShare.startTime.substring(11, 13));
+                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 16));
 //                                                DateTimeFormatter fmt = DateTimeFormat.forPattern("a HH:mm");
 //
 //                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
+
                                                 Log.d(TAG, "resTime --> " + resYear + "--" + resMonth + "--" + resDay + "--" + hour + "--" + minute);
                                                 Number currentId = realm.where(ScheduleR.class).max("seq");
                                                 int nextId;
