@@ -55,6 +55,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import static com.playgilround.schedule.client.utils.DateUtils.date2TimeStamp;
+
 
 public class LoginActivity extends Activity implements SelectFindDialog.OnFindSetListener {
 
@@ -214,13 +216,15 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 int resMonth = Integer.valueOf(resShare.startTime.substring(5,7));
                                                 int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
 
-                                                int hour = Integer.valueOf(resShare.startTime.substring(11, 13));
-                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 16));
+                                                String resTime = resShare.startTime.substring(11, 16);
+//                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 16));
 //                                                DateTimeFormatter fmt = DateTimeFormat.forPattern("a HH:mm");
 //
 //                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
 
-                                                Log.d(TAG, "resTime --> " + resYear + "--" + resMonth + "--" + resDay + "--" + hour + "--" + minute);
+                                                long time =   date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
+                                                        "yyyy-MM-dd HH:mm");
+                                                Log.d(TAG, "resTime --> " + resYear + "--" + resMonth + "--" + resDay + "--" + resTime + "--"+ time);
                                                 Number currentId = realm.where(ScheduleR.class).max("seq");
                                                 int nextId;
 
@@ -245,7 +249,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setEventSetId(-2);
                                                 shareR.setLatitude(resShare.latitude);
                                                 shareR.setLongitude(resShare.longitude);
-//                                                shareR.sethTime(ressh);
+                                                shareR.sethTime(resTime);
+                                                shareR.setTime(time);
 
 
                                             }
