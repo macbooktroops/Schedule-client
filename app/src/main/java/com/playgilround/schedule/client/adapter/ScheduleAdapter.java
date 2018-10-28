@@ -132,7 +132,11 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.tvScheduleState.setBackgroundResource(R.drawable.holiday_schedule_hint);
                 viewHolder.tvScheduleState.setText(mContext.getString(R.string.holiday));
                 viewHolder.tvScheduleState.setTextColor(mContext.getResources().getColor(R.color.color_holiday_view));
-
+            } else if (schedule.getState() == -2) {
+                Log.d(TAG, "State -2");
+                viewHolder.tvScheduleState.setBackgroundResource(R.drawable.share_schedule_hint);
+                viewHolder.tvScheduleState.setText(mContext.getString(R.string.shared));
+                viewHolder.tvScheduleState.setTextColor(mContext.getResources().getColor(R.color.color_share_view));
             }
 
             //상태 클릭시 (시작 , 종료)
@@ -329,6 +333,11 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                     case -1:
                         Log.d(TAG, "holiday check.");
+                        break;
+
+                    case -2:
+                        Log.d(TAG, "shared schedule check.");
+                        break;
                 }
             }
         });
