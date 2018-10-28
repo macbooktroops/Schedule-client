@@ -194,7 +194,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
      */
     public void getMyFriend(final ApiCallback callback) {
         String nickName = pref.getString("loginName", "");
-        int resultId = pref.getInt("loginId", 0);
+        resultId = pref.getInt("loginId", 0);
 
         Retrofit retrofit = APIClient.getClient();
         APIInterface getFriendAPI = retrofit.create(APIInterface.class);
@@ -214,13 +214,15 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 //                    arrId.add(resultId);
 //                    arrName.add(nickName + "(나)");
 
-                    Log.d(TAG, "getMyFriend...-->" + strFriend);
+                    Log.d(TAG, "getMyFriend...-->" + strFriend + "--" + resultId);
 
                     Type list = new TypeToken<List<UserJsonData>>() {
                     }.getType();
 
                     List<UserJsonData> userData = new Gson().fromJson(strFriend, list);
 
+                    arrId.add(resultId);
+                    arrName.add("개인 일정입니다.");
                     for (int i = 0; i < userData.size(); i++) {
                         id = userData.get(i).id;
                         name = userData.get(i).name;
@@ -288,53 +290,57 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                         @Override
                         public void execute(Realm realm) {
 
-                            //자기자신 추가
-                            resultId = pref.getInt("loginId", 0);
+                            Log.d(TAG, "result friend ->" + result);
 
-                            arrFriendId.add(resultId);
+                            if (result.equals("share")) {
+                                //공유 된 스케줄일 경우
+                                //자기자신 추가
+                                resultId = pref.getInt("loginId", 0);
 
-                            for (int i = 0; i < list.size(); i++) {
-                                ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
+                                arrFriendId.add(resultId);
+                            }
+                                for (int i = 0; i < list.size(); i++) {
+                                    ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
 
 //                                Log.d(TAG, "list value ->" + item.getId());
-                                arrFriendId.add(item.getId());
-                            }
-                            Log.d(TAG, "Try save -->" + arrFriendId.size());
-
-                            Number currentIdNum = realm.where(ScheduleR.class).max("seq");
-
-                            int nextId;
-
-                            if (currentIdNum == null) {
-                                nextId = 0;
-                            } else {
-                                nextId = currentIdNum.intValue() + 1;
-                            }
-
-                            ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-                            schedule.setTitle(content);
-                            schedule.setState(0);
-                            schedule.setTime(mTime);
-                            schedule.sethTime(resultTime);
-                            schedule.setYear(mCurrentSelectYear);
-                            schedule.setMonth(mCurrentSelectMonth +1);
-                            schedule.setDay(mCurrentSelectDay);
-//
-                            new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
-                                @Override
-                                public void onTaskFinished(ScheduleR data) {
-                                    Log.d(TAG, "AddScheduleTask finish ->" + data);
-                                    if (data != null) {
-                                        mScheduleAdapter.insertItem(data);
-                                        etInputContent.getText().clear();
-                                        rlNoTask.setVisibility(View.GONE);
-                                        mTime = 0;
-                                        updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
-                                        addScheduleServer(data);
-                                    }
+                                    arrFriendId.add(item.getId());
                                 }
-                            }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        }
+                                Log.d(TAG, "Try save -->" + arrFriendId.size());
+
+                                Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                                int nextId;
+
+                                if (currentIdNum == null) {
+                                    nextId = 0;
+                                } else {
+                                    nextId = currentIdNum.intValue() + 1;
+                                }
+
+                                ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                                schedule.setTitle(content);
+                                schedule.setState(0);
+                                schedule.setTime(mTime);
+                                schedule.sethTime(resultTime);
+                                schedule.setYear(mCurrentSelectYear);
+                                schedule.setMonth(mCurrentSelectMonth + 1);
+                                schedule.setDay(mCurrentSelectDay);
+//
+                                new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
+                                    @Override
+                                    public void onTaskFinished(ScheduleR data) {
+                                        Log.d(TAG, "AddScheduleTask finish ->" + data);
+                                        if (data != null) {
+                                            mScheduleAdapter.insertItem(data);
+                                            etInputContent.getText().clear();
+                                            rlNoTask.setVisibility(View.GONE);
+                                            mTime = 0;
+                                            updateTaskHintUi(mScheduleAdapter.getItemCount() - 2);
+                                            addScheduleServer(data);
+                                        }
+                                    }
+                                }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            }
                     });
 
                 }

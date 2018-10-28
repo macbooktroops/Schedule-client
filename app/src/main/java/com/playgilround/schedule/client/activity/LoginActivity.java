@@ -236,7 +236,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setUserId(resUserShare.user_id);
                                                 shareR.setNickName(resUserShare.name);
                                                 shareR.setEmail(resUserShare.email);
-                                                shareR.setArrive(resUserShare.arrive); //arrive 가 아니고 assent..
+                                                shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-2);
                                                 shareR.setTitle(resShare.title);
                                                 shareR.setState(resShare.state);
                                                 shareR.setYear(resYear);
@@ -291,7 +292,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setUserId(resUserShare.user_id);
                                                 shareR.setNickName(resUserShare.name);
                                                 shareR.setEmail(resUserShare.email);
-                                                shareR.setArrive(resUserShare.arrive); //arrive 가 아니고 assent..
+                                                shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-2);
                                                 shareR.setTitle(resShare.title);
                                                 shareR.setState(resShare.state);
                                                 shareR.setYear(resYear);
@@ -621,8 +623,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                     int loginId = loginList.id;
                     String loginName = loginList.name;
                     String loginToken = loginList.token;
-
-                    Log.d(TAG, "result name and token ->" + loginName + "--" + loginToken);
 
                     editor.putInt("loginId", loginId);
                     editor.putString("loginName", loginName);

@@ -23,5 +23,5 @@ public class ShareUserScheJsonData {
     public String email;
 
     @SerializedName("arrive")
-    public boolean arrive;
+    public boolean assent;
 }

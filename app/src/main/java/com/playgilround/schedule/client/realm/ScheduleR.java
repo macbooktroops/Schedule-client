@@ -28,7 +28,7 @@ public class ScheduleR extends RealmObject {
 
     private String email; //users table에 email (server)
 
-    private boolean arrive; //도착여부
+    private boolean assent; //도착여부
     private int color;
     private String title;
     private String desc;
@@ -107,12 +107,12 @@ public class ScheduleR extends RealmObject {
         this.email = email;
     }
 
-    public boolean getArrive() {
-        return arrive;
+    public boolean getAssent() {
+        return assent;
     }
 
-    public void setArrive(boolean arrive) {
-        this.arrive = arrive;
+    public void setAssent(boolean assent) {
+        this.assent = assent;
     }
 
     public int getColor() {
