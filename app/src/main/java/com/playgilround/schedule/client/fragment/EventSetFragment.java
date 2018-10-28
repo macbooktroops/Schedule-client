@@ -471,7 +471,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                     arrId = new ArrayList<>();
 
                     String strFriend = response.body().toString();
-                    
+
                     Type list = new TypeToken<List<UserJsonData>>(){
                     }.getType();
 
