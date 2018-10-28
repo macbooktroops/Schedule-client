@@ -68,7 +68,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private ImageView ivEventIcon;
     private EditText etTitle, etDesc;
 
-    private TextView tvEventSet, tvTime, tvLocation;
+    private TextView tvEventSet, tvTime, tvLocation, tvShare;
     private Map<Integer, EventSetR> mEventSetsMap;
 
     private ScheduleR mSchedule;
@@ -114,7 +114,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         searchViewById(R.id.llScheduleEventSet).setOnClickListener(this);
         searchViewById(R.id.llScheduleTime).setOnClickListener(this);
         searchViewById(R.id.llScheduleLocation).setOnClickListener(this);
-        searchViewById(R.id.llAddFriend).setOnClickListener(this);
+        searchViewById(R.id.llShare).setOnClickListener(this);
 
         vSchedule = searchViewById(R.id.vScheduleColor);
         ivEventIcon = searchViewById(R.id.ivScheduleEventSetIcon);
@@ -126,6 +126,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         tvEventSet = searchViewById(R.id.tvScheduleEventSet);
         tvTime = searchViewById(R.id.tvScheduleTime);
         tvLocation = searchViewById(R.id.tvScheduleLocation);
+
+        tvShare = searchViewById(R.id.tvShare);
+
+
 
         realm = Realm.getDefaultInstance();
 
@@ -192,6 +196,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             case R.id.llScheduleLocation:
                 //위치 선택 레이아웃 클릭
                 showInputLocationDialog();
+                break;
+
+            case R.id.llShare:
+//                showS
                 break;
 
         }

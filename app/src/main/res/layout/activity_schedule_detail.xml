@@ -101,7 +101,7 @@
             android:background="@color/color_schedule_line"/>
 
         <LinearLayout
-            android:id="@+id/llAddFriend"
+            android:id="@+id/llShare"
             android:layout_width="match_parent"
             android:layout_height="@dimen/schedule_item_size"
             android:gravity="center_vertical"
@@ -114,7 +114,7 @@
                 android:src="@mipmap/ic_user"/>
 
             <TextView
-                android:id="@+id/tvAddFriend"
+                android:id="@+id/tvShare"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/space_12dp"
@@ -241,20 +241,32 @@
                 android:text="@string/remarks"
                 android:textColor="@color/color_schedule_text"
                 android:textSize="@dimen/text_size_16sp"/>
-
             <EditText
                 android:id="@+id/etScheduleDesc"
+                android:layout_below="@+id/ivRemarkIcon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/ivRemarkIcon"
                 android:layout_marginBottom="@dimen/space_10dp"
                 android:layout_marginLeft="@dimen/space_10dp"
-                android:layout_marginRight="@dimen/space_10dp"
+                android:layout_alignRight="@+id/btnArrived"
                 android:background="@drawable/bg_remark_edit_text"
                 android:gravity="top|left"
                 android:hint="@string/please_input_desc"
                 android:paddingTop="@dimen/space_12dp"
                 android:textSize="@dimen/text_size_16sp"/>
-        </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnArrived"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/schedule_item_size"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="@dimen/space_10dp"
+                android:layout_marginRight="@dimen/space_10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/arrived"
+                android:textColor="@color/color_schedule_text"
+                android:textSize="@dimen/text_size_16sp" />
+            </RelativeLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
