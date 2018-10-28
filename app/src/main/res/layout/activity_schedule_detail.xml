@@ -256,6 +256,7 @@
                 android:textSize="@dimen/text_size_16sp"/>
 
             <Button
+                android:visibility="gone"
                 android:id="@+id/btnArrived"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/schedule_item_size"

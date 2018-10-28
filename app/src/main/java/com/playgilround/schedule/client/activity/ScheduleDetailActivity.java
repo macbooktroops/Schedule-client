@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -88,6 +89,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     int resYear, resMonth, resDay;
     long resTime;
 
+    private Button btnArrived;
 
 
 
@@ -129,7 +131,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
         tvShare = searchViewById(R.id.tvShare);
 
-
+        btnArrived = searchViewById(R.id.btnArrived);
 
         realm = Realm.getDefaultInstance();
 
@@ -158,6 +160,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
                  mSchedule = resScheduleR;
                 Log.d(TAG, "check data --->" + mSchedule.getTitle());
+
+                if (mSchedule.getEventSetId() == -2) {
+                    btnArrived.setVisibility(View.VISIBLE);
+                }
             }
         });
 
