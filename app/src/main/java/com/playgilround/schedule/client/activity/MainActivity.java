@@ -42,6 +42,7 @@ import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
+import com.playgilround.schedule.client.schedule.InitShareSchedule;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
 
 import java.util.ArrayList;
@@ -219,6 +220,9 @@ public class MainActivity extends BaseActivity
 
         InitHoliday initHoliday = new InitHoliday();
         initHoliday.initHolidayEventSet();
+
+        InitShareSchedule initShareSchedule = new InitShareSchedule();
+        initShareSchedule.shareScheEventSet();
 
     }
 
