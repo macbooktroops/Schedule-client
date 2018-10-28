@@ -32,6 +32,7 @@ import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
+import com.playgilround.schedule.client.dialog.SelectShareDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
 import com.playgilround.schedule.client.fragment.FriendFragment;
 import com.playgilround.schedule.client.fragment.ScheduleFragment;
@@ -42,6 +43,7 @@ import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
+import com.playgilround.schedule.client.schedule.InitShareSchedule;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
 
 import java.util.ArrayList;
@@ -63,7 +65,7 @@ import retrofit2.Retrofit;
  *
  */
 public class MainActivity extends BaseActivity
-        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener {
+        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, SelectShareDialog.OnShareSetListener {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -105,6 +107,8 @@ public class MainActivity extends BaseActivity
 
     private int mYear;
     private SelectHolidayDialog mSelectHolidayDialog;
+
+    private SelectShareDialog mSelectShareDialog;
     String resPush; //push 를통해 앱 실행
 
     String resPushName; //푸쉬를 보낸 사람의 닉네임
@@ -219,6 +223,9 @@ public class MainActivity extends BaseActivity
 
         InitHoliday initHoliday = new InitHoliday();
         initHoliday.initHolidayEventSet();
+
+        InitShareSchedule initShareSchedule = new InitShareSchedule();
+        initShareSchedule.shareScheEventSet();
 
     }
 
@@ -363,6 +370,45 @@ public class MainActivity extends BaseActivity
 
     }
 
+    /**
+     * SelectShareDialog 년도 선택 완료 시 호출
+     * SelectShareDialog -> EventSetFragment 순
+     *
+     * @param year
+     * @param eventSet
+     */
+    @Override
+    public void onShareSet(int year, EventSetR eventSet) {
+        Log.d(TAG, "onShareSet -->" + year + "--" + eventSet.getName());
+        mYear = year;
+
+        //mYear 로 검색 한 공유된 스케일 EventSetFragment show
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+
+        if (mEventSetFragment != null)
+            ft.remove(mEventSetFragment);
+
+        mEventSetFragment = EventSetFragment.getInstance(eventSet, mYear);
+        ft.add(R.id.frameContainer, mEventSetFragment);
+
+        if (mScheduleFragment != null) {
+            ft.hide(mScheduleFragment);
+        }
+
+        if (mFriendFragment != null) {
+            ft.hide(mFriendFragment);
+        }
+
+        ft.show(mEventSetFragment);
+        ft.commit();
+
+        resetTitleText(eventSet.getName());
+        drawMain.closeDrawer(Gravity.START);
+        mCurrentEventSet = eventSet;
+    }
+
 
 
     //goto eventset fragment
@@ -379,6 +425,13 @@ public class MainActivity extends BaseActivity
                 mSelectHolidayDialog = new SelectHolidayDialog(this, this, eventSet);
 
             mSelectHolidayDialog.show();
+        } else if(eventSet.getSeq() == -2) {
+            //공유된 스케줄 표시.
+            Log.d(TAG, "start SelectShareDialog --->"+  mSelectShareDialog);
+            if (mSelectShareDialog == null)
+                mSelectShareDialog = new SelectShareDialog(this, this, eventSet);
+
+            mSelectShareDialog.show();
         } else {
             Log.d(TAG, "start Fragment----");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

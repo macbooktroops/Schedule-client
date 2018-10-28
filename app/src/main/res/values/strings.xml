@@ -55,6 +55,7 @@
     <string name="start">시작</string>
     <string name="finish">완료</string>
     <string name="holiday">공휴일</string>
+    <string name="shared">Shared</string>
 
     <string name="schedule_delete_this_schedule">스케줄을 삭제할래요?</string>
 
@@ -87,6 +88,8 @@
     <string name="human_time_format">a hh:mm:ss</string>
 
     <string name="human_time_format2">HH:mm:ss</string>
+
+    <string name="arrived">도착 완료</string>
     <string name="holidayDomain">http://schedule.mactroops.com:3000/v1/holiday/</string>
 
     <string-array name="calendar_week">

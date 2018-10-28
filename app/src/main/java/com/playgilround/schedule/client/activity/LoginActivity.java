@@ -248,6 +248,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setLongitude(resShare.longitude);
                                                 shareR.sethTime(resTime);
                                                 shareR.setTime(time);
+                                                shareR.setState(-2);
                                             }
                                         }
                                     } else {
@@ -304,6 +305,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setLongitude(resShare.longitude);
                                                 shareR.sethTime(resTime);
                                                 shareR.setTime(time);
+                                                shareR.setState(-2);
                                             }
                                         }
                                     }
