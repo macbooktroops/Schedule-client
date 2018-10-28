@@ -291,10 +291,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                                     public void execute(Realm realm) {
                                         Log.d(TAG, "addSchedule EventSetFragment");
 
-
-                                        resultId = pref.getInt("loginId", 0);
-
-                                        arrFriendId.add(resultId);
+                                        if (result.equals("share")) {
+                                            //공유된 스케줄일 경우 자기자신 추가.
+                                            arrFriendId.add(resultId);
+                                        }
 
                                         for (int i = 0; i < list.size(); i++) {
                                             ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
@@ -460,6 +460,8 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         APIInterface getFriendAPI = retrofit.create(APIInterface.class);
         Call<JsonArray> result = getFriendAPI.getFriendSearch(authToken);
 
+        resultId = pref.getInt("loginId", 0);
+
         result.enqueue(new Callback<JsonArray>() {
             @Override
             public void onResponse(Call<JsonArray> call, Response<JsonArray> response) {
@@ -469,13 +471,14 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                     arrId = new ArrayList<>();
 
                     String strFriend = response.body().toString();
-
-                    Log.d(TAG, "getMyFriend...-->" + strFriend);
-
+                    
                     Type list = new TypeToken<List<UserJsonData>>(){
                     }.getType();
 
                     List<UserJsonData> userData = new Gson().fromJson(strFriend, list);
+
+                    arrId.add(resultId);
+                    arrName.add("개인 일정입니다.");
 
                     for (int i = 0; i < userData.size(); i++) {
                         id = userData.get(i).id;
