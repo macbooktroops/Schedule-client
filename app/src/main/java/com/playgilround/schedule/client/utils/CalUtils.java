@@ -21,6 +21,8 @@ public class CalUtils {
     //eventSet 색깔 설정
     public static int getEventSetColor(int color) {
         switch (color) {
+            case -2:
+                return R.color.color_schedule_share;
             case -1:
                 return R.color.color_schedule_holiday;
             case 0:
@@ -44,6 +46,8 @@ public class CalUtils {
     //스케줄 볼 경우, 좌측 색깔 지정
     public static int getScheduleBlockView(int color) {
         switch (color) {
+            case -2:
+                return R.drawable.share_schedule_left_block;
             case -1:
                 return R.drawable.holiday_schedule_left_block;
             case 0:

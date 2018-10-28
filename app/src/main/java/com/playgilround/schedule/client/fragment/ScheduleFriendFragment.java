@@ -82,8 +82,21 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
 
     public void selectedClick() {
         List list = adapter.getSelectedItem(); //체크 된 리스트
-        if (list.size() > 0) {
-            retCallback.onSuccess("success", list);
+
+        if (list.size() == 1) {
+            //개인 일정일 경우
+//            if (list.get)
+            ScheduleFriendItem item = (ScheduleFriendItem) list.get(0);
+//            Log.d(TAG, "item.getName result ->" + item.getName());
+            if (item.getName().equals("개인 일정입니다.")) {
+                retCallback.onSuccess("personal", list);
+                dismiss();
+            } else {
+                //스케줄에 내가 포함이 안될 경우.
+                Toast.makeText(getActivity(), "내가 포함 되있어야합니다.", Toast.LENGTH_LONG).show();
+            }
+        } else  if (list.size() > 1) {
+            retCallback.onSuccess("share", list);
             dismiss();
         } else {
             Toast.makeText(getActivity(), "공유할 친구를 선택해주세요.", Toast.LENGTH_LONG).show();

@@ -83,6 +83,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     //푸쉬 메세지를 알림으로 표현하는 처리.
     private void sendNotification(Map<String, String> dataMap) {
         Log.d(TAG, "DataMap -->" + dataMap.toString());
+        pref = getSharedPreferences("loginData", MODE_PRIVATE);
+
 
         String channelId = "channel";
         String channelName = "channel Name";
@@ -240,7 +242,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             notifyManager.notify(0, builder.build());
 
         } else if (retPush.equals("{sch")) {
-          //스케줄 추가
+            //스케줄 추가
             Type list = new TypeToken<ScheduleJsonData>() {
             }.getType();
 
@@ -264,34 +266,40 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             DateTime dateTime = new DateTime();
             String setTime = dateTime.toString("yyyy-MM-dd");
 
-            Log.d(TAG, "Json Result -->" +  "--" +id + "//" + title + "--" + setTime + "--" + name);
-
+            Log.d(TAG, "Json Result -->" + "--" + id + "//" + title + "--" + setTime + "--" + name);
 
 
             //Push Notification 클릭 시 LoginActivity
             //추후에 assent 작업때 전달할 값 정의.
-            Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
-            notificationIntent.putExtra("push", "SchedulePush");
-            notificationIntent.putExtra("pushTitle", title);
-            notificationIntent.putExtra("pushName", name);
-            notificationIntent.putExtra("pushId", id);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            int requestId = (int) System.currentTimeMillis();
+            //자기 자신이 등록한 스케줄일 경우 푸쉬 메세지 표시 x
+            String myName = pref.getString("loginName", "");
+            if (name.equals(myName)) {
+                //자기 자신은 Notification 메세지 x
+            } else {
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent notificationIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                notificationIntent.putExtra("push", "SchedulePush");
+                notificationIntent.putExtra("pushTitle", title);
+                notificationIntent.putExtra("pushName", name);
+                notificationIntent.putExtra("pushId", id);
+                notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            builder.setContentTitle(name + "님이 스케줄 추가를 했습니다.")
-                    .setContentText(setTime + "에 " + title + "약속이있으신가요?")
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setAutoCancel(true)
-                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                    .setSmallIcon(android.R.drawable.btn_star)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
-                    .setBadgeIconType(R.mipmap.add_friend)
-                    .setContentIntent(pendingIntent);
+                int requestId = (int) System.currentTimeMillis();
 
-            notifyManager.notify(0, builder.build());
+                PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), requestId, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                builder.setContentTitle(name + "님이 스케줄 추가를 했습니다.")
+                        .setContentText(setTime + "에 " + title + "약속이있으신가요?")
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setSmallIcon(android.R.drawable.btn_star)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.add_friend))
+                        .setBadgeIconType(R.mipmap.add_friend)
+                        .setContentIntent(pendingIntent);
+
+                notifyManager.notify(0, builder.build());
 
 
                 //앱이 실행중일때에만, 다이얼로그 표시
@@ -309,6 +317,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 //                isChkPush = true;
 
 
+            }
         }
 
 

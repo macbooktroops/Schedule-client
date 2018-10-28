@@ -179,25 +179,26 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                                     Log.d(TAG, "shareSchedule size ->" + shareSchedule.size());
 
-//                                    if (shareSchedule.size() == 0) {
-                                        //ScheduleR 에 공유된 스케줄이 저장이 안 되어있음
+                                    //ScheduleR 에 공유된 스케줄이 저장이 안 되어있음
 
-                                        /**
-                                         * Use gson json Parsing
-                                         */
-                                        String strSearch = response.body().toString();
-                                        Log.d(TAG, "search schedule success-->" + strSearch);
+                                    /**
+                                     * Use gson json Parsing
+                                     */
+                                    String strSearch = response.body().toString();
+                                    Log.d(TAG, "search schedule success-->" + strSearch);
 
-                                        Type list = new TypeToken<List<ShareScheduleJsonData>>() {
-                                        }.getType();
+                                    Type list = new TypeToken<List<ShareScheduleJsonData>>() {
+                                    }.getType();
 
-                                        //user jsonArray 이
-                                        Type list2 = new TypeToken<List<ShareUserScheJsonData>>(){
-                                        }.getType();
+                                    //user jsonArray 이
+                                    Type list2 = new TypeToken<List<ShareUserScheJsonData>>() {
+                                    }.getType();
 
-                                        Gson userGson = new Gson();
+                                    Gson userGson = new Gson();
 
-                                        List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
+                                    List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
+
+                                    if (shareSchedule.size() == 0) {
 
                                         for (ShareScheduleJsonData resShare : shareData) {
 
@@ -207,13 +208,9 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                                             //공유된 유저만큼 반복
                                             for (ShareUserScheJsonData resUserShare : shareUserData) {
-                                                Log.d(TAG, "result s->" + resShare.id + "--" + resShare.state +"--" + resShare.title +
-                                                        "--" + resShare.startTime + "--" + resShare.latitude + "--" + resShare.longitude + "--"
-                                                                + resUserShare.user_id + "--" + resUserShare.name +"--" + resUserShare.email + "--" + resUserShare.arrive);
-
 
                                                 int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
-                                                int resMonth = Integer.valueOf(resShare.startTime.substring(5,7));
+                                                int resMonth = Integer.valueOf(resShare.startTime.substring(5, 7));
                                                 int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
 
                                                 String resTime = resShare.startTime.substring(11, 16);
@@ -222,9 +219,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 //
 //                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
 
-                                                long time =   date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
+                                                long time = date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
                                                         "yyyy-MM-dd HH:mm");
-                                                Log.d(TAG, "resTime --> " + resYear + "--" + resMonth + "--" + resDay + "--" + resTime + "--"+ time);
                                                 Number currentId = realm.where(ScheduleR.class).max("seq");
                                                 int nextId;
 
@@ -240,7 +236,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setUserId(resUserShare.user_id);
                                                 shareR.setNickName(resUserShare.name);
                                                 shareR.setEmail(resUserShare.email);
-                                                shareR.setArrive(resUserShare.arrive); //arrive 가 아니고 assent..
+                                                shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-2);
                                                 shareR.setTitle(resShare.title);
                                                 shareR.setState(resShare.state);
                                                 shareR.setYear(resYear);
@@ -251,14 +248,67 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setLongitude(resShare.longitude);
                                                 shareR.sethTime(resTime);
                                                 shareR.setTime(time);
+                                            }
+                                        }
+                                    } else {
+                                        //공유된 스케줄이 있을 경우
+                                        Log.d(TAG, "Try delete ....");
+                                        shareSchedule.deleteAllFromRealm();
+
+                                        //중복 방지를 위해 삭제 후 재 저장.
+                                        for (ShareScheduleJsonData resShare : shareData) {
 
 
+                                            List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
+
+
+                                            //공유된 유저만큼 반복
+                                            for (ShareUserScheJsonData resUserShare : shareUserData) {
+
+                                                int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
+                                                int resMonth = Integer.valueOf(resShare.startTime.substring(5, 7));
+                                                int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
+
+                                                String resTime = resShare.startTime.substring(11, 16);
+//                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 16));
+//                                                DateTimeFormatter fmt = DateTimeFormat.forPattern("a HH:mm");
+//
+//                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
+
+                                                long time = date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
+                                                        "yyyy-MM-dd HH:mm");
+                                                Number currentId = realm.where(ScheduleR.class).max("seq");
+                                                int nextId;
+
+                                                if (currentId == null) {
+                                                    nextId = 0;
+                                                } else {
+                                                    nextId = currentId.intValue() + 1;
+                                                }
+
+                                                ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(resUserShare.user_id);
+                                                shareR.setNickName(resUserShare.name);
+                                                shareR.setEmail(resUserShare.email);
+                                                shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-2);
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-2);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+                                                shareR.sethTime(resTime);
+                                                shareR.setTime(time);
                                             }
                                         }
                                     }
-//                                }
+                                }
                             });
-
                         } else {
                             try {
                                 error = response.errorBody().string();
@@ -573,8 +623,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                     int loginId = loginList.id;
                     String loginName = loginList.name;
                     String loginToken = loginList.token;
-
-                    Log.d(TAG, "result name and token ->" + loginName + "--" + loginToken);
 
                     editor.putInt("loginId", loginId);
                     editor.putString("loginName", loginName);
