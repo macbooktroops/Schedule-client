@@ -35,6 +35,8 @@ import com.playgilround.schedule.client.utils.CalUtils;
 import com.playgilround.schedule.client.utils.DateUtils;
 import com.playgilround.schedule.client.utils.ToastUtils;
 
+import org.joda.time.DateTime;
+
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -73,6 +75,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private Map<Integer, EventSetR> mEventSetsMap;
 
     private ScheduleR mSchedule;
+
+    private int scheId;
     public static String SCHEDULE_OBJ = "schedule.obj";
     public static String CALENDAR_POSITION = "calendar.position";
 
@@ -132,7 +136,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         tvShare = searchViewById(R.id.tvShare);
 
         btnArrived = searchViewById(R.id.btnArrived);
+        searchViewById(R.id.btnArrived).setOnClickListener(this);
 
+        pref = getSharedPreferences("loginData", Context.MODE_PRIVATE);
+        authToken = pref.getString("loginToken", "default");
         realm = Realm.getDefaultInstance();
 
     }
@@ -159,7 +166,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
 
                  mSchedule = resScheduleR;
-                Log.d(TAG, "check data --->" + mSchedule.getTitle());
+
+                scheId = mSchedule.getScheId();
 
                 if (mSchedule.getEventSetId() == -2) {
                     btnArrived.setVisibility(View.VISIBLE);
@@ -207,6 +215,49 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             case R.id.llShare:
 //                showS
                 break;
+
+            case R.id.btnArrived:
+                //도착완료버튼 클릭
+
+                DateTime dateTime = new DateTime();
+                String retTime = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("arrived_at", retTime);
+
+                Retrofit retrofit = APIClient.getClient();
+                APIInterface postArriveSche = retrofit.create(APIInterface.class);
+                Call<JsonObject> result = postArriveSche.postScheduleArrive(jsonObject, authToken, scheId);
+
+                result.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                        if (response.isSuccessful()) {
+                            Log.d(TAG, "arrive result ->" + response.body().toString());
+                        } else {
+                            try {
+                                String error = response.errorBody().string();
+
+                                Result result = new Gson().fromJson(error, Result.class);
+
+                                List<String> message = result.message;
+
+                                if (message.contains("Unauthorized auth_token.")) {
+                                    Toast.makeText(getApplicationContext(),"도착완료 토큰 에러입니다. 앱을 재실행해주세요.", Toast.LENGTH_LONG).show();
+                                } else if (message.contains("Not found schedule.")) {
+                                    Toast.makeText(getApplicationContext(), "스케줄을 찾을 수 없습니다..", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonObject> call, Throwable t) {
+
+                    }
+                });
 
         }
     }
@@ -281,8 +332,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         * }
         */
         //자기 자신 유저 아이디 얻기
-        pref = getSharedPreferences("loginData", Context.MODE_PRIVATE);
-        authToken = pref.getString("loginToken", "default");
+
 
         String nickName = pref.getString("loginName", "");
         Log.d(TAG, "friend nickName -->" + nickName);
