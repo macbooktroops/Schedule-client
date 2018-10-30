@@ -23,6 +23,9 @@ import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.dialog.InputLocationDialog;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.dialog.SelectEventSetDialog;
+import com.playgilround.schedule.client.gson.ArrivedAtJsonData;
+import com.playgilround.schedule.client.gson.ShareScheduleJsonData;
+import com.playgilround.schedule.client.gson.ShareUserScheJsonData;
 import com.playgilround.schedule.client.gson.UserJsonData;
 import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.EventSetR;
@@ -219,49 +222,147 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             case R.id.btnArrived:
                 //도착완료버튼 클릭
 
-                DateTime dateTime = new DateTime();
-                String retTime = dateTime.toString("yyyy-MM-dd HH:mm:ss");
-
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("arrived_at", retTime);
-
-                Retrofit retrofit = APIClient.getClient();
-                APIInterface postArriveSche = retrofit.create(APIInterface.class);
-                Call<JsonObject> result = postArriveSche.postScheduleArrive(jsonObject, authToken, scheId);
-
-                result.enqueue(new Callback<JsonObject>() {
+                arrivedDest(new LoginActivity.ApiCallback() {
                     @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        if (response.isSuccessful()) {
-                            Log.d(TAG, "arrive result ->" + response.body().toString());
-                        } else {
-                            try {
-                                String error = response.errorBody().string();
+                    public void onSuccess(String success) {
 
-                                Result result = new Gson().fromJson(error, Result.class);
+                        //도착완료 버튼이 눌리면 도착 순위 작업
+                        //
+                        /**
+                         * {
+                         * 	"id": 106,
+                         * 	"title": "kill",
+                         * 	"state": 0,
+                         * 	"start_time": "2018-10-30 00:00:00",
+                         * 	"latitude": 0.0,
+                         * 	"longitude": 0.0,
+                         * 	"user": [{
+                         * 		"id": 1,
+                         * 		"name": "c004245",
+                         * 		"email": "c004245@naver.com",
+                         * 		"arrive": true,
+                         * 		"arrived_at": "2018-10-30 13:50:46"
+                         *        }, {
+                         * 		"id": 1,
+                         * 		"name": "c004245",
+                         * 		"email": "c004245@naver.com",
+                         * 		"arrive": true,
+                         * 		"arrived_at": "2018-10-30 13:50:46"
+                         *    }, {
+                         * 		"id": 5,
+                         * 		"name": "hyun123",
+                         * 		"email": "c00@naver.com",
+                         * 		"arrive": true
+                         *    }]
+                         * }
+                         */
+                        Retrofit retrofit = APIClient.getClient();
+                        APIInterface getDetailSche = retrofit.create(APIInterface.class);
 
-                                List<String> message = result.message;
+                        Log.d(TAG, "authToken ->" + authToken + "--" + scheId);
+                        Call<JsonObject> result = getDetailSche.getScheduleDetail(authToken, scheId);
 
-                                if (message.contains("Unauthorized auth_token.")) {
-                                    Toast.makeText(getApplicationContext(),"도착완료 토큰 에러입니다. 앱을 재실행해주세요.", Toast.LENGTH_LONG).show();
-                                } else if (message.contains("Not found schedule.")) {
-                                    Toast.makeText(getApplicationContext(), "스케줄을 찾을 수 없습니다..", Toast.LENGTH_LONG).show();
+                        result.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                                if (response.isSuccessful()) {
+                                    Log.d(TAG, "result -->" + response.body().toString());
+
+                                    String strResponse = response.body().toString();
+
+                                    Type list = new TypeToken<ShareUserScheJsonData>() {
+                                    }.getType();
+
+                                    Type list2 = new TypeToken<List<ArrivedAtJsonData>>(){
+                                    }.getType();
+
+                                    ShareUserScheJsonData scheList = new Gson().fromJson(strResponse, list);
+
+                                    JsonArray user = scheList.user;
+
+                                    List<ArrivedAtJsonData> arrivedList = new Gson().fromJson(scheList.user, list2);
+
+                                    for (ArrivedAtJsonData resArrivedAt : arrivedList) {
+                                        String arriveTime = resArrivedAt.arriveTime;
+                                        Log.d(TAG, "userData --> " +user + "--" + arriveTime);
+
+                                    }
+=
+
+
+                                } else {
+                                    try {
+                                        String error = response.errorBody().string();
+
+                                        Log.d(TAG, "result error -->" + error);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
-                        }
+
+                            @Override
+                            public void onFailure(Call<JsonObject> call, Throwable t) {
+                                Log.d(TAG, "t-->" + t.toString());
+                            }
+                        });
                     }
 
                     @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
+                    public void onFail(String result) {
 
                     }
                 });
 
+
         }
     }
 
+
+    //도착 완료 버튼 클릭
+    private void arrivedDest(final LoginActivity.ApiCallback callback) {
+        DateTime dateTime = new DateTime();
+        String retTime = dateTime.toString("yyyy-MM-dd HH:mm:ss");
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("arrived_at", retTime);
+
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface postArriveSche = retrofit.create(APIInterface.class);
+        Call<JsonObject> result = postArriveSche.postScheduleArrive(jsonObject, authToken, scheId);
+
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "arrive result ->" + response.body().toString());
+                    callback.onSuccess("success");
+
+                } else {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+                            Toast.makeText(getApplicationContext(),"도착완료 토큰 에러입니다. 앱을 재실행해주세요.", Toast.LENGTH_LONG).show();
+                        } else if (message.contains("Not found schedule.")) {
+                            Toast.makeText(getApplicationContext(), "스케줄을 찾을 수 없습니다..", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
+    }
     //확인 버튼
     private void confirm() {
 
@@ -708,5 +809,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 //        });
 
 //    }
+
+
 
 }

@@ -97,4 +97,9 @@ public interface APIInterface {
     @Headers({"Accept: application/json", "Content-Type: application/json"})
     @POST(BaseUrl.PATH_ARRIVE_SCHEDULE)
     Call<JsonObject> postScheduleArrive(@Body JsonObject scheArrive, @Header("Authorization") String tokenData, @Path("scheId") int scheId);
+
+    //스케줄 자세히 확인
+    @Headers({"Accept: application/json", "Content-Type: application/json"})
+    @GET(BaseUrl.PATH_DETAIL_SCHEDULE)
+    Call<JsonObject> getScheduleDetail(@Header("Authorization") String tokenData, @Path("scheId") int scheId);
 }

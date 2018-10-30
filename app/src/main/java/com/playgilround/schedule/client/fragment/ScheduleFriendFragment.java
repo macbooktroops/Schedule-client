@@ -19,6 +19,7 @@ import com.playgilround.schedule.client.adapter.ChoiceFriendAdapter;
 import com.playgilround.schedule.client.utils.ScheduleFriendItem;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -38,6 +39,8 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
 
     TextView tvConfirm;
     static ScheduleFragment.ApiCallback retCallback;
+
+    public boolean isChecked = false; //공유 다중 선택 시, 내가 포함이 되어있는지 판단.
 
     public static ScheduleFriendFragment getInstance(ArrayList<Integer> arrId, ArrayList arrName, ScheduleFragment.ApiCallback callback) {
         retArrId = arrId;
@@ -88,7 +91,7 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
 //            if (list.get)
             ScheduleFriendItem item = (ScheduleFriendItem) list.get(0);
 //            Log.d(TAG, "item.getName result ->" + item.getName());
-            if (item.getName().equals("개인 일정입니다.")) {
+            if (item.getName().equals("나")) {
                 retCallback.onSuccess("personal", list);
                 dismiss();
             } else {
@@ -96,8 +99,24 @@ public class ScheduleFriendFragment extends DialogFragment implements View.OnCli
                 Toast.makeText(getActivity(), "내가 포함 되있어야합니다.", Toast.LENGTH_LONG).show();
             }
         } else  if (list.size() > 1) {
-            retCallback.onSuccess("share", list);
-            dismiss();
+            for (int i = 0; i < list.size(); i++) {
+                ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
+                if (item.getName().equals("나")) {
+                    isChecked = true;
+                }
+            }
+
+            if (isChecked) {
+                //공유 스케줄엔 '나' 가 포함되야 등록가능
+                isChecked = false;
+                retCallback.onSuccess("share", list);
+                dismiss();
+            } else {
+                isChecked = false;
+                Toast.makeText(getActivity(), "공유 스케줄엔 '나' 자신이 포함되야합니다..", Toast.LENGTH_LONG).show();
+
+            }
+
         } else {
             Toast.makeText(getActivity(), "공유할 친구를 선택해주세요.", Toast.LENGTH_LONG).show();
         }
