@@ -478,7 +478,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                     List<UserJsonData> userData = new Gson().fromJson(strFriend, list);
 
                     arrId.add(resultId);
-                    arrName.add("개인 일정입니다.");
+                    arrName.add("나");
 
                     for (int i = 0; i < userData.size(); i++) {
                         id = userData.get(i).id;

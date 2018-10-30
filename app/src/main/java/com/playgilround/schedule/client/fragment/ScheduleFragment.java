@@ -222,7 +222,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                     List<UserJsonData> userData = new Gson().fromJson(strFriend, list);
 
                     arrId.add(resultId);
-                    arrName.add("개인 일정입니다.");
+                    arrName.add("나");
                     for (int i = 0; i < userData.size(); i++) {
                         id = userData.get(i).id;
                         name = userData.get(i).name;

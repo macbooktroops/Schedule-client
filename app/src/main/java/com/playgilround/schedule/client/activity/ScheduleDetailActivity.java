@@ -218,10 +218,41 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
             case R.id.btnArrived:
                 //도착완료버튼 클릭
+
                 arrivedDest(new LoginActivity.ApiCallback() {
                     @Override
                     public void onSuccess(String success) {
+
                         //도착완료 버튼이 눌리면 도착 순위 작업
+                        //
+                        /**
+                         * {
+                         * 	"id": 106,
+                         * 	"title": "kill",
+                         * 	"state": 0,
+                         * 	"start_time": "2018-10-30 00:00:00",
+                         * 	"latitude": 0.0,
+                         * 	"longitude": 0.0,
+                         * 	"user": [{
+                         * 		"id": 1,
+                         * 		"name": "c004245",
+                         * 		"email": "c004245@naver.com",
+                         * 		"arrive": true,
+                         * 		"arrived_at": "2018-10-30 13:50:46"
+                         *        }, {
+                         * 		"id": 1,
+                         * 		"name": "c004245",
+                         * 		"email": "c004245@naver.com",
+                         * 		"arrive": true,
+                         * 		"arrived_at": "2018-10-30 13:50:46"
+                         *    }, {
+                         * 		"id": 5,
+                         * 		"name": "hyun123",
+                         * 		"email": "c00@naver.com",
+                         * 		"arrive": true
+                         *    }]
+                         * }
+                         */
                         Retrofit retrofit = APIClient.getClient();
                         APIInterface getDetailSche = retrofit.create(APIInterface.class);
 
