@@ -23,6 +23,9 @@ import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.dialog.InputLocationDialog;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.dialog.SelectEventSetDialog;
+import com.playgilround.schedule.client.gson.ArrivedAtJsonData;
+import com.playgilround.schedule.client.gson.ShareScheduleJsonData;
+import com.playgilround.schedule.client.gson.ShareUserScheJsonData;
 import com.playgilround.schedule.client.gson.UserJsonData;
 import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.EventSetR;
@@ -264,6 +267,29 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                                 if (response.isSuccessful()) {
                                     Log.d(TAG, "result -->" + response.body().toString());
+
+                                    String strResponse = response.body().toString();
+
+                                    Type list = new TypeToken<ShareUserScheJsonData>() {
+                                    }.getType();
+
+                                    Type list2 = new TypeToken<List<ArrivedAtJsonData>>(){
+                                    }.getType();
+
+                                    ShareUserScheJsonData scheList = new Gson().fromJson(strResponse, list);
+
+                                    JsonArray user = scheList.user;
+
+                                    List<ArrivedAtJsonData> arrivedList = new Gson().fromJson(scheList.user, list2);
+
+                                    for (ArrivedAtJsonData resArrivedAt : arrivedList) {
+                                        String arriveTime = resArrivedAt.arriveTime;
+                                        Log.d(TAG, "userData --> " +user + "--" + arriveTime);
+
+                                    }
+=
+
+
                                 } else {
                                     try {
                                         String error = response.errorBody().string();
