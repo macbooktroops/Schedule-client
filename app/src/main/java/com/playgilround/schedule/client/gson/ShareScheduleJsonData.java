@@ -23,10 +23,10 @@ public class ShareScheduleJsonData {
     public String startTime;
 
     @SerializedName("latitude")
-    public long latitude;
+    public double latitude;
 
     @SerializedName("longitude")
-    public long longitude;
+    public double longitude;
 
 
     //User Json

@@ -287,7 +287,6 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                                         Log.d(TAG, "userData --> " +user + "--" + arriveTime);
 
                                     }
-=
 
 
                                 } else {

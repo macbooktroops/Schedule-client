@@ -366,8 +366,8 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         int day = schedule.getDay();
         String hTime = schedule.gethTime();
         String content = schedule.getDesc();
-        long latitude = schedule.getLatitude();
-        long longitude = schedule.getLongitude();
+        double latitude = schedule.getLatitude();
+        double longitude = schedule.getLongitude();
 
         Log.d(TAG, "change title -->" + title);
         Log.d(TAG, "change state -->" + state);
