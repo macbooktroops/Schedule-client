@@ -1,5 +1,6 @@
 package com.playgilround.schedule.client.activity;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.dialog.InputLocationDialog;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.dialog.SelectEventSetDialog;
+import com.playgilround.schedule.client.fragment.ArrivedRankFragment;
 import com.playgilround.schedule.client.gson.ArrivedAtJsonData;
 import com.playgilround.schedule.client.gson.ShareScheduleJsonData;
 import com.playgilround.schedule.client.gson.ShareUserScheJsonData;
@@ -42,6 +44,7 @@ import org.joda.time.DateTime;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +115,12 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     int userId;
 
     String authToken;
+
+    ArrayList<String> arrName; //도착 랭킹 이름
+
+    //도착 시간 여부, arrived_at 이 없으면 도착하지않음.
+    //arrived_at 이 있으면 도착버튼 클릭 안되도록.
+    ArrayList<String> arrArrived;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
@@ -266,6 +275,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                             @Override
                             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                                 if (response.isSuccessful()) {
+                                    arrName = new ArrayList<String>();
+                                    arrArrived = new ArrayList<String>();
                                     Log.d(TAG, "result -->" + response.body().toString());
 
                                     String strResponse = response.body().toString();
@@ -278,16 +289,33 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
                                     ShareUserScheJsonData scheList = new Gson().fromJson(strResponse, list);
 
-                                    JsonArray user = scheList.user;
+//                                    JsonArray user = scheList.user;
+
 
                                     List<ArrivedAtJsonData> arrivedList = new Gson().fromJson(scheList.user, list2);
 
                                     for (ArrivedAtJsonData resArrivedAt : arrivedList) {
+                                        String name = resArrivedAt.name;
                                         String arriveTime = resArrivedAt.arriveTime;
-                                        Log.d(TAG, "userData --> " +user + "--" + arriveTime);
+                                        Log.d(TAG, "userData --> " + name + "--" + arriveTime);
 
+                                        /**
+                                         * 먼저 도착한 순서대로 name, arrived_at 저장
+                                         * arrived_at 이 없으면 null
+                                         */
+                                        arrName.add(name);
+                                        arrArrived.add(arriveTime);
                                     }
-=
+
+                                    for (int i = 0; i < arrName.size(); i++) {
+                                        Log.d(TAG, "name -->" + arrName.get(i) + "--arrived --> " + arrArrived.get(i));
+                                    }
+
+                                    //도착 랭킹 DialogFragment 표시
+                                    final ArrivedRankFragment af = ArrivedRankFragment.getInstance(arrName, arrArrived);
+                                    final FragmentManager fm  = getFragmentManager();
+
+                                    af.show(fm, "TAG");
 
 
                                 } else {

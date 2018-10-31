@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ArrivedAtJsonData {
 
+    @SerializedName("name")
+    public String name;
+
     @SerializedName("arrived_at")
     public String arriveTime;
 

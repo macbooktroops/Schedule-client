@@ -15,7 +15,7 @@ public class ScheduleJsonData {
     public String startTime;
 
     @SerializedName("latitude")
-    public long latitude;
+    public double latitude;
 
     //스케줄 아이디
     @SerializedName("id")

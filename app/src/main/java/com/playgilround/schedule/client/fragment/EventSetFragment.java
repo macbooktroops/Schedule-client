@@ -291,10 +291,10 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                                     public void execute(Realm realm) {
                                         Log.d(TAG, "addSchedule EventSetFragment");
 
-                                        if (result.equals("share")) {
+//                                        if (result.equals("share")) {
                                             //공유된 스케줄일 경우 자기자신 추가.
-                                            arrFriendId.add(resultId);
-                                        }
+//                                            arrFriendId.add(resultId);
+//                                        }
 
                                         for (int i = 0; i < list.size(); i++) {
                                             ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
