@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/friendCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_10dp"
+        card_view:cardCornerRadius="10dp"
+        card_view:cardElevation="@dimen/space_10dp">
+
+        <RelativeLayout
+            android:id="@+id/rlRank"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/userImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@mipmap/ic_mainfriend" />
+
+            <TextView
+                android:id="@+id/userRank"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/space_30dp"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/userImage"
+                android:layout_marginLeft="20dp"
+                android:text="1"
+                android:textSize="@dimen/space_20dp"
+                android:textStyle="bold" />
+
+            <TextView
+            android:id="@+id/userNickName"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/space_30dp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/userRank"
+            android:layout_marginLeft="20dp"
+            android:text="테스트"
+            android:textSize="@dimen/space_20dp"
+            android:textStyle="bold" />
+
+ <!--           <TextView
+                android:id="@+id/userArrivedAt"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/space_30dp"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/userNickName"
+                android:layout_marginLeft="20dp"
+                android:text="2018-10-31 18:00:00"
+                android:textSize="@dimen/space_20dp"
+                android:textStyle="bold" />-->
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
