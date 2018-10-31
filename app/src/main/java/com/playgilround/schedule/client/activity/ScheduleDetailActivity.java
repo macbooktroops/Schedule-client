@@ -1,5 +1,6 @@
 package com.playgilround.schedule.client.activity;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,7 @@ import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.dialog.InputLocationDialog;
 import com.playgilround.schedule.client.dialog.SelectDateDialog;
 import com.playgilround.schedule.client.dialog.SelectEventSetDialog;
+import com.playgilround.schedule.client.fragment.ArrivedRankFragment;
 import com.playgilround.schedule.client.gson.ArrivedAtJsonData;
 import com.playgilround.schedule.client.gson.ShareScheduleJsonData;
 import com.playgilround.schedule.client.gson.ShareUserScheJsonData;
@@ -310,7 +312,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                                     }
 
                                     //도착 랭킹 DialogFragment 표시
-                                    final
+                                    final ArrivedRankFragment af = ArrivedRankFragment.getInstance(arrName, arrArrived);
+                                    final FragmentManager fm  = getFragmentManager();
+
+                                    af.show(fm, "TAG");
 
 
                                 } else {

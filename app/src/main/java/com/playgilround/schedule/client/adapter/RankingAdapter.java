@@ -49,7 +49,7 @@ public class RankingAdapter extends RecyclerView.Adapter<RankHolder> {
     @Override
     public void onBindViewHolder(RankHolder holder, int position) {
         holder.rankImage.setBackgroundResource(R.mipmap.ic_mainfriend);
-        holder.rankCount.setText(position);
+        holder.rankCount.setText(String.valueOf(position +1) + "등");
         holder.rankName.setText(retName.get(position).toString());
 
         holder.rankRelative.setOnClickListener(l -> {
