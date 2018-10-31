@@ -22,20 +22,22 @@ public class RankingAdapter extends RecyclerView.Adapter<RankHolder> {
     Context context;
 
     ArrayList retName;
-
+    ArrayList retArrivedAt;
+    String resArrived;
     private ItemClick itemClick;
     public interface ItemClick {
-        public void onClick(View view, int position, String name);
+        public void onClick(View view, int position, String name, String arrivedAt);
     }
 
     public void setItemClick(ItemClick itemClick) {
         this.itemClick = itemClick;
     }
 
-    public RankingAdapter(Context context, ArrayList name) {
+    public RankingAdapter(Context context, ArrayList name, ArrayList arrivedAt) {
         this.context = context;
 
         retName = name;
+        retArrivedAt = arrivedAt;
     }
 
     @Override
@@ -53,10 +55,17 @@ public class RankingAdapter extends RecyclerView.Adapter<RankHolder> {
         holder.rankName.setText(retName.get(position).toString());
 
         holder.rankRelative.setOnClickListener(l -> {
-            Log.d(TAG, "this view name rank ->" + holder.rankName.getText());
+            Log.d(TAG, "this view name rank ->" + holder.rankName.getText() + retArrivedAt.get(position));
             String resName = holder.rankName.getText().toString();
+
+            if (retArrivedAt.get(position) == null) {
+                Log.d(TAG, "this is null.");
+                resArrived = "도착 하지 않음";
+            } else {
+                resArrived = retArrivedAt.get(position).toString();
+            }
             if (itemClick != null) {
-                itemClick.onClick(l, position, resName);
+                itemClick.onClick(l, position, resName, resArrived);
             }
         });
 

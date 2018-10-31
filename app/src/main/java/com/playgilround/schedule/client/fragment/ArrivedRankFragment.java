@@ -1,15 +1,18 @@
 package com.playgilround.schedule.client.fragment;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.RankingAdapter;
+import com.playgilround.schedule.client.dialog.ArrivedRankDialog;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,8 @@ public class ArrivedRankFragment extends DialogFragment implements View.OnClickL
     RecyclerView rvRank;
 
     RankingAdapter adapter;
+
+    private ArrivedRankDialog mArrivedRankDialog;
     public static ArrivedRankFragment getInstance(ArrayList arrName, ArrayList arrArrived) {
         retName = arrName;
         retArrived = arrArrived;
@@ -43,8 +48,24 @@ public class ArrivedRankFragment extends DialogFragment implements View.OnClickL
         rvRank = rootView.findViewById(R.id.rvFriend);
         rvRank.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        adapter = new RankingAdapter(getActivity(), retName);
+        adapter = new RankingAdapter(getActivity(), retName, retArrived);
         rvRank.setAdapter(adapter);
+
+        adapter.setItemClick(new RankingAdapter.ItemClick() {
+            @Override
+            public void onClick(View view, int position, String name, String arrivedAt) {
+                Log.d(TAG, "Success Ranking..-->" + name + "--" + arrivedAt);
+
+                //도착 시간 표시
+                if (mArrivedRankDialog == null) {
+                    mArrivedRankDialog = new ArrivedRankDialog(getActivity(), name, arrivedAt);
+                    mArrivedRankDialog.show();
+                }
+
+                mArrivedRankDialog = null;
+
+            }
+        });
 
         rootView.findViewById(R.id.tvCancel).setOnClickListener(this);
         rootView.findViewById(R.id.tvConfirm).setOnClickListener(this);
