@@ -292,13 +292,13 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
                             Log.d(TAG, "result friend ->" + result);
 
-                            if (result.equals("share")) {
+//                            if (result.equals("share")) {
                                 //공유 된 스케줄일 경우
                                 //자기자신 추가
-                                resultId = pref.getInt("loginId", 0);
+//                                resultId = pref.getInt("loginId", 0);
 
-                                arrFriendId.add(resultId);
-                            }
+//                                arrFriendId.add(resultId);
+//                            }
                                 for (int i = 0; i < list.size(); i++) {
                                     ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
 
