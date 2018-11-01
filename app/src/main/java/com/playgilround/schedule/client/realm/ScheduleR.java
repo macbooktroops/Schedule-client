@@ -4,6 +4,7 @@ package com.playgilround.schedule.client.realm;
 
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -22,9 +23,9 @@ public class ScheduleR extends RealmObject {
 
     private int scheId; //schedule table 에 schedule_id (server)
 
-    private int userId; //schedule_user table에 user_id (server)
+    private RealmList<Integer> userId; //schedule_user table에 user_id (server)
 
-    private String nickName; //users table에 name (server)
+    private RealmList<String> nickName; //users table에 name (server)
 
     private String email; //users table에 email (server)
 
@@ -83,19 +84,19 @@ public class ScheduleR extends RealmObject {
         this.scheId = scheId;
     }
 
-    public int getUserId() {
+    public RealmList<Integer> getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(RealmList<Integer> userId) {
         this.userId = userId;
     }
 
-    public String getNickName() {
+    public RealmList<String> getNickName() {
         return nickName;
     }
 
-    public void setNickName(String nickName) {
+    public void setNickName(RealmList<String> nickName) {
         this.nickName = nickName;
     }
 

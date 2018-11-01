@@ -49,6 +49,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,6 +78,9 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     static final String TAG = LoginActivity.class.getSimpleName();
     String authToken;
     Realm realm;
+
+    RealmList<Integer> arrUserId; //userId, NickName 은 배열형태로 넣음.
+    RealmList<String> arrNickName;
 
     public static String getTime(String strDate, String Time, String result) {
         SimpleDateFormat df;
@@ -171,7 +175,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                          *
                          */
                         if (response.isSuccessful()) {
-
+                            arrUserId = new RealmList<>();
+                            arrNickName = new RealmList<>();
                             realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
@@ -230,11 +235,17 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                     nextId = currentId.intValue() + 1;
                                                 }
 
+                                                Log.d(TAG, "result Id -->" + resShare.id);
+                                                Log.d(TAG, "result nickname -->" + resUserShare.name);
+                                                arrUserId.add(resUserShare.user_id);
+                                                arrNickName.add(resUserShare.name);
                                                 ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
 
                                                 shareR.setScheId(resShare.id);
-                                                shareR.setUserId(resUserShare.user_id);
-                                                shareR.setNickName(resUserShare.name);
+//                                                shareR.setUserId(resUserShare.user_id);
+                                                shareR.setUserId(arrUserId);
+                                                shareR.setNickName(arrNickName);
+//                                                shareR.setNickName(resUserShare.name);
                                                 shareR.setEmail(resUserShare.email);
                                                 shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
                                                 shareR.setColor(-2);
@@ -286,12 +297,20 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 } else {
                                                     nextId = currentId.intValue() + 1;
                                                 }
+                                                Log.d(TAG, "result Id -->" + resUserShare.user_id);
+
+                                                Log.d(TAG, "result nickname -->" + resUserShare.name);
+
+                                                arrUserId.add(resUserShare.user_id);
+                                                arrNickName.add(resUserShare.name);
 
                                                 ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
 
                                                 shareR.setScheId(resShare.id);
-                                                shareR.setUserId(resUserShare.user_id);
-                                                shareR.setNickName(resUserShare.name);
+//                                                shareR.setUserId(resUserShare.user_id);
+                                                shareR.setUserId(arrUserId);
+                                                shareR.setNickName(arrNickName);
+//                                                shareR.setNickName(resUserShare.name);
                                                 shareR.setEmail(resUserShare.email);
                                                 shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
                                                 shareR.setColor(-2);
