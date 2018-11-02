@@ -11,7 +11,7 @@
 
 #Android Studio
 *.iml
-.idea
+.idea/
 .gradle
 /local.properties
 /.idea/workspace.xml

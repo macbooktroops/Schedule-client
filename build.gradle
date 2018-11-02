@@ -23,7 +23,7 @@ allprojects {
         maven { url "https://jitpack.io" }
 
         maven {
-            url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo'
+            url 'https://github.com/Wickedev/stetho-realm/raw/master/maven-repo'
             }
     }
     //test 24 .. later 27--.
