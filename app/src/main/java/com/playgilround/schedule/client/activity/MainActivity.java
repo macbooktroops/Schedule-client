@@ -43,6 +43,7 @@ import com.playgilround.schedule.client.realm.EventSetR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
+import com.playgilround.schedule.client.schedule.InitRequestSchedule;
 import com.playgilround.schedule.client.schedule.InitShareSchedule;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
 
@@ -162,7 +163,6 @@ public class MainActivity extends BaseActivity
         searchViewById(R.id.linearMenuNoCategory).setOnClickListener(this);
         searchViewById(R.id.tvMenuAddEventSet).setOnClickListener(this);
 
-
 //        getToken();
         initUI();
         initEventSetList();
@@ -227,6 +227,8 @@ public class MainActivity extends BaseActivity
         InitShareSchedule initShareSchedule = new InitShareSchedule();
         initShareSchedule.shareScheEventSet();
 
+        InitRequestSchedule initRequestSchedule = new InitRequestSchedule();
+        initRequestSchedule.requestScheEventSet();
     }
 
     @Override
@@ -425,13 +427,16 @@ public class MainActivity extends BaseActivity
                 mSelectHolidayDialog = new SelectHolidayDialog(this, this, eventSet);
 
             mSelectHolidayDialog.show();
-        } else if(eventSet.getSeq() == -2) {
+        } else if (eventSet.getSeq() == -2) {
             //공유된 스케줄 표시.
-            Log.d(TAG, "start SelectShareDialog --->"+  mSelectShareDialog);
+            Log.d(TAG, "start SelectShareDialog --->" + mSelectShareDialog);
             if (mSelectShareDialog == null)
                 mSelectShareDialog = new SelectShareDialog(this, this, eventSet);
 
             mSelectShareDialog.show();
+        } else if (eventSet.getSeq() == -3) {
+            //공유 요청중인 스케줄 표시.
+            Log.d(TAG, "start RequestShareDialog --> " + mSelectShareDialog);
         } else {
             Log.d(TAG, "start Fragment----");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -536,8 +541,6 @@ public class MainActivity extends BaseActivity
                 mCurrentEventSet.setName(getString(R.string.menu_schedule_category));
                 gotoEventSetFragment(mCurrentEventSet);
                 break;
-
-            case R.id.llRequestSchedule:
 
             case R.id.tvMenuAddEventSet:
                 gotoAddEventSetActivity();
