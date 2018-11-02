@@ -23,7 +23,7 @@ public class InitShareSchedule {
     static final String TAG = InitShareSchedule.class.getSimpleName();
 
     /**
-     * 최초 앱 실행 시 공유된 스케줄 EvetSet 추가.
+     * 최초 앱 실행 시 공유된 스케줄 EventSetR 추가.
      * 좌측 메뉴 클릭 시, 해당 연도 공유된 스케줄 볼 수있음.
      */
     public void shareScheEventSet() {

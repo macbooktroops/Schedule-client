@@ -180,7 +180,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                             realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    RealmResults<ScheduleR> shareSchedule = realm.where(ScheduleR.class).equalTo("eventSetId", -2).equalTo("year", nYear).findAll();
+                                    RealmResults<ScheduleR> shareSchedule = realm.where(ScheduleR.class).equalTo("eventSetId", -2).or().equalTo("eventSetId", -3).equalTo("year", nYear).findAll();
 
                                     Log.d(TAG, "shareSchedule size ->" + shareSchedule.size());
 
@@ -204,25 +204,16 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                     List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
 
                                     if (shareSchedule.size() == 0) {
-
+                                        Log.d(TAG, "first install..");
                                         for (ShareScheduleJsonData resShare : shareData) {
 
-
                                             List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
-
-
-                                            //공유된 유저만큼 반복
-                                            for (ShareUserScheJsonData resUserShare : shareUserData) {
 
                                                 int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
                                                 int resMonth = Integer.valueOf(resShare.startTime.substring(5, 7));
                                                 int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
 
                                                 String resTime = resShare.startTime.substring(11, 16);
-//                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 16));
-//                                                DateTimeFormatter fmt = DateTimeFormat.forPattern("a HH:mm");
-//
-//                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
 
                                                 long time = date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
                                                         "yyyy-MM-dd HH:mm");
@@ -235,19 +226,38 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                     nextId = currentId.intValue() + 1;
                                                 }
 
-                                                Log.d(TAG, "result Id -->" + resShare.id);
-                                                Log.d(TAG, "result nickname -->" + resUserShare.name);
+                                            //공유된 유저만큼 반복
+                                            for (ShareUserScheJsonData resUserShare : shareUserData) {
                                                 arrUserId.add(resUserShare.user_id);
                                                 arrNickName.add(resUserShare.name);
-                                                ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+                                            }
+                                            ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
 
+                                            if (resShare.assent == 0) {
                                                 shareR.setScheId(resShare.id);
-//                                                shareR.setUserId(resUserShare.user_id);
                                                 shareR.setUserId(arrUserId);
                                                 shareR.setNickName(arrNickName);
-//                                                shareR.setNickName(resUserShare.name);
-                                                shareR.setEmail(resUserShare.email);
-                                                shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
+                                                shareR.setEmail(shareUserData.get(0).email);
+                                                shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-3);
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-3);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+                                                shareR.sethTime(resTime);
+                                                shareR.setTime(time);
+                                                shareR.setState(-3);
+                                            } else {
+                                                Log.d(TAG, "Share assent..");
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(arrUserId);
+                                                shareR.setNickName(arrNickName);
+                                                shareR.setEmail(shareUserData.get(0).email);
+                                                shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
                                                 shareR.setColor(-2);
                                                 shareR.setTitle(resShare.title);
                                                 shareR.setState(resShare.state);
@@ -261,58 +271,73 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setTime(time);
                                                 shareR.setState(-2);
                                             }
+
+
+                                            arrUserId.clear();
+                                            arrNickName.clear();
                                         }
                                     } else {
                                         //공유된 스케줄이 있을 경우
-                                        Log.d(TAG, "Try delete ....");
                                         shareSchedule.deleteAllFromRealm();
 
                                         //중복 방지를 위해 삭제 후 재 저장.
                                         for (ShareScheduleJsonData resShare : shareData) {
 
-
                                             List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
 
+                                            int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
+                                            int resMonth = Integer.valueOf(resShare.startTime.substring(5, 7));
+                                            int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
 
-                                            //공유된 유저만큼 반복
+                                            String resTime = resShare.startTime.substring(11, 16);
+
+                                            long time = date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
+                                                    "yyyy-MM-dd HH:mm");
+                                            Number currentId = realm.where(ScheduleR.class).max("seq");
+                                            int nextId;
+
+                                            if (currentId == null) {
+                                                nextId = 0;
+                                            } else {
+                                                nextId = currentId.intValue() + 1;
+                                            }
+
                                             for (ShareUserScheJsonData resUserShare : shareUserData) {
-
-                                                int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
-                                                int resMonth = Integer.valueOf(resShare.startTime.substring(5, 7));
-                                                int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
-
-                                                String resTime = resShare.startTime.substring(11, 16);
-//                                                int minute = Integer.valueOf(resShare.startTime.substring(14, 16));
-//                                                DateTimeFormatter fmt = DateTimeFormat.forPattern("a HH:mm");
-//
-//                                                DateTime dt = DateTime.parse("2014-02-03 11:22:33", fmt);
-
-                                                long time = date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
-                                                        "yyyy-MM-dd HH:mm");
-                                                Number currentId = realm.where(ScheduleR.class).max("seq");
-                                                int nextId;
-
-                                                if (currentId == null) {
-                                                    nextId = 0;
-                                                } else {
-                                                    nextId = currentId.intValue() + 1;
-                                                }
-                                                Log.d(TAG, "result Id -->" + resUserShare.user_id);
-
-                                                Log.d(TAG, "result nickname -->" + resUserShare.name);
-
                                                 arrUserId.add(resUserShare.user_id);
                                                 arrNickName.add(resUserShare.name);
+                                            }
 
-                                                ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+                                            Log.d(TAG, "resShare -->" + resShare.assent);
 
+                                            ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+
+                                            if (resShare.assent == 0) {
+                                                //아직 스케줄 공유 수락이 안된 스케줄들.
+                                                Log.d(TAG, "share not assent.");
                                                 shareR.setScheId(resShare.id);
-//                                                shareR.setUserId(resUserShare.user_id);
                                                 shareR.setUserId(arrUserId);
                                                 shareR.setNickName(arrNickName);
-//                                                shareR.setNickName(resUserShare.name);
-                                                shareR.setEmail(resUserShare.email);
-                                                shareR.setAssent(resUserShare.assent); //arrive 가 아니고 assent..
+                                                shareR.setEmail(shareUserData.get(0).email);
+                                                shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-3);
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-3);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+                                                shareR.sethTime(resTime);
+                                                shareR.setTime(time);
+                                                shareR.setState(-3);
+                                            } else {
+                                                Log.d(TAG, "Share assent.");
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(arrUserId);
+                                                shareR.setNickName(arrNickName);
+                                                shareR.setEmail(shareUserData.get(0).email);
+                                                shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
                                                 shareR.setColor(-2);
                                                 shareR.setTitle(resShare.title);
                                                 shareR.setState(resShare.state);
@@ -326,8 +351,25 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setTime(time);
                                                 shareR.setState(-2);
                                             }
+
+                                            arrUserId.clear();
+                                            arrNickName.clear();
                                         }
                                     }
+
+                                    RealmResults<ScheduleR> checkData = realm.where(ScheduleR.class).equalTo("eventSetId", -2).findAll();
+                                    Log.d(TAG, "check userid- >" + checkData.size());
+
+                                    for (int i = 0; i < checkData.size(); i++) {
+                                        Log.d(TAG, "check userid- >" + checkData.get(i).getUserId());
+                                        Log.d(TAG, "check nickname- >" + checkData.get(i).getNickName());
+
+                                        for (int j = 0; j < checkData.get(i).getNickName().size(); j++) {
+                                            Log.d(TAG, "id >" + checkData.get(i).getNickName().get(j));
+                                            Log.d(TAG, "name - >" + checkData.get(i).getUserId().get(j));
+                                        }
+                                    }
+
                                 }
                             });
                         } else {

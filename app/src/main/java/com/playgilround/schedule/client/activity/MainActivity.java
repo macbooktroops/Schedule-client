@@ -40,9 +40,11 @@ import com.playgilround.schedule.client.fragment.ScheduleFragment;
 import com.playgilround.schedule.client.holiday.InitHoliday;
 import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.EventSetR;
+import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
+import com.playgilround.schedule.client.schedule.InitRequestSchedule;
 import com.playgilround.schedule.client.schedule.InitShareSchedule;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
 
@@ -120,6 +122,9 @@ public class MainActivity extends BaseActivity
 
     private ScheduleAssentActivity mScheduleAssentActivity;
 
+    //스케줄 요청 관련 ArrayList
+    ArrayList<Integer> reqArrId;
+    ArrayList<String> reqArrName;
     //foreground, background 판단
     public static boolean isAppRunning = false;
     @Override
@@ -161,7 +166,6 @@ public class MainActivity extends BaseActivity
         searchViewById(R.id.linearMenuFriends).setOnClickListener(this);
         searchViewById(R.id.linearMenuNoCategory).setOnClickListener(this);
         searchViewById(R.id.tvMenuAddEventSet).setOnClickListener(this);
-
 
 //        getToken();
         initUI();
@@ -227,6 +231,8 @@ public class MainActivity extends BaseActivity
         InitShareSchedule initShareSchedule = new InitShareSchedule();
         initShareSchedule.shareScheEventSet();
 
+        InitRequestSchedule initRequestSchedule = new InitRequestSchedule();
+        initRequestSchedule.requestScheEventSet();
     }
 
     @Override
@@ -425,13 +431,37 @@ public class MainActivity extends BaseActivity
                 mSelectHolidayDialog = new SelectHolidayDialog(this, this, eventSet);
 
             mSelectHolidayDialog.show();
-        } else if(eventSet.getSeq() == -2) {
+        } else if (eventSet.getSeq() == -2) {
             //공유된 스케줄 표시.
-            Log.d(TAG, "start SelectShareDialog --->"+  mSelectShareDialog);
+            Log.d(TAG, "start SelectShareDialog --->" + mSelectShareDialog);
             if (mSelectShareDialog == null)
                 mSelectShareDialog = new SelectShareDialog(this, this, eventSet);
 
             mSelectShareDialog.show();
+        } else if (eventSet.getSeq() == -3) {
+            //공유 요청중인 스케줄 표시.
+            Log.d(TAG, "start RequestShareDialog --> " + mSelectShareDialog);
+            reqArrId = new ArrayList<>();
+            reqArrName = new ArrayList<>();
+
+            //Realm 에 EventSetId 가 '-3'.
+            RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                    .equalTo("eventSetId", -3).findAll();
+
+            Log.d(TAG, "ScheSize ->" + scheduleR.size());
+            if (scheduleR.size() == 0) {
+
+            } else {
+                for (int i = 0; i < scheduleR.size(); i++) {
+                    Log.d(TAG, "id result -> " + scheduleR.get(i).getScheId());
+                    Log.d(TAG, "title result -> " + scheduleR.get(i).getTitle());
+
+                    reqArrId.add(scheduleR.get(i).getScheId());
+                    reqArrName.add(scheduleR.get(i).getTitle());
+                }
+//                Log.d(TAG, "")
+            }
+
         } else {
             Log.d(TAG, "start Fragment----");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -536,8 +566,6 @@ public class MainActivity extends BaseActivity
                 mCurrentEventSet.setName(getString(R.string.menu_schedule_category));
                 gotoEventSetFragment(mCurrentEventSet);
                 break;
-
-            case R.id.llRequestSchedule:
 
             case R.id.tvMenuAddEventSet:
                 gotoAddEventSetActivity();

@@ -559,7 +559,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                 RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
                         .equalTo("year", mCurrentSelectYear)
                         .equalTo("month", mCurrentSelectMonth +1)
-                        .equalTo("day", mCurrentSelectDay).findAll();
+                        .equalTo("day", mCurrentSelectDay)
+                        .notEqualTo("eventSetId", -3).findAll();
                 Log.d(TAG, "check size ->" +scheduleR.size());
 
                 schedule = data;

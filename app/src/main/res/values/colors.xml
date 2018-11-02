@@ -47,6 +47,7 @@
     <color name="color_schedule_holiday">#58D3F7</color>
     <color name="color_schedule_base">#FF888888</color>
 
+    <color name="color_schedule_share_not">#8A4B08</color>
     <color name="color_schedule_share">#8258FA</color>
     <color name="color_schedule_start">#3D81E2</color>
 

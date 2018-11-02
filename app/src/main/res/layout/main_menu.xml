@@ -160,7 +160,7 @@
                         android:src="@mipmap/ic_menu_go"/>
             </LinearLayout>
 
-                <!-- 공유 요청 스케줄 모음-->
+             <!--   &lt;!&ndash; 공유 요청 스케줄 모음&ndash;&gt;
                 <LinearLayout
                     android:id="@+id/llRequestSchedule"
                     android:layout_width="match_parent"
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/space_10dp"
                         android:src="@mipmap/ic_menu_go"/>
-                </LinearLayout>
+                </LinearLayout>-->
 
                 <View
                 android:layout_width="match_parent"
