@@ -56,6 +56,7 @@
     <string name="finish">완료</string>
     <string name="holiday">공휴일</string>
     <string name="shared">Shared</string>
+    <string name="notShared">UnShare</string>
 
     <string name="schedule_delete_this_schedule">스케줄을 삭제할래요?</string>
 

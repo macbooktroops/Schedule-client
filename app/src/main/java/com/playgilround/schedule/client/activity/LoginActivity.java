@@ -180,7 +180,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                             realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    RealmResults<ScheduleR> shareSchedule = realm.where(ScheduleR.class).equalTo("eventSetId", -2).equalTo("year", nYear).findAll();
+                                    RealmResults<ScheduleR> shareSchedule = realm.where(ScheduleR.class).equalTo("eventSetId", -2).or().equalTo("eventSetId", -3).equalTo("year", nYear).findAll();
 
                                     Log.d(TAG, "shareSchedule size ->" + shareSchedule.size());
 
@@ -204,9 +204,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                     List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
 
                                     if (shareSchedule.size() == 0) {
-
+                                        Log.d(TAG, "first install..");
                                         for (ShareScheduleJsonData resShare : shareData) {
-
 
                                             List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
 
@@ -233,23 +232,45 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 arrNickName.add(resUserShare.name);
                                             }
                                             ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
-                                            shareR.setScheId(resShare.id);
-                                            shareR.setUserId(arrUserId);
-                                            shareR.setNickName(arrNickName);
-                                            shareR.setEmail(shareUserData.get(0).email);
-                                            shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
-                                            shareR.setColor(-2);
-                                            shareR.setTitle(resShare.title);
-                                            shareR.setState(resShare.state);
-                                            shareR.setYear(resYear);
-                                            shareR.setMonth(resMonth);
-                                            shareR.setDay(resDay);
-                                            shareR.setEventSetId(-2);
-                                            shareR.setLatitude(resShare.latitude);
-                                            shareR.setLongitude(resShare.longitude);
-                                            shareR.sethTime(resTime);
-                                            shareR.setTime(time);
-                                            shareR.setState(-2);
+
+                                            if (resShare.assent == 0) {
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(arrUserId);
+                                                shareR.setNickName(arrNickName);
+                                                shareR.setEmail(shareUserData.get(0).email);
+                                                shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-3);
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-3);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+                                                shareR.sethTime(resTime);
+                                                shareR.setTime(time);
+                                                shareR.setState(-3);
+                                            } else {
+                                                Log.d(TAG, "Share assent..");
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(arrUserId);
+                                                shareR.setNickName(arrNickName);
+                                                shareR.setEmail(shareUserData.get(0).email);
+                                                shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-2);
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-2);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+                                                shareR.sethTime(resTime);
+                                                shareR.setTime(time);
+                                                shareR.setState(-2);
+                                            }
 
 
                                             arrUserId.clear();
@@ -261,6 +282,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                                         //중복 방지를 위해 삭제 후 재 저장.
                                         for (ShareScheduleJsonData resShare : shareData) {
+
                                             List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
 
                                             int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
@@ -284,7 +306,33 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 arrUserId.add(resUserShare.user_id);
                                                 arrNickName.add(resUserShare.name);
                                             }
-                                                ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+
+                                            Log.d(TAG, "resShare -->" + resShare.assent);
+
+                                            ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+
+                                            if (resShare.assent == 0) {
+                                                //아직 스케줄 공유 수락이 안된 스케줄들.
+                                                Log.d(TAG, "share not assent.");
+                                                shareR.setScheId(resShare.id);
+                                                shareR.setUserId(arrUserId);
+                                                shareR.setNickName(arrNickName);
+                                                shareR.setEmail(shareUserData.get(0).email);
+                                                shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
+                                                shareR.setColor(-3);
+                                                shareR.setTitle(resShare.title);
+                                                shareR.setState(resShare.state);
+                                                shareR.setYear(resYear);
+                                                shareR.setMonth(resMonth);
+                                                shareR.setDay(resDay);
+                                                shareR.setEventSetId(-3);
+                                                shareR.setLatitude(resShare.latitude);
+                                                shareR.setLongitude(resShare.longitude);
+                                                shareR.sethTime(resTime);
+                                                shareR.setTime(time);
+                                                shareR.setState(-3);
+                                            } else {
+                                                Log.d(TAG, "Share assent.");
                                                 shareR.setScheId(resShare.id);
                                                 shareR.setUserId(arrUserId);
                                                 shareR.setNickName(arrNickName);
@@ -302,7 +350,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.sethTime(resTime);
                                                 shareR.setTime(time);
                                                 shareR.setState(-2);
-//                                            }
+                                            }
 
                                             arrUserId.clear();
                                             arrNickName.clear();

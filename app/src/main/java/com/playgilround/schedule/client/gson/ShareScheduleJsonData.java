@@ -28,6 +28,9 @@ public class ShareScheduleJsonData {
     @SerializedName("longitude")
     public double longitude;
 
+    @SerializedName("assent")
+    public int assent;
+
 
     //User Json
     @SerializedName("user")
