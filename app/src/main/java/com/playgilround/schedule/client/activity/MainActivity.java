@@ -40,6 +40,7 @@ import com.playgilround.schedule.client.fragment.ScheduleFragment;
 import com.playgilround.schedule.client.holiday.InitHoliday;
 import com.playgilround.schedule.client.listener.OnTaskFinishedListener;
 import com.playgilround.schedule.client.realm.EventSetR;
+import com.playgilround.schedule.client.realm.ScheduleR;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
@@ -121,6 +122,9 @@ public class MainActivity extends BaseActivity
 
     private ScheduleAssentActivity mScheduleAssentActivity;
 
+    //스케줄 요청 관련 ArrayList
+    ArrayList<Integer> reqArrId;
+    ArrayList<String> reqArrName;
     //foreground, background 판단
     public static boolean isAppRunning = false;
     @Override
@@ -437,6 +441,27 @@ public class MainActivity extends BaseActivity
         } else if (eventSet.getSeq() == -3) {
             //공유 요청중인 스케줄 표시.
             Log.d(TAG, "start RequestShareDialog --> " + mSelectShareDialog);
+            reqArrId = new ArrayList<>();
+            reqArrName = new ArrayList<>();
+
+            //Realm 에 EventSetId 가 '-3'.
+            RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
+                    .equalTo("eventSetId", -3).findAll();
+
+            Log.d(TAG, "ScheSize ->" + scheduleR.size());
+            if (scheduleR.size() == 0) {
+
+            } else {
+                for (int i = 0; i < scheduleR.size(); i++) {
+                    Log.d(TAG, "id result -> " + scheduleR.get(i).getScheId());
+                    Log.d(TAG, "title result -> " + scheduleR.get(i).getTitle());
+
+                    reqArrId.add(scheduleR.get(i).getScheId());
+                    reqArrName.add(scheduleR.get(i).getTitle());
+                }
+//                Log.d(TAG, "")
+            }
+
         } else {
             Log.d(TAG, "start Fragment----");
             android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
