@@ -479,7 +479,7 @@ public class MainActivity extends BaseActivity
                     Log.d(TAG, "time check ->" + DateUtils.timeStamp2Year(scheduleR.get(i).getTime(), getString(R.string.date_onlyYear_format)));
 
 
-                    reqArrId.add(scheduleR.get(i).getScheId());
+                    reqArrId.add(scheduleR.get(i).getScheUserId());
 //                for (int j = 0; j < scheduleR.get(i).getNickName().size(); j++) {
                     Log.d(TAG, "id >" + scheduleR.get(i).getNickName().get(0));
                     reqArrName.add(scheduleR.get(i).getNickName().get(0));
