@@ -62,10 +62,12 @@ public class RequestShareDialog extends Dialog implements View.OnClickListener {
             public void onClick(View view, int position, int id, String time, String name, String title) {
                 Log.d(TAG, "Success Click ->" + id + "/" + time);
 
-                if (mShareCheckTimeDialog == null)
+                if (mShareCheckTimeDialog == null) {
                     mShareCheckTimeDialog = new ShareCheckTimeDialog(getContext(), id, time, name, title);
+                    mShareCheckTimeDialog.show();
+                    mShareCheckTimeDialog = null;
+                }
 
-                mShareCheckTimeDialog.show();
             }
         });
 
