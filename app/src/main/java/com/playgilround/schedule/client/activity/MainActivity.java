@@ -31,6 +31,7 @@ import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.adapter.EventSetAdapter;
 import com.playgilround.schedule.client.base.app.BaseActivity;
 import com.playgilround.schedule.client.base.app.BaseFragment;
+import com.playgilround.schedule.client.dialog.RequestShareDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.dialog.SelectShareDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
@@ -47,6 +48,7 @@ import com.playgilround.schedule.client.gson.Result;
 import com.playgilround.schedule.client.schedule.InitRequestSchedule;
 import com.playgilround.schedule.client.schedule.InitShareSchedule;
 import com.playgilround.schedule.client.task.eventset.LoadEventSetRTask;
+import com.playgilround.schedule.client.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +57,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,7 +70,9 @@ import retrofit2.Retrofit;
  *
  */
 public class MainActivity extends BaseActivity
-        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>, SelectHolidayDialog.OnHolidaySetListener, SelectShareDialog.OnShareSetListener {
+        implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>,
+        SelectHolidayDialog.OnHolidaySetListener, SelectShareDialog.OnShareSetListener,
+        RequestShareDialog.OnRequestScheListener{
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -111,6 +116,7 @@ public class MainActivity extends BaseActivity
     private SelectHolidayDialog mSelectHolidayDialog;
 
     private SelectShareDialog mSelectShareDialog;
+    private RequestShareDialog mRequestShareDialog;
     String resPush; //push 를통해 앱 실행
 
     String resPushName; //푸쉬를 보낸 사람의 닉네임
@@ -124,7 +130,9 @@ public class MainActivity extends BaseActivity
 
     //스케줄 요청 관련 ArrayList
     ArrayList<Integer> reqArrId;
-    ArrayList<String> reqArrName;
+    RealmList<String> reqArrName;
+    ArrayList<String> reqArrTitle;
+    ArrayList<String> reqArrTime;
     //foreground, background 판단
     public static boolean isAppRunning = false;
     @Override
@@ -415,6 +423,14 @@ public class MainActivity extends BaseActivity
         mCurrentEventSet = eventSet;
     }
 
+    /**
+     * 스케줄 공유 요청온 항목 클릭.
+     */
+    @Override
+    public void onRequestSche() {
+        Log.d(TAG, "onRequestSche");
+    }
+
 
 
     //goto eventset fragment
@@ -442,7 +458,9 @@ public class MainActivity extends BaseActivity
             //공유 요청중인 스케줄 표시.
             Log.d(TAG, "start RequestShareDialog --> " + mSelectShareDialog);
             reqArrId = new ArrayList<>();
-            reqArrName = new ArrayList<>();
+            reqArrName = new RealmList<>();
+            reqArrTitle = new ArrayList<>();
+            reqArrTime = new ArrayList<>();
 
             //Realm 에 EventSetId 가 '-3'.
             RealmResults<ScheduleR> scheduleR = realm.where(ScheduleR.class)
@@ -455,11 +473,27 @@ public class MainActivity extends BaseActivity
                 for (int i = 0; i < scheduleR.size(); i++) {
                     Log.d(TAG, "id result -> " + scheduleR.get(i).getScheId());
                     Log.d(TAG, "title result -> " + scheduleR.get(i).getTitle());
+                    Log.d(TAG, "time result ->" + scheduleR.get(i).getTime());
+
+                    Log.d(TAG, "time check ->" + DateUtils.timeStamp2Date(scheduleR.get(i).getTime(), getString(R.string.date_format)));
+
 
                     reqArrId.add(scheduleR.get(i).getScheId());
-                    reqArrName.add(scheduleR.get(i).getTitle());
+//                for (int j = 0; j < scheduleR.get(i).getNickName().size(); j++) {
+                    Log.d(TAG, "id >" + scheduleR.get(i).getNickName().get(0));
+                    reqArrName.add(scheduleR.get(i).getNickName().get(0));
+//                }
+                    reqArrTitle.add(scheduleR.get(i).getTitle());
+                    reqArrTime.add(DateUtils.timeStamp2Date(scheduleR.get(i).getTime(), getString(R.string.date_format)));
                 }
+
+                Log.d(TAG, "check size ->" + reqArrName.size());
+
 //                Log.d(TAG, "")
+                if (mRequestShareDialog == null)
+                    mRequestShareDialog = new RequestShareDialog(this, this, reqArrId, reqArrName, reqArrTitle, reqArrTime);
+
+                mRequestShareDialog.show();
             }
 
         } else {
