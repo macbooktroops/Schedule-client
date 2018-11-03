@@ -469,7 +469,7 @@ public class MainActivity extends BaseActivity
 
             Log.d(TAG, "ScheSize ->" + scheduleR.size());
             if (scheduleR.size() == 0) {
-
+                Toast.makeText(getApplicationContext(), "요청 온 스케줄이 없습니다.", Toast.LENGTH_LONG).show();
             } else {
                 for (int i = 0; i < scheduleR.size(); i++) {
                     Log.d(TAG, "id result -> " + scheduleR.get(i).getScheId());

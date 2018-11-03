@@ -24,4 +24,7 @@ public class ShareUserScheJsonData {
 
     @SerializedName("arrive")
     public boolean assent;
+
+    @SerializedName("schedule_user_id")
+    public int sche_id;
 }

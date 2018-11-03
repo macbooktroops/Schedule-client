@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="400dp"
+    android:layout_width="350dp"
     android:layout_height="400dp"
     android:paddingLeft="@dimen/space_20dp"
     android:paddingRight="@dimen/space_20dp">

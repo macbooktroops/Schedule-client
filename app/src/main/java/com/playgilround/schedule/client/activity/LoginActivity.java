@@ -82,6 +82,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     RealmList<Integer> arrUserId; //userId, NickName 은 배열형태로 넣음.
     RealmList<String> arrNickName;
 
+    int arrScheId; //자기 자신 스케줄 아이디만 저장.
     public static String getTime(String strDate, String Time, String result) {
         SimpleDateFormat df;
         df = new SimpleDateFormat(Time);
@@ -230,10 +231,19 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                             for (ShareUserScheJsonData resUserShare : shareUserData) {
                                                 arrUserId.add(resUserShare.user_id);
                                                 arrNickName.add(resUserShare.name);
+                                                String nickName = pref.getString("loginName", "");
+
+
+                                                if (resUserShare.name.equals(nickName)) {
+                                                    arrScheId = resUserShare.sche_id;
+                                                }
+
                                             }
+
                                             ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
 
                                             if (resShare.assent == 0) {
+                                                shareR.setScheUserId(arrScheId);
                                                 shareR.setScheId(resShare.id);
                                                 shareR.setUserId(arrUserId);
                                                 shareR.setNickName(arrNickName);
@@ -252,7 +262,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setTime(time);
                                                 shareR.setState(-3);
                                             } else {
-                                                Log.d(TAG, "Share assent..");
+                                                shareR.setScheUserId(arrScheId);
                                                 shareR.setScheId(resShare.id);
                                                 shareR.setUserId(arrUserId);
                                                 shareR.setNickName(arrNickName);
@@ -305,15 +315,19 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                             for (ShareUserScheJsonData resUserShare : shareUserData) {
                                                 arrUserId.add(resUserShare.user_id);
                                                 arrNickName.add(resUserShare.name);
-                                            }
+                                                String nickName = pref.getString("loginName", "");
 
-                                            Log.d(TAG, "resShare -->" + resShare.assent);
+
+                                                if (resUserShare.name.equals(nickName)) {
+                                                    arrScheId = resUserShare.sche_id;
+                                                }
+                                            }
 
                                             ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
 
                                             if (resShare.assent == 0) {
                                                 //아직 스케줄 공유 수락이 안된 스케줄들.
-                                                Log.d(TAG, "share not assent.");
+                                                shareR.setScheUserId(arrScheId);
                                                 shareR.setScheId(resShare.id);
                                                 shareR.setUserId(arrUserId);
                                                 shareR.setNickName(arrNickName);
@@ -332,7 +346,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                                 shareR.setTime(time);
                                                 shareR.setState(-3);
                                             } else {
-                                                Log.d(TAG, "Share assent.");
+                                                shareR.setScheUserId(arrScheId);
                                                 shareR.setScheId(resShare.id);
                                                 shareR.setUserId(arrUserId);
                                                 shareR.setNickName(arrNickName);
@@ -354,6 +368,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                                             arrUserId.clear();
                                             arrNickName.clear();
+
                                         }
                                     }
 

@@ -21,6 +21,7 @@ public class ScheduleR extends RealmObject {
 
     private int id;
 
+    private int scheUserId; //Schedule_user테이블에 id (추후 요청된 스케줄 목록 수락/거부 시 이 아이디가지고 구분)
     private int scheId; //schedule table 에 schedule_id (server)
 
     private RealmList<Integer> userId; //schedule_user table에 user_id (server)
@@ -76,6 +77,13 @@ public class ScheduleR extends RealmObject {
         this.id = id;
     }
 
+    public int getScheUserId() {
+        return scheUserId;
+    }
+
+    public void setScheUserId(int scheUserId) {
+        this.scheUserId = scheUserId;
+    }
     public int getScheId() {
         return scheId;
     }
