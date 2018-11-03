@@ -27,17 +27,18 @@ public class RequestShareDialog extends Dialog implements View.OnClickListener {
     RequestShareAdapter reqAdapter;
 
     RecyclerView requestShareRecycler;
-    private OnRequestScheListener mOnRequestScheListener;
 
     ArrayList retArrId, retArrTitle, retArrTime;
     RealmList retArrName;
 
     private TextView tvTitle;
-    public RequestShareDialog(Context context, OnRequestScheListener onRequestScheListener,
-                              ArrayList arrId, RealmList arrName, ArrayList arrTitle, ArrayList arrTime) {
+
+    private ShareCheckTimeDialog mShareCheckTimeDialog;
+
+    public RequestShareDialog(Context context, ArrayList arrId, RealmList arrName, ArrayList arrTitle, ArrayList arrTime) {
         super(context, R.style.DialogFullScreen);
 
-        mOnRequestScheListener = onRequestScheListener;
+//        mOnRequestScheListener = onRequestScheListener;
         mContext = context;
 
         retArrId = arrId;
@@ -58,15 +59,17 @@ public class RequestShareDialog extends Dialog implements View.OnClickListener {
 
         reqAdapter.setItemClick(new RequestShareAdapter.ItemClick() {
             @Override
-            public void onClick(View view, int position, int id, String time) {
+            public void onClick(View view, int position, int id, String time, String name, String title) {
                 Log.d(TAG, "Success Click ->" + id + "/" + time);
 
-                dismiss();
+                if (mShareCheckTimeDialog == null)
+                    mShareCheckTimeDialog = new ShareCheckTimeDialog(getContext(), id, time, name, title);
+
+                mShareCheckTimeDialog.show();
             }
         });
 
         findViewById(R.id.tvCancel).setOnClickListener(this);
-        findViewById(R.id.tvConfirm).setOnClickListener(this);
 
         tvTitle = findViewById(R.id.tvTitle);
 
@@ -80,16 +83,8 @@ public class RequestShareDialog extends Dialog implements View.OnClickListener {
                 dismiss();
                 break;
 
-            case R.id.tvConfirm:
-                if (mOnRequestScheListener != null) {
-                    mOnRequestScheListener.onRequestSche();
-                }
-                dismiss();
-                break;
         }
 
     }
-    public interface OnRequestScheListener {
-        void onRequestSche();
-    }
+
 }

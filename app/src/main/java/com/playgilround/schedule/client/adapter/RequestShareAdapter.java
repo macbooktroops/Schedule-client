@@ -38,7 +38,7 @@ public class RequestShareAdapter extends RecyclerView.Adapter<ShareHolder> {
 
     //클릭 인터페이스
     public interface ItemClick {
-        public void onClick(View view, int position, int id, String time);
+        public void onClick(View view, int position, int id, String time, String name, String title);
     }
 
     public void setItemClick(ItemClick itemClick) {
@@ -66,9 +66,11 @@ public class RequestShareAdapter extends RecyclerView.Adapter<ShareHolder> {
 
             int id = Integer.valueOf(holder.tvId.getText().toString());
             String time = retTime.get(position).toString();
+            String name = holder.tvName.getText().toString();
+            String title = holder.tvTitle.getText().toString();
 
             if (itemClick != null) {
-                itemClick.onClick(l, position, id, time);
+                itemClick.onClick(l, position, id, time, name, title);
             }
 //            String
         });

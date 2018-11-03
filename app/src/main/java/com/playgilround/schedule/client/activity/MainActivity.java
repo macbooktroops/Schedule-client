@@ -34,6 +34,7 @@ import com.playgilround.schedule.client.base.app.BaseFragment;
 import com.playgilround.schedule.client.dialog.RequestShareDialog;
 import com.playgilround.schedule.client.dialog.SelectHolidayDialog;
 import com.playgilround.schedule.client.dialog.SelectShareDialog;
+import com.playgilround.schedule.client.dialog.ShareCheckTimeDialog;
 import com.playgilround.schedule.client.fragment.EventSetFragment;
 import com.playgilround.schedule.client.fragment.FriendFragment;
 import com.playgilround.schedule.client.fragment.ScheduleFragment;
@@ -72,7 +73,7 @@ import retrofit2.Retrofit;
 public class MainActivity extends BaseActivity
         implements View.OnClickListener, OnTaskFinishedListener<List<EventSetR>>,
         SelectHolidayDialog.OnHolidaySetListener, SelectShareDialog.OnShareSetListener,
-        RequestShareDialog.OnRequestScheListener{
+        ShareCheckTimeDialog.OnRequestScheListener {
 
     private DrawerLayout drawMain;
     private LinearLayout linearDate;
@@ -475,7 +476,7 @@ public class MainActivity extends BaseActivity
                     Log.d(TAG, "title result -> " + scheduleR.get(i).getTitle());
                     Log.d(TAG, "time result ->" + scheduleR.get(i).getTime());
 
-                    Log.d(TAG, "time check ->" + DateUtils.timeStamp2Date(scheduleR.get(i).getTime(), getString(R.string.date_format)));
+                    Log.d(TAG, "time check ->" + DateUtils.timeStamp2Year(scheduleR.get(i).getTime(), getString(R.string.date_onlyYear_format)));
 
 
                     reqArrId.add(scheduleR.get(i).getScheId());
@@ -484,14 +485,14 @@ public class MainActivity extends BaseActivity
                     reqArrName.add(scheduleR.get(i).getNickName().get(0));
 //                }
                     reqArrTitle.add(scheduleR.get(i).getTitle());
-                    reqArrTime.add(DateUtils.timeStamp2Date(scheduleR.get(i).getTime(), getString(R.string.date_format)));
+                    reqArrTime.add(DateUtils.timeStamp2Year(scheduleR.get(i).getTime(), getString(R.string.date_onlyYear_format)));
                 }
 
                 Log.d(TAG, "check size ->" + reqArrName.size());
 
 //                Log.d(TAG, "")
                 if (mRequestShareDialog == null)
-                    mRequestShareDialog = new RequestShareDialog(this, this, reqArrId, reqArrName, reqArrTitle, reqArrTime);
+                    mRequestShareDialog = new RequestShareDialog(this,  reqArrId, reqArrName, reqArrTitle, reqArrTime);
 
                 mRequestShareDialog.show();
             }

@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="400dp"
-    android:layout_height="400dp"
-    android:paddingLeft="@dimen/space_20dp"
-    android:paddingRight="@dimen/space_20dp">
+    android:layout_height="400dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:background="@drawable/dialog_background"
         android:orientation="vertical">
@@ -16,23 +14,27 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/space_18dp"
+            android:text="스케줄 공유 신청"
+            android:layout_margin="@dimen/space_3dp"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/schedule_hint_dash_line_width"
+            android:background="@color/color_select_date_dialog_line"/>
+
+        <TextView
+            android:id="@+id/tvAssent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="@dimen/space_10dp"
+            android:layout_marginRight="@dimen/space_10dp"
+            android:layout_marginBottom="5dp"
             android:textSize="20dp"
-            android:layout_margin="@dimen/space_10dp"
-            android:gravity="center"
-            android:text=""/>
+            android:layout_gravity="center"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/schedule_hint_dash_line_width"
-            android:background="@color/color_select_date_dialog_line"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:id="@+id/reqScheduleRecycler"
-            android:layout_below="@id/linearMain"
-            android:layout_height="150dp">
-
-        </android.support.v7.widget.RecyclerView>
 
         <View
             android:layout_width="match_parent"
@@ -40,14 +42,13 @@
             android:background="@color/color_select_date_dialog_line"/>
         <View
             android:layout_width="match_parent"
-            android:layout_height="30dp"/>
+            android:layout_height="15dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:id="@+id/resultText"
-            android:textSize="20dp"
-            android:text="스케줄 요청을 받으시려면 클릭 해주세요."/>
+            android:textSize="@dimen/space_18dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,18 +58,32 @@
 
 
             <TextView
-                android:id="@+id/tvCancel"
-                android:layout_width="100dp"
+                android:id="@+id/tvNegative"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/space_30dp"
-                android:layout_marginRight="@dimen/space_30dp"
+                android:layout_marginLeft="@dimen/space_10dp"
+                android:layout_marginRight="@dimen/space_10dp"
+                android:layout_weight="1"
                 android:background="@drawable/btn_cancel"
                 android:gravity="center"
                 android:paddingBottom="6dp"
                 android:paddingTop="6dp"
-                android:text="@string/cancel"
+                android:text="@string/negativeFriend"
                 android:textColor="@color/colorWrite"/>
 
+            <TextView
+                android:id="@+id/tvPositive"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/space_10dp"
+                android:layout_marginRight="@dimen/space_10dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_confirm"
+                android:gravity="center"
+                android:paddingBottom="6dp"
+                android:paddingTop="6dp"
+                android:text="@string/positiveFriend"
+                android:textColor="@color/colorWrite"/>
         </LinearLayout>
     </LinearLayout>
 

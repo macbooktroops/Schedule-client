@@ -23,6 +23,18 @@ public class DateUtils {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(new Date(time));
     }
+    //날짜 형식 문자열로 변환 된 타임 스탬프
+    public static String timeStamp2Year(long time, String format) {
+        if (time == 0) {
+            return "";
+        }
+        if (format == null || format.isEmpty()) {
+            format = "yyyy-MM-dd";
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(time));
+    }
 
     //타임 스탬프로 변환 된 날짜 형식 문자열
     public static long date2TimeStamp(String date, String format) {
