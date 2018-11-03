@@ -91,7 +91,7 @@
 
     <string name="human_time_format2">HH:mm:ss</string>
 
-    <string name="arrived">도착 완료</string>
+    <string name="arrived">도착했나요?</string>
     <string name="holidayDomain">http://schedule.mactroops.com:3000/v1/holiday/</string>
 
     <string-array name="calendar_week">
