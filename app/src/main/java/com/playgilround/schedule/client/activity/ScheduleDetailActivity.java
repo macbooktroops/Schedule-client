@@ -180,10 +180,29 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                  mSchedule = resScheduleR;
 
                 scheId = mSchedule.getScheId();
+                isArrivedSchedule(new LoginActivity.ApiCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        if (result == null) {
+                            if (mSchedule.getEventSetId() == -2) {
+                                btnArrived.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            if (mSchedule.getEventSetId() == -2) {
+                                btnArrived.setVisibility(View.VISIBLE);
+                                btnArrived.setText("도착 완료!");
+                                btnArrived.setEnabled(false);
+                            }
+                        }
+                    }
 
-                if (mSchedule.getEventSetId() == -2) {
-                    btnArrived.setVisibility(View.VISIBLE);
-                }
+                    @Override
+                    public void onFail(String result) {
+
+                    }
+                                  }
+                );
+
             }
         });
 
@@ -234,106 +253,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                 arrivedDest(new LoginActivity.ApiCallback() {
                     @Override
                     public void onSuccess(String success) {
-
-                        //도착완료 버튼이 눌리면 도착 순위 작업
-                        //
-                        /**
-                         * {
-                         * 	"id": 106,
-                         * 	"title": "kill",
-                         * 	"state": 0,
-                         * 	"start_time": "2018-10-30 00:00:00",
-                         * 	"latitude": 0.0,
-                         * 	"longitude": 0.0,
-                         * 	"user": [{
-                         * 		"id": 1,
-                         * 		"name": "c004245",
-                         * 		"email": "c004245@naver.com",
-                         * 		"arrive": true,
-                         * 		"arrived_at": "2018-10-30 13:50:46"
-                         *        }, {
-                         * 		"id": 1,
-                         * 		"name": "c004245",
-                         * 		"email": "c004245@naver.com",
-                         * 		"arrive": true,
-                         * 		"arrived_at": "2018-10-30 13:50:46"
-                         *    }, {
-                         * 		"id": 5,
-                         * 		"name": "hyun123",
-                         * 		"email": "c00@naver.com",
-                         * 		"arrive": true
-                         *    }]
-                         * }
-                         */
-                        Retrofit retrofit = APIClient.getClient();
-                        APIInterface getDetailSche = retrofit.create(APIInterface.class);
-
-                        Log.d(TAG, "authToken ->" + authToken + "--" + scheId);
-                        Call<JsonObject> result = getDetailSche.getScheduleDetail(authToken, scheId);
-
-                        result.enqueue(new Callback<JsonObject>() {
-                            @Override
-                            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                                if (response.isSuccessful()) {
-                                    arrName = new ArrayList<String>();
-                                    arrArrived = new ArrayList<String>();
-                                    Log.d(TAG, "result -->" + response.body().toString());
-
-                                    String strResponse = response.body().toString();
-
-                                    Type list = new TypeToken<ShareUserScheJsonData>() {
-                                    }.getType();
-
-                                    Type list2 = new TypeToken<List<ArrivedAtJsonData>>(){
-                                    }.getType();
-
-                                    ShareUserScheJsonData scheList = new Gson().fromJson(strResponse, list);
-
-//                                    JsonArray user = scheList.user;
-
-
-                                    List<ArrivedAtJsonData> arrivedList = new Gson().fromJson(scheList.user, list2);
-
-                                    for (ArrivedAtJsonData resArrivedAt : arrivedList) {
-                                        String name = resArrivedAt.name;
-                                        String arriveTime = resArrivedAt.arriveTime;
-                                        Log.d(TAG, "userData --> " + name + "--" + arriveTime);
-
-                                        /**
-                                         * 먼저 도착한 순서대로 name, arrived_at 저장
-                                         * arrived_at 이 없으면 null
-                                         */
-                                        arrName.add(name);
-                                        arrArrived.add(arriveTime);
-                                    }
-
-                                    for (int i = 0; i < arrName.size(); i++) {
-                                        Log.d(TAG, "name -->" + arrName.get(i) + "--arrived --> " + arrArrived.get(i));
-                                    }
-
-                                    //도착 랭킹 DialogFragment 표시
-                                    final ArrivedRankFragment af = ArrivedRankFragment.getInstance(arrName, arrArrived);
-                                    final FragmentManager fm  = getFragmentManager();
-
-                                    af.show(fm, "TAG");
-
-
-                                } else {
-                                    try {
-                                        String error = response.errorBody().string();
-
-                                        Log.d(TAG, "result error -->" + error);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<JsonObject> call, Throwable t) {
-                                Log.d(TAG, "t-->" + t.toString());
-                            }
-                        });
+                        arrivedRanking();
                     }
 
                     @Override
@@ -344,6 +264,168 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
 
         }
+    }
+
+    //최초 DetailActivity 실행 시, 도착 여부 판단 (버튼 비활성화 처리)
+    private void isArrivedSchedule(final LoginActivity.ApiCallback callback) {
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface getDetailSche = retrofit.create(APIInterface.class);
+
+        Call<JsonObject> result = getDetailSche.getScheduleDetail(authToken, scheId);
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    String nickName = pref.getString("loginName", "");
+
+                    Log.d(TAG, "result -->" + response.body().toString());
+
+                    String strResponse = response.body().toString();
+
+                    Type list = new TypeToken<ShareUserScheJsonData>() {
+                    }.getType();
+
+                    Type list2 = new TypeToken<List<ArrivedAtJsonData>>(){
+                    }.getType();
+
+                    ShareUserScheJsonData scheList = new Gson().fromJson(strResponse, list);
+
+                    List<ArrivedAtJsonData> arrivedList = new Gson().fromJson(scheList.user, list2);
+
+                    for (ArrivedAtJsonData resArrivedAt : arrivedList) {
+                        String name = resArrivedAt.name;
+                        String arriveTime = resArrivedAt.arriveTime;
+
+                        /**
+                         * 먼저 도착한 순서대로 name, arrived_at 저장
+                         * arrived_at 이 없으면 null
+                         */
+                        if (nickName.equals(name)) {
+                            Log.d(TAG, "Same Detail Schedule." + arriveTime);
+                            callback.onSuccess(arriveTime);
+                        }
+                    }
+
+                } else {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Log.d(TAG, "result error -->" + error);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "t-->" + t.toString());
+            }
+        });
+    }
+
+    //도착 랭킹 메기기
+    private void arrivedRanking() {
+
+        //도착완료 버튼이 눌리면 도착 순위 작업
+        //
+        /**
+         * {
+         * 	"id": 106,
+         * 	"title": "kill",
+         * 	"state": 0,
+         * 	"start_time": "2018-10-30 00:00:00",
+         * 	"latitude": 0.0,
+         * 	"longitude": 0.0,
+         * 	"user": [{
+         * 		"id": 1,
+         * 		"name": "c004245",
+         * 		"email": "c004245@naver.com",
+         * 		"arrive": true,
+         * 		"arrived_at": "2018-10-30 13:50:46"
+         *        }, {
+         * 		"id": 1,
+         * 		"name": "c004245",
+         * 		"email": "c004245@naver.com",
+         * 		"arrive": true,
+         * 		"arrived_at": "2018-10-30 13:50:46"
+         *    }, {
+         * 		"id": 5,
+         * 		"name": "hyun123",
+         * 		"email": "c00@naver.com",
+         * 		"arrive": true
+         *    }]
+         * }
+         */
+        Retrofit retrofit = APIClient.getClient();
+        APIInterface getDetailSche = retrofit.create(APIInterface.class);
+
+        Log.d(TAG, "authToken ->" + authToken + "--" + scheId);
+        Call<JsonObject> result = getDetailSche.getScheduleDetail(authToken, scheId);
+
+        result.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    arrName = new ArrayList<String>();
+                    arrArrived = new ArrayList<String>();
+                    Log.d(TAG, "result -->" + response.body().toString());
+
+                    String strResponse = response.body().toString();
+
+                    Type list = new TypeToken<ShareUserScheJsonData>() {
+                    }.getType();
+
+                    Type list2 = new TypeToken<List<ArrivedAtJsonData>>(){
+                    }.getType();
+
+                    ShareUserScheJsonData scheList = new Gson().fromJson(strResponse, list);
+
+//                                    JsonArray user = scheList.user;
+
+
+                    List<ArrivedAtJsonData> arrivedList = new Gson().fromJson(scheList.user, list2);
+
+                    for (ArrivedAtJsonData resArrivedAt : arrivedList) {
+                        String name = resArrivedAt.name;
+                        String arriveTime = resArrivedAt.arriveTime;
+                        Log.d(TAG, "userData --> " + name + "--" + arriveTime);
+
+                        /**
+                         * 먼저 도착한 순서대로 name, arrived_at 저장
+                         * arrived_at 이 없으면 null
+                         */
+                        arrName.add(name);
+                        arrArrived.add(arriveTime);
+                    }
+
+                    for (int i = 0; i < arrName.size(); i++) {
+                        Log.d(TAG, "name -->" + arrName.get(i) + "--arrived --> " + arrArrived.get(i));
+                    }
+
+                    //도착 랭킹 DialogFragment 표시
+                    final ArrivedRankFragment af = ArrivedRankFragment.getInstance(arrName, arrArrived);
+                    final FragmentManager fm  = getFragmentManager();
+
+                    af.show(fm, "TAG");
+
+
+                } else {
+                    try {
+                        String error = response.errorBody().string();
+
+                        Log.d(TAG, "result error -->" + error);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d(TAG, "t-->" + t.toString());
+            }
+        });
     }
 
 

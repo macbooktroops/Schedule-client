@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/friendCard"
+    android:id="@+id/scheduleCard"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -44,6 +44,21 @@
 
         <TextView
             android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/space_30dp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textSize="@dimen/space_20dp"
+            android:text="스케줄" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="260dp"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/tvId"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/space_30dp"
             android:textStyle="bold"
