@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -55,6 +56,15 @@ public class RequestShareDialog extends Dialog implements View.OnClickListener {
         reqAdapter = new RequestShareAdapter(getContext(), retArrId, retArrName, retArrTitle, retArrTime);
         requestShareRecycler.setAdapter(reqAdapter);
 
+        reqAdapter.setItemClick(new RequestShareAdapter.ItemClick() {
+            @Override
+            public void onClick(View view, int position, int id, String time) {
+                Log.d(TAG, "Success Click ->" + id + "/" + time);
+
+                dismiss();
+            }
+        });
+
         findViewById(R.id.tvCancel).setOnClickListener(this);
         findViewById(R.id.tvConfirm).setOnClickListener(this);
 
@@ -72,7 +82,7 @@ public class RequestShareDialog extends Dialog implements View.OnClickListener {
 
             case R.id.tvConfirm:
                 if (mOnRequestScheListener != null) {
-                   mOnRequestScheListener.onRequestSche();
+                    mOnRequestScheListener.onRequestSche();
                 }
                 dismiss();
                 break;

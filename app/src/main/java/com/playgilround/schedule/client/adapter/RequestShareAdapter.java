@@ -2,6 +2,7 @@ package com.playgilround.schedule.client.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ public class RequestShareAdapter extends RecyclerView.Adapter<ShareHolder> {
     RealmList retName;
     ArrayList retId, retTitle, retTime;
 
+    private ItemClick itemClick;
+
     public RequestShareAdapter(Context context, ArrayList id, RealmList name, ArrayList title, ArrayList time) {
         this.context = context;
         retId = id;
@@ -33,9 +36,18 @@ public class RequestShareAdapter extends RecyclerView.Adapter<ShareHolder> {
         retTime = time;
     }
 
-    @Override
+    //클릭 인터페이스
+    public interface ItemClick {
+        public void onClick(View view, int position, int id, String time);
+    }
+
+    public void setItemClick(ItemClick itemClick) {
+        this.itemClick = itemClick;
+    }
+
+   @Override
     public ShareHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_request_schedule, parent, false);
+       View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_request_schedule, parent, false);
 
         ShareHolder holder = new ShareHolder(v);
         return holder;
@@ -47,6 +59,19 @@ public class RequestShareAdapter extends RecyclerView.Adapter<ShareHolder> {
         holder.userImage.setBackgroundResource(R.mipmap.ic_mainfriend);
         holder.tvName.setText(retName.get(position).toString());
         holder.tvTitle.setText(retTitle.get(position).toString());
+
+        holder.tvId.setText(retId.get(position).toString());
+        holder.userView.setOnClickListener(l -> {
+            Log.d(TAG, "this view ->" + holder.tvId.getText() + "--" + retTime.get(position).toString());
+
+            int id = Integer.valueOf(holder.tvId.getText().toString());
+            String time = retTime.get(position).toString();
+
+            if (itemClick != null) {
+                itemClick.onClick(l, position, id, time);
+            }
+//            String
+        });
     }
 
     @Override
