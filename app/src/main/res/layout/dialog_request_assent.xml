@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="400dp"
-    android:layout_height="400dp">
+    android:layout_width="300dp"
+    android:layout_height="200dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,6 +25,17 @@
             android:background="@color/color_select_date_dialog_line"/>
 
         <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="@dimen/space_10dp"
+            android:layout_marginRight="@dimen/space_10dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
+            android:layout_gravity="center"/>
+
+        <TextView
             android:id="@+id/tvAssent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,13 +54,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="15dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/resultText"
-            android:textSize="@dimen/space_18dp"/>
-
+      
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

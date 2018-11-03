@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.playgilround.schedule.client.R;
 
@@ -21,7 +22,7 @@ public class ShareCheckTimeDialog extends Dialog implements View.OnClickListener
 
     int retId;
     String retTime, retName, retTitle;
-
+    TextView tvTime, tvAssent;
     public ShareCheckTimeDialog(Context context, int id, String time, String name, String title) {
         super(context, R.style.DialogFullScreen);
 
@@ -38,6 +39,11 @@ public class ShareCheckTimeDialog extends Dialog implements View.OnClickListener
     private void initView() {
         setContentView(R.layout.dialog_request_assent);
 
+        tvTime = findViewById(R.id.tvTime);
+        tvTime.setText(retTime);
+
+        tvAssent = findViewById(R.id.tvAssent);
+        tvAssent.setText(retName + "님이 요청 하신 \n" + retTitle + "스케줄을 공유하시겠어요?");
         Log.d(TAG, "Result -> " + retId + "--" + retTime + "--" + retTitle + "--" + retName);
     }
 
