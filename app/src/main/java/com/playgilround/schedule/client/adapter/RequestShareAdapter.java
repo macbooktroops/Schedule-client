@@ -11,6 +11,8 @@ import com.playgilround.schedule.client.holder.ShareHolder;
 
 import java.util.ArrayList;
 
+import io.realm.RealmList;
+
 /**
  * 18-11-02
  * 스케줄 공유 요청중인 스케줄 어댑터
@@ -20,13 +22,15 @@ public class RequestShareAdapter extends RecyclerView.Adapter<ShareHolder> {
     static final String TAG = RequestShareAdapter.class.getSimpleName();
 
     Context context;
-    ArrayList retName;
-    ArrayList retTitle;
+    RealmList retName;
+    ArrayList retId, retTitle, retTime;
 
-    public RequestShareAdapter(Context context, ArrayList name, ArrayList title) {
+    public RequestShareAdapter(Context context, ArrayList id, RealmList name, ArrayList title, ArrayList time) {
         this.context = context;
+        retId = id;
         retName = name;
         retTitle = title;
+        retTime = time;
     }
 
     @Override
