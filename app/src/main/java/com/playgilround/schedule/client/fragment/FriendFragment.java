@@ -444,7 +444,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
 
                             if (message.contains("Not found user.") || message.contains("Unauthorized auth_token.")) {
                                 Log.d(TAG, "message ->" + message);
-                                Toast.makeText(getContext(), "그런 유저는 없어요 ㅋ", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "유저가 없습니다.", Toast.LENGTH_LONG).show();
                             }
 
                         } catch (Exception e) {

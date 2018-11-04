@@ -92,13 +92,13 @@ public class MonthCalendarView extends ViewPager implements OnMonthClickListener
         //페이지 터치 스크롤
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            Log.d(TAG, "onPageScrolled");
+//            Log.d(TAG, "onPageScrolled");
         }
 
         //새 페이지 선택
         @Override
         public void onPageSelected(final int position) {
-            Log.d(TAG, "onPageSelected");
+//            Log.d(TAG, "onPageSelected");
             MonthView monthView = mMonthAdapter.getViews().get(getCurrentItem());
 
             if (monthView != null) {

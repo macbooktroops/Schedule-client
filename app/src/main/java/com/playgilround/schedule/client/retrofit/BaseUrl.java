@@ -3,8 +3,8 @@ package com.playgilround.schedule.client.retrofit;
 public class BaseUrl {
 
 //    public static final String BASE_URL = "http://schedule.mactroops.com";
-     public static final String BASE_URL = "http://192.168.219.104:3000";
-//     public static final String BASE_URL = "http://192.168.10.30:3000";
+//     public static final String BASE_URL = "http://192.168.219.104:3000";
+     public static final String BASE_URL = "http://172.16.6.160:3000";
 //     public static final String BASE_URL = "http://192.168.3.243:3000/";
 
 //     public static final String BASE_URL = "http://localhost:3000";
