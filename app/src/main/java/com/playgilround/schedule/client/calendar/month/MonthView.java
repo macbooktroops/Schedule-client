@@ -137,7 +137,6 @@ public class MonthView extends View {
 
     //월 뷰 기본색상설정
     private void initAttrs(TypedArray array, int year, int month) {
-        Log.d(TAG, "initAttrs array -->" + array.toString());
         if (array != null) {
             mSelectDayColor = array.getColor(R.styleable.MonthCalendarView_month_selected_text_color, Color.parseColor("#FFFFFF")); //white
             mSelectBGColor = array.getColor(R.styleable.MonthCalendarView_month_selected_circle_color, Color.parseColor("#E8E8E8")); //살짝 흰색? 그레이
@@ -182,14 +181,11 @@ public class MonthView extends View {
 
         chkYear = calendar.get(Calendar.YEAR);
 
-        Log.d(TAG, "mSel Year/Month --> " + mSelYear + "-" + chkYear);
         int resultYear = mSelYear - chkYear;
-        Log.d(TAG, "test mSelYear - chkYear ="+ resultYear);
 
         //현재 년도와, 스케줄상에 년도가 2년이상 차이일 경우
         //1월, 12월 = 작년, 다음년도가 되기 1달전에 실행됨.
         if (resultYear <= -1 || resultYear >= 1) {
-            Log.d(TAG, "check try holiday info");
 
             //먼저 공휴일 데이터가 있는지 검사
             realm.executeTransaction(new Realm.Transaction() {
@@ -198,12 +194,10 @@ public class MonthView extends View {
                     RealmResults<ScheduleR> scheduleY = realm.where(ScheduleR.class)
                             .equalTo("eventSetId", -1).equalTo("year", mSelYear).findAll();
 
-                    Log.d(TAG, "scheduleY size -->" + scheduleY.size());
                     int size = scheduleY.size();
 
                     if (size == 0) {
                         //공휴일 정보를 mSelYear 기준으로 얻어옴
-                        Log.d(TAG, "Try mSelYear getHoliday.... -->" +mSelYear);
 
                         Retrofit retrofit = APIClient.getClient();
                         APIInterface moreHolidayAPI = retrofit.create(APIInterface.class);
@@ -213,8 +207,6 @@ public class MonthView extends View {
                         res.enqueue(new retrofit2.Callback<ArrayList<JsonObject>>() {
                             @Override
                             public void onResponse(retrofit2.Call<ArrayList<JsonObject>> call, final Response<ArrayList<JsonObject>> response) {
-                                Log.d(TAG, " check this year retrofit->" + mSelYear);
-                                Log.d(TAG, "MonthView Retrofit --->" + response.body().toString());
 
                                 /**
                                  * ScheduleR Table eventSetId = '-1'공휴일
@@ -227,19 +219,12 @@ public class MonthView extends View {
                                      @Override
                                      public void execute(Realm realm) {
                                          try {
-                                             Log.d(TAG, "MonthView HolidayCheck ....");
                                              JSONArray jsonArray = new JSONArray(response.body().toString());
                                              Type list = new TypeToken<List<HolidayJsonData>>() {
                                              }.getType();
 
                                              List<HolidayJsonData> holidayList = new Gson().fromJson(jsonArray.toString(), list);
 
-                                             Log.d(TAG, "MonthView holiday response -->" + jsonArray);
-                                             Log.d(TAG, "MonthView HolidayList size ->" + holidayList.size());
-                                             Log.d(TAG, "MonthView holiday gson ->" + holidayList.get(0).toString());
-
-
-                                             Log.d(TAG, "Start Insert REalm....");
 
                                              for (HolidayJsonData resHoliday : holidayList) {
                                                  Number currentIdNum = realm.where(ScheduleR.class).max("seq");
@@ -254,7 +239,6 @@ public class MonthView extends View {
 
                                                  ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
 
-                                                 Log.d(TAG, "holiday data id MonthView ->" + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
 
                                                  holidayR.setId(resHoliday.id);
                                                  holidayR.setYear(resHoliday.year);
@@ -274,11 +258,9 @@ public class MonthView extends View {
 
                             @Override
                             public void onFailure(retrofit2.Call<ArrayList<JsonObject>> call, Throwable t) {
-                                Log.d(TAG, "Fail MonthView ---> " +t.toString());
                             }
                         });
                     } else {
-                        Log.d(TAG, "MonthView Already exist..");
                     }
 
 
@@ -568,12 +550,10 @@ public class MonthView extends View {
         for (int day = 0; day < weekNumber -1; day++) {
 
             mDaysText[0][day] = monthDays - weekNumber + day + 2;
-            Log.d(TAG, "drawLastMonth mDaysText --->"  + mDaysText[0][day]);
             String dayString = String.valueOf(mDaysText[0][day]);
             int startX = (int) (mColumnSize * day + (mColumnSize - mPaint.measureText(dayString)) /2);
             int startY = (int) (mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) /2);
 
-            Log.d(TAG, "drawLastMonth for -->" + dayString + "--"+ day + "--" + monthDays +"--"+ weekNumber);
             canvas.drawText(dayString, startX, startY, mPaint);
 
             mHolidayOrLunarText[0][day] = CalendarUtils.getHolidayFromSolar(lastYear, lastMonth, mDaysText[0][day]);
@@ -584,15 +564,12 @@ public class MonthView extends View {
 
     //이번 달 그리기
     private int[] drawThisMonth(Canvas canvas) {
-        Log.d(TAG, "drawThisMonth ======");
         String dayString;
 
         int selectedPoint[] = new int[2];
         int monthDays = CalendarUtils.getMonthDays(mSelYear, mSelMonth); //해당 연월 일개수
         int weekNumber = CalendarUtils.getFirstDayWeek(mSelYear, mSelMonth); //해당 연월 1일 요일
 
-        Log.d(TAG, "check This Month -->" + mSelYear + "-" + mSelMonth + "-"+ resultMinHoliday);
-        Log.d(TAG, "resultMinHoliday --->" +resultMinHoliday);
 
         //해당 연월에 공휴일 정보
 //        ScheduleR holiSchedule;
@@ -612,19 +589,14 @@ public class MonthView extends View {
             int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) / 2);
 
             //선택날짜랑 dayString 이 같을경우.
-            Log.d(TAG, "dayResult -> " +dayString + "-" + mSelDay + "-" + mCurrDay);
             if (dayString.equals(String.valueOf(mSelDay))) {
                 int startRecX = mColumnSize * col;
-                Log.d(TAG, "drawThisMonth startRecX -->" + startRecX);
 
                 int startRecY = mRowSize * row;
-                Log.d(TAG, "drawThisMonth startRecY -->" + startRecY);
 
                 int endRecX = startRecX + mColumnSize;
-                Log.d(TAG, "drawThisMonth endRecX -->" + endRecX);
 
                 int endRecY = startRecY + mRowSize;
-                Log.d(TAG, "drawThisMOnth endRecY -->" + endRecY);
 
 
                 if (mSelYear == mCurrYear && mSelMonth == mCurrMonth && day + 1 == mCurrDay) {
@@ -774,7 +746,6 @@ public class MonthView extends View {
             }
 
             String dayString = String.valueOf(mDaysText[row][column]);
-            Log.d(TAG, "dayString ---> " + dayString);
 
             int startX = (int) (mColumnSize * column + (mColumnSize - mPaint.measureText(dayString)) / 2);
             int startY = (int) (mRowSize * row + mRowSize / 2 - (mPaint.ascent() + mPaint.descent()) /2);

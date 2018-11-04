@@ -397,7 +397,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                 List<String> message = result.message;
 
                                 if (message.contains("Unauthorized auth_token.")) {
-                                    Toast.makeText(getApplicationContext(), "Auth Token Error..", Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(getApplicationContext(), "Auth Token Error..", Toast.LENGTH_LONG).show();
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -561,11 +561,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                 Type list = new TypeToken<List<HolidayJsonData>>(){}.getType();
                                 List<HolidayJsonData> holidays = new Gson().fromJson(response.body().toString(), list);
 
-                                Log.d(TAG, "holiday response ->" + response.body().toString());
-                                Log.d(TAG, "holidayList ->" + response.body().size());
-                                Log.d(TAG, "holiday gson ->" + holidays.get(0).toString());
-
-                                Log.d(TAG, "Holiday Insert Realm ....");
                                 //print
                                 for (HolidayJsonData resHoliday : holidays) {
 
@@ -580,7 +575,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                     }
                                     ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
 
-                                    Log.d(TAG, "holiday data id -> " + resHoliday.id + "//" + resHoliday.year + ":" + resHoliday.month + ":" + resHoliday.day + ":" + resHoliday.name);
 
                                     holidayR.setId(resHoliday.id);
                                     holidayR.setYear(resHoliday.year);
@@ -593,9 +587,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                                 }
 
                             } else {
-                                Log.d(TAG, "exist HolidayR");
                             }
-                            Log.d(TAG, "success holidayR");
                             callback.onSuccess("success");
 
                         }
@@ -620,22 +612,18 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         Log.d(TAG, "onStart");
         //이전에 자동로그인을 체크했나 ?
         String strAuto = pref.getString("prefAutoLogin", "");
-        Log.d(TAG, "autoCheck -->" + strAuto);
 
         String autoId = pref.getString("prefEmail", "");
         String autoPw = pref.getString("prefPw", "");
 
-        Log.d(TAG, "id info --> " + autoId + "////" + autoPw);
         //기존에 자동로그인을 체크했을 경우 아이디 비밀번호 표시
         if (strAuto.equals("check")) {
             idInput.setText(autoId);
             pwInput.setText(autoPw);
             autoCheck.setChecked(true);
         } else if (autoId.equals("") || autoPw.equals("")) {
-            Log.d(TAG, "서버에 저장된 정보가 없어 자동로그인을 체크가 불가능합니다..");
             autoCheck.setEnabled(true);
         } else {
-            Log.d(TAG, "체크 안한경우.");
             autoCheck.setChecked(false);
             autoCheck.setEnabled(true);
         }

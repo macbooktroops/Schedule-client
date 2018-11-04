@@ -68,5 +68,7 @@
     <string name="event_set_color">Color</string>
     <color name="color_menu_line">#303054</color>
 
+    <color name="color_black">#000000</color>
+
 
 </resources>

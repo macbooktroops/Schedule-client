@@ -5,6 +5,8 @@ import android.app.Application;
 import com.facebook.stetho.Stetho;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
+import java.io.FileNotFoundException;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -22,11 +24,22 @@ public class RealmInit extends Application {
         super.onCreate();
 
         Realm.init(this);
-//        Realm.setDefaultConfiguration(new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build());
-//        RealmInspectorModulesProvider.builder(this).withDeleteIfMigrationNeeded(true).build();
+
+        Realm.setDefaultConfiguration(new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build());
+
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+                        .build());
+     /*   Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .build());*/
+   /*     Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
                 .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build()).build());
+                .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build()).build());*/
     }
 }

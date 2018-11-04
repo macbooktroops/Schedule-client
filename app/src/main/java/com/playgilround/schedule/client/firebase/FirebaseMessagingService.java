@@ -82,7 +82,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
     //푸쉬 메세지를 알림으로 표현하는 처리.
     private void sendNotification(Map<String, String> dataMap) {
-        Log.d(TAG, "DataMap -->" + dataMap.toString());
         pref = getSharedPreferences("loginData", MODE_PRIVATE);
 
 
@@ -115,7 +114,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
          */
 
         String retPush = resPsh.substring(0, 4);
-        Log.d(TAG, "retPush -->" + retPush);
 
         //최초 친구 신청
         if (retPush.equals("{typ")) {
@@ -132,7 +130,6 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             id = userList.id;
             name = userList.name;
 
-            Log.d(TAG, "type -->" + type + "--" + "user -->" + user + "--" + name + "--" + id);
 
 //            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
 
