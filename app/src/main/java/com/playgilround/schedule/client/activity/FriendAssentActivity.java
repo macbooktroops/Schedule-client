@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import com.playgilround.schedule.client.R;
+import com.playgilround.schedule.client.fragment.FriendFragment;
 import com.playgilround.schedule.client.retrofit.APIClient;
 import com.playgilround.schedule.client.retrofit.APIInterface;
 import com.playgilround.schedule.client.gson.Result;
@@ -137,6 +138,7 @@ public class FriendAssentActivity extends Activity implements View.OnClickListen
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "response assent success ---" + response.body().toString());
+
                 } else {
                     try {
 //                        Log.d(TAG, "response assent fail -->" + response.errorBody().string());
@@ -150,7 +152,6 @@ public class FriendAssentActivity extends Activity implements View.OnClickListen
                         List<String> message = result.message;
 
                         Log.d(TAG, "Friend assent Info fail...-->"  + message);
-
 
                         if (message.contains("Unauthorized auth_token.")) {
                             Log.d(TAG, "message ->" + message);
