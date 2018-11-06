@@ -1,6 +1,7 @@
 package com.playgilround.schedule.client.realm;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.facebook.stetho.Stetho;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
@@ -24,13 +25,19 @@ public class RealmInit extends Application {
         super.onCreate();
 
         Realm.init(this);
+//        RealmConfiguration config = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
+//
+//        Realm.setDefaultConfiguration(config);
 
-        Realm.setDefaultConfiguration(new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build());
+        RealmInspectorModulesProvider provider = RealmInspectorModulesProvider.builder(this)
+                .build();
 
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                         .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+//                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .enableWebKitInspector(provider)
                         .build());
      /*   Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
@@ -42,4 +49,8 @@ public class RealmInit extends Application {
                 .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                 .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build()).build());*/
     }
+
 }
+
+
+
