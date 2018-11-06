@@ -568,7 +568,9 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
                 if (resultYear == 0) {
                     resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).findAll();
                 } else {
-                    resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).equalTo("year", resultYear).findAllSorted("id");
+//                    resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).equalTo("year", resultYear).findAllSorted("id");
+                    resEmp = realm.where(ScheduleR.class).equalTo("eventSetId", mEventSet.getSeq()).equalTo("year", resultYear).findAll();
+                    resEmp.sort("id");
                 }
                 Log.d(TAG, "resEmp Get -->" +  resEmp.size());
 
