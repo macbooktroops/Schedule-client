@@ -473,6 +473,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                                                             }
                                                                         } else {
                                                                             //공유된 스케줄이 있을 경우
+                                                                            Log.d(TAG, "Delete schedule share.");
                                                                             shareSchedule.deleteAllFromRealm();
 
                                                                             //중복 방지를 위해 삭제 후 재 저장.
@@ -567,7 +568,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                                                     List<String> message = result.message;
 
                                                                     if (message.contains("Unauthorized auth_token.")) {
-                                                                    }                                                                } catch (Exception e) {
+                                                                    }
+                                                                } catch (Exception e) {
                                                                     e.printStackTrace();
                                                                 }
                                                             }
