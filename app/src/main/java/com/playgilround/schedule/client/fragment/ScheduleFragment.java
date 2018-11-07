@@ -372,6 +372,8 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                                                 realm.executeTransaction(new Realm.Transaction() {
                                                                     @Override
                                                                     public void execute(Realm realm) {
+                                                                        int resultMonth = mCurrentSelectMonth + 1;
+                                                                        Log.d(TAG, "check date -->" + mCurrentSelectYear + "--" + resultMonth + "--" + mCurrentSelectDay);
                                                                         RealmResults<ScheduleR> shareSchedule = realm.where(ScheduleR.class).equalTo("eventSetId", -2).or().equalTo("eventSetId", -3).equalTo("year", nYear).findAll();
                                                                         Log.d(TAG, "shareSchedule size ->" + shareSchedule.size());
 
@@ -389,44 +391,49 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
                                                                         List<ShareScheduleJsonData> shareData = userGson.fromJson(strSearch, list);
 
-                                                                        if (shareSchedule.size() == 0) {
-                                                                            Log.d(TAG, "first install..");
-                                                                            for (ShareScheduleJsonData resShare : shareData) {
+//                                                                        if (shareSchedule.size() == 0) {
+                                                                        Log.d(TAG, "first install..");
+                                                                        for (ShareScheduleJsonData resShare : shareData) {
 
-                                                                                List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
+                                                                            List<ShareUserScheJsonData> shareUserData = userGson.fromJson(resShare.user, list2);
 
-                                                                                int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
-                                                                                int resMonth = Integer.valueOf(resShare.startTime.substring(5, 7));
-                                                                                int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
+                                                                            int resYear = Integer.valueOf(resShare.startTime.substring(0, 4));
+                                                                            int resMonth = Integer.valueOf(resShare.startTime.substring(5, 7));
+                                                                            int resDay = Integer.valueOf(resShare.startTime.substring(8, 10));
 
-                                                                                String resTime = resShare.startTime.substring(11, 16);
+                                                                            String resTime = resShare.startTime.substring(11, 16);
 
-                                                                                long time = date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
-                                                                                        "yyyy-MM-dd HH:mm");
-                                                                                Number currentId = realm.where(ScheduleR.class).max("seq");
-                                                                                int nextId;
+                                                                            long time = date2TimeStamp(String.format("%s-%s-%s %s", resYear, resMonth, resDay, resTime),
+                                                                                    "yyyy-MM-dd HH:mm");
+                                                                            Number currentId = realm.where(ScheduleR.class).max("seq");
+                                                                            int nextId;
 
-                                                                                if (currentId == null) {
-                                                                                    nextId = 0;
-                                                                                } else {
-                                                                                    nextId = currentId.intValue() + 1;
+                                                                            if (currentId == null) {
+                                                                                nextId = 0;
+                                                                            } else {
+                                                                                nextId = currentId.intValue() + 1;
+                                                                            }
+
+                                                                            //공유된 유저만큼 반복
+                                                                            for (ShareUserScheJsonData resUserShare : shareUserData) {
+                                                                                arrUserId.add(resUserShare.user_id);
+                                                                                arrNickName.add(resUserShare.name);
+                                                                                String nickName = pref.getString("loginName", "");
+
+
+                                                                                if (resUserShare.name.equals(nickName)) {
+                                                                                    arrScheId = resUserShare.sche_id;
                                                                                 }
 
-                                                                                //공유된 유저만큼 반복
-                                                                                for (ShareUserScheJsonData resUserShare : shareUserData) {
-                                                                                    arrUserId.add(resUserShare.user_id);
-                                                                                    arrNickName.add(resUserShare.name);
-                                                                                    String nickName = pref.getString("loginName", "");
+                                                                            }
 
 
-                                                                                    if (resUserShare.name.equals(nickName)) {
-                                                                                        arrScheId = resUserShare.sche_id;
-                                                                                    }
-
-                                                                                }
-
+                                                                            Log.d(TAG, "Check date ->" + mCurrentSelectYear + "//" + resYear);
+                                                                            Log.d(TAG, "Check 1 ->" + resultMonth + "//" + resMonth);
+                                                                            Log.d(TAG, "Check 2 ->" + mCurrentSelectDay + "//" + resDay);
+                                                                            if (mCurrentSelectYear == resYear && resultMonth == resMonth && mCurrentSelectDay == resDay) {
+                                                                                Log.d(TAG, "same same same!!");
                                                                                 ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
-
                                                                                 if (resShare.assent == 0) {
                                                                                     shareR.setScheUserId(arrScheId);
                                                                                     shareR.setScheId(resShare.id);
@@ -467,11 +474,20 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                                                                     shareR.setState(-2);
                                                                                 }
 
+                                                                                mScheduleAdapter.insertItem(shareR);
 
-                                                                                arrUserId.clear();
-                                                                                arrNickName.clear();
                                                                             }
-                                                                        } else {
+
+                                                                            arrUserId.clear();
+                                                                            arrNickName.clear();
+
+
+//                                                                                etInputContent.getText().clear();
+//                                                                                rlNoTask.setVisibility(View.GONE);
+//                                                                                mTime = 0;
+                                                                        }
+                                                                    }
+                                                                        /*} else {
                                                                             //공유된 스케줄이 있을 경우
                                                                             Log.d(TAG, "Delete schedule share.");
                                                                             shareSchedule.deleteAllFromRealm();
@@ -509,55 +525,64 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                                                                     }
                                                                                 }
 
-                                                                                ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+                                                                                if (mCurrentSelectYear == resYear && resultMonth == resMonth && mCurrentSelectDay == resDay) {
+                                                                                    Log.d(TAG, "same same same!!");
+                                                                                    ScheduleR shareR = realm.createObject(ScheduleR.class, nextId);
+                                                                                    Log.d(TAG, "Check date ->" + mCurrentSelectYear + "//" +resYear);
+                                                                                    Log.d(TAG, "Check 1 ->" + resultMonth + "//" +resMonth);
+                                                                                    Log.d(TAG, "Check 2 ->" + mCurrentSelectDay + "//" +resDay);
+                                                                                    if (resShare.assent == 0) {
+                                                                                        //아직 스케줄 공유 수락이 안된 스케줄들.
+                                                                                        shareR.setScheUserId(arrScheId);
+                                                                                        shareR.setScheId(resShare.id);
+                                                                                        shareR.setUserId(arrUserId);
+                                                                                        shareR.setNickName(arrNickName);
+                                                                                        shareR.setEmail(shareUserData.get(0).email);
+                                                                                        shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
+                                                                                        shareR.setColor(-3);
+                                                                                        shareR.setTitle(resShare.title);
+                                                                                        shareR.setState(resShare.state);
+                                                                                        shareR.setYear(resYear);
+                                                                                        shareR.setMonth(resMonth);
+                                                                                        shareR.setDay(resDay);
+                                                                                        shareR.setEventSetId(-3);
+                                                                                        shareR.setLatitude(resShare.latitude);
+                                                                                        shareR.setLongitude(resShare.longitude);
+                                                                                        shareR.sethTime(resTime);
+                                                                                        shareR.setTime(time);
+                                                                                        shareR.setState(-3);
+                                                                                    } else {
+                                                                                        shareR.setScheUserId(arrScheId);
+                                                                                        shareR.setScheId(resShare.id);
+                                                                                        shareR.setUserId(arrUserId);
+                                                                                        shareR.setNickName(arrNickName);
+                                                                                        shareR.setEmail(shareUserData.get(0).email);
+                                                                                        shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
+                                                                                        shareR.setColor(-2);
+                                                                                        shareR.setTitle(resShare.title);
+                                                                                        shareR.setState(resShare.state);
+                                                                                        shareR.setYear(resYear);
+                                                                                        shareR.setMonth(resMonth);
+                                                                                        shareR.setDay(resDay);
+                                                                                        shareR.setEventSetId(-2);
+                                                                                        shareR.setLatitude(resShare.latitude);
+                                                                                        shareR.setLongitude(resShare.longitude);
+                                                                                        shareR.sethTime(resTime);
+                                                                                        shareR.setTime(time);
+                                                                                        shareR.setState(-2);
+                                                                                    }
+                                                                                    mScheduleAdapter.insertItem(shareR);
 
-                                                                                if (resShare.assent == 0) {
-                                                                                    //아직 스케줄 공유 수락이 안된 스케줄들.
-                                                                                    shareR.setScheUserId(arrScheId);
-                                                                                    shareR.setScheId(resShare.id);
-                                                                                    shareR.setUserId(arrUserId);
-                                                                                    shareR.setNickName(arrNickName);
-                                                                                    shareR.setEmail(shareUserData.get(0).email);
-                                                                                    shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
-                                                                                    shareR.setColor(-3);
-                                                                                    shareR.setTitle(resShare.title);
-                                                                                    shareR.setState(resShare.state);
-                                                                                    shareR.setYear(resYear);
-                                                                                    shareR.setMonth(resMonth);
-                                                                                    shareR.setDay(resDay);
-                                                                                    shareR.setEventSetId(-3);
-                                                                                    shareR.setLatitude(resShare.latitude);
-                                                                                    shareR.setLongitude(resShare.longitude);
-                                                                                    shareR.sethTime(resTime);
-                                                                                    shareR.setTime(time);
-                                                                                    shareR.setState(-3);
-                                                                                } else {
-                                                                                    shareR.setScheUserId(arrScheId);
-                                                                                    shareR.setScheId(resShare.id);
-                                                                                    shareR.setUserId(arrUserId);
-                                                                                    shareR.setNickName(arrNickName);
-                                                                                    shareR.setEmail(shareUserData.get(0).email);
-                                                                                    shareR.setAssent(shareUserData.get(0).assent); //arrive 가 아니고 assent..
-                                                                                    shareR.setColor(-2);
-                                                                                    shareR.setTitle(resShare.title);
-                                                                                    shareR.setState(resShare.state);
-                                                                                    shareR.setYear(resYear);
-                                                                                    shareR.setMonth(resMonth);
-                                                                                    shareR.setDay(resDay);
-                                                                                    shareR.setEventSetId(-2);
-                                                                                    shareR.setLatitude(resShare.latitude);
-                                                                                    shareR.setLongitude(resShare.longitude);
-                                                                                    shareR.sethTime(resTime);
-                                                                                    shareR.setTime(time);
-                                                                                    shareR.setState(-2);
                                                                                 }
+
 
                                                                                 arrUserId.clear();
                                                                                 arrNickName.clear();
 
+
                                                                             }
                                                                         }
-                                                                    }
+                                                                    }*/
                                                                 });
                                                             } else {
                                                                 try {
