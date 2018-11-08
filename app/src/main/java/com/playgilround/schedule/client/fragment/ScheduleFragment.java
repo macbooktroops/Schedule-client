@@ -90,7 +90,7 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
 
     private long mTime;
 
-    //제대로 저장되었는지 확인 사이즈
+            //제대로 저장되었는지 확인 사이즈
     RealmResults<ScheduleR> resSchedule;
     static final String TAG = ScheduleFragment.class.getSimpleName();
 
@@ -464,11 +464,27 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                                                                     shareR.setTime(time);
                                                                                     shareR.setState(-2);
                                                                                 }
+
+                                                                                //중복된 scheId 제거
+                                                                                //방금 추가된 중복된 타이틀빼고 모두 삭제.
+                                                                                RealmResults<ScheduleR> deleteData = realm.where(ScheduleR.class).equalTo("scheId", resShare.id).notEqualTo("seq", nextId).findAll();
+
+                                                                                if (deleteData.size() == 0) {
+                                                                                } else {
+                                                                                    mScheduleAdapter.removeShareItem(deleteData);
+                                                                                    deleteData.deleteAllFromRealm();
+                                                                                    onReset();
+                                                                                }
+
                                                                                 mScheduleAdapter.insertItem(shareR);
+
                                                                             }
                                                                             arrUserId.clear();
                                                                             arrNickName.clear();
+
                                                                         }
+                                                                        Log.d(TAG, "Insert Success.");
+
                                                                     }
                                                                 });
                                                             } else {
