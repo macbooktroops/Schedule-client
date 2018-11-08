@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
@@ -278,6 +279,16 @@ public class ScheduleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         //Log.d(TAG,"removeItem -->" + schedule.getTitle());
         if (mSchedules.remove(schedule)) {
             notifyDataSetChanged(); //reupdate.
+        } else if (mFinishSchedules.remove(schedule)) {
+            notifyDataSetChanged();
+        }
+    }
+
+    //공유된 중복된 데이터 제거
+    public void removeShareItem(RealmResults<ScheduleR> schedule) {
+        if (mSchedules.remove(schedule)) {
+            Log.d(TAG, "delete removeShareItem..");
+            notifyDataSetChanged();
         } else if (mFinishSchedules.remove(schedule)) {
             notifyDataSetChanged();
         }
