@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -111,6 +112,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     SharedPreferences pref;
     String authToken;
 
+    LinearLayout mainInput;
     int resultId;
 
     static EventSetR resultEvent; //EVENT_SET_OBJ
@@ -148,7 +150,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void bindView() {
 
-
+        mainInput = searchViewById(R.id.main_input);
         rvScheduleList = searchViewById(R.id.rvScheduleList);
         rlNoTask = searchViewById(R.id.rlNoTask);
         etInput = searchViewById(R.id.etInputContent);
@@ -236,6 +238,11 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         });*/
         mEventSet = resultEvent;
 
+        if (mEventSet.getSeq() == -1) {
+            Log.d(TAG, "공휴일 ..");
+            mainInput.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -280,90 +287,140 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             ToastUtils.showShortToast(mActivity, R.string.schedule_input_null);
         } else {
             closeSoftInput();
+            DateTime dateTime = new DateTime();
+            String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
 
-            getMyFriend(new ScheduleFragment.ApiCallback() {
+            int jodaYear = Integer.parseInt(today.substring(0, 4));
+            int jodaMonth = Integer.parseInt(today.substring(5, 7));
+            int jodaDay = Integer.parseInt(today.substring(8, 10));
+
+            if (mEventSet.getSeq() == 0) {
+                Log.d(TAG, "Test transaction 개인");
+                //개인 일정
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+
+                        Log.d(TAG, "joda result ->" + today + "--" + jodaYear + "/" + jodaMonth + "/" + jodaDay);
+                        Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                        int nextId;
+
+                        if (currentIdNum == null) {
+                            nextId = 0;
+                        } else {
+                            nextId = currentIdNum.intValue() + 1;
+                        }
+                        //스케줄 저장
+                        ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                        Log.d(TAG, "eventFragment content ==>" + content);
+                        schedule.setTitle(content);
+                        schedule.setState(0);
+                        schedule.setColor(mEventSet.getColor());
+                        schedule.setEventSetId(mEventSet.getSeq());
+                        schedule.setTime(mTime);
+                        schedule.sethTime(resultTime);
+
+                        if (isSetTime) {
+                            schedule.setYear(mCurrentSelectYear);
+                            schedule.setMonth(mCurrentSelectMonth);
+                            schedule.setDay(mCurrentSelectDay);
+                        } else {
+                            schedule.setYear(jodaYear);
+                            schedule.setMonth(jodaMonth);
+                            schedule.setDay(jodaDay);
+                        }
+
+                        Log.d(TAG, "isSetTime local -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
+                        new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                             @Override
-                            public void onSuccess(String result, List list) {
-                                arrFriendId = new ArrayList<Integer>();
+                            public void onTaskFinished(ScheduleR data) {
+                                Log.d(TAG, "EventSetFragment add" + data);
 
-                                realm.executeTransaction(new Realm.Transaction() {
+                                if (data != null) {
+                                    mScheduleAdapter.insertItem(data);
+                                    etInput.getText().clear();
+                                    rlNoTask.setVisibility(View.GONE);
+                                    mTime = 0;
+                                    addScheduleServer();
+
+                                }
+                            }
+                        }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                });
+            } else {
+                getMyFriend(new ScheduleFragment.ApiCallback() {
+                    @Override
+                    public void onSuccess(String result, List list) {
+                        arrFriendId = new ArrayList<Integer>();
+
+                        realm.executeTransaction(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                Log.d(TAG, "addSchedule EventSetFragment");
+
+                                for (int i = 0; i < list.size(); i++) {
+                                    ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
+                                    arrFriendId.add(item.getId());
+                                }
+                                Log.d(TAG, "joda result ->" + today + "--" + jodaYear + "/" + jodaMonth + "/" + jodaDay);
+                                Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+
+                                int nextId;
+
+                                if (currentIdNum == null) {
+                                    nextId = 0;
+                                } else {
+                                    nextId = currentIdNum.intValue() + 1;
+                                }
+                                //스케줄 저장
+                                ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
+                                Log.d(TAG, "eventFragment content ==>" + content);
+                                schedule.setTitle(content);
+                                schedule.setState(-2);
+                                schedule.setColor(mEventSet.getColor());
+                                schedule.setEventSetId(mEventSet.getSeq());
+                                schedule.setTime(mTime);
+                                schedule.sethTime(resultTime);
+
+                                if (isSetTime) {
+                                    schedule.setYear(mCurrentSelectYear);
+                                    schedule.setMonth(mCurrentSelectMonth);
+                                    schedule.setDay(mCurrentSelectDay);
+                                } else {
+                                    schedule.setYear(jodaYear);
+                                    schedule.setMonth(jodaMonth);
+                                    schedule.setDay(jodaDay);
+                                }
+
+                                Log.d(TAG, "isSetTime local -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
+                                new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
                                     @Override
-                                    public void execute(Realm realm) {
-                                        Log.d(TAG, "addSchedule EventSetFragment");
+                                    public void onTaskFinished(ScheduleR data) {
+                                        Log.d(TAG, "EventSetFragment add" + data);
 
-//                                        if (result.equals("share")) {
-                                            //공유된 스케줄일 경우 자기자신 추가.
-//                                            arrFriendId.add(resultId);
-//                                        }
+                                        if (data != null) {
+                                            mScheduleAdapter.insertItem(data);
+                                            etInput.getText().clear();
+                                            rlNoTask.setVisibility(View.GONE);
+                                            mTime = 0;
+                                            addScheduleServer();
 
-                                        for (int i = 0; i < list.size(); i++) {
-                                            ScheduleFriendItem item = (ScheduleFriendItem) list.get(i);
-
-//                               Log.d(TAG, "list value ->" + item.getId());
-                                            arrFriendId.add(item.getId());
                                         }
-                                        DateTime dateTime = new DateTime();
-                                        String today = dateTime.toString("yyyy-MM-dd HH:mm:ss");
-
-                                        int jodaYear = Integer.parseInt(today.substring(0, 4));
-                                        int jodaMonth = Integer.parseInt(today.substring(5, 7));
-                                        int jodaDay = Integer.parseInt(today.substring(8, 10));
-
-                                        Log.d(TAG, "joda result ->" + today + "--" + jodaYear + "/" + jodaMonth + "/" + jodaDay);
-                                        Number currentIdNum = realm.where(ScheduleR.class).max("seq");
-
-                                        int nextId;
-
-                                        if (currentIdNum == null) {
-                                            nextId = 0;
-                                        } else {
-                                            nextId = currentIdNum.intValue() + 1;
-                                        }
-                                        //스케줄 저장
-                                        ScheduleR schedule = realm.createObject(ScheduleR.class, nextId);
-                                        Log.d(TAG, "eventFragment content ==>" + content);
-                                        schedule.setTitle(content);
-                                        schedule.setState(0);
-                                        schedule.setColor(mEventSet.getColor());
-                                        schedule.setEventSetId(mEventSet.getSeq());
-                                        schedule.setTime(mTime);
-                                        schedule.sethTime(resultTime);
-
-                                        if (isSetTime) {
-                                            schedule.setYear(mCurrentSelectYear);
-                                            schedule.setMonth(mCurrentSelectMonth);
-                                            schedule.setDay(mCurrentSelectDay);
-                                        } else {
-                                            schedule.setYear(jodaYear);
-                                            schedule.setMonth(jodaMonth);
-                                            schedule.setDay(jodaDay);
-                                        }
-
-                                        Log.d(TAG, "isSetTime local -->" + isSetTime + "--" + mCurrentSelectYear + "/" + mCurrentSelectMonth + "/" + mCurrentSelectDay);
-                                        new AddScheduleRTask(mActivity, new OnTaskFinishedListener<ScheduleR>() {
-                                            @Override
-                                            public void onTaskFinished(ScheduleR data) {
-                                                Log.d(TAG, "EventSetFragment add" + data);
-
-                                                if (data != null) {
-                                                    mScheduleAdapter.insertItem(data);
-                                                    etInput.getText().clear();
-                                                    rlNoTask.setVisibility(View.GONE);
-                                                    mTime = 0;
-                                                    addScheduleServer();
-
-                                                }
-                                            }
-                                        }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                     }
-                                });
-
+                                }, schedule).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             }
-                            @Override
-                            public void onFail(String result) {
+                        });
 
-                            }
-                    });
+                    }
+
+                    @Override
+                    public void onFail(String result) {
+
+                    }
+                });
+            }
         }
     }
 
@@ -404,8 +461,14 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
         jsonObject.addProperty("latitude", 0);
         jsonObject.addProperty("longitude", 0);
 
-        for (int id : arrFriendId) {
-            jsonArray.add(id);
+        //개인 일정
+        if (mEventSet.getSeq() == 0) {
+            jsonArray.add(resultId);
+        } else {
+            for (int id : arrFriendId) {
+                Log.d(TAG, "id result " + id);
+                jsonArray.add(id);
+            }
         }
 //        jsonObject.addProperty("user_ids", [1]);
 

@@ -6,7 +6,7 @@
     <string name="menu_friend">Friend</string>
 
     <string name="calendar_today">Today</string>
-    <string name="menu_schedule_category">스케줄 </string>
+    <string name="menu_schedule_category">개인 스케줄 </string>
     <string name="menu_schedule_shared">공유 스케줄 </string>
     <string name="menu_schedule_request">요청 스케줄 </string>
 
