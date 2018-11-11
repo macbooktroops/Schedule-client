@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -111,6 +112,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     SharedPreferences pref;
     String authToken;
 
+    LinearLayout mainInput;
     int resultId;
 
     static EventSetR resultEvent; //EVENT_SET_OBJ
@@ -148,7 +150,7 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void bindView() {
 
-
+        mainInput = searchViewById(R.id.main_input);
         rvScheduleList = searchViewById(R.id.rvScheduleList);
         rlNoTask = searchViewById(R.id.rlNoTask);
         etInput = searchViewById(R.id.etInputContent);
@@ -235,6 +237,11 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
             }
         });*/
         mEventSet = resultEvent;
+
+        if (mEventSet.getSeq() == -1) {
+            Log.d(TAG, "공휴일 ..");
+            mainInput.setVisibility(View.GONE);
+        }
 
     }
 

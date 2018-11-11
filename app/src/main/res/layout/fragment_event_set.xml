@@ -30,5 +30,6 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/main_input"/>
+    <include layout="@layout/main_input"
+             android:id="@+id/main_input"/>
 </RelativeLayout> 
