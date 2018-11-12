@@ -66,7 +66,7 @@ import retrofit2.Retrofit;
  * 최종 confirm()에서만 Realm Transaction이 실행되도록 수정.
  */
 public class ScheduleDetailActivity extends BaseActivity implements View.OnClickListener,
-        OnTaskFinishedListener<Map<Integer, EventSetR>>, SelectEventSetDialog.OnSelectEventSetListener, SelectDateDialog.OnSelectDateListener, InputLocationDialog.OnLocationBackListener {
+        OnTaskFinishedListener<Map<Integer, EventSetR>>, SelectEventSetDialog.OnSelectEventSetListener, SelectDateDialog.OnSelectDateListener {
 
     static final String TAG = ScheduleDetailActivity.class.getSimpleName();
 
@@ -102,6 +102,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     private Button btnArrived;
 
 
+    public boolean isSetLocation = false;
 
     //realm 에 time을 보기 편하게 변환
     private String HUMAN_TIME_FORMAT = "";
@@ -714,11 +715,14 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     //위치 설정 레이아웃 클릭
     private void showInputLocationDialog() {
-        if (mInputLocationDialog == null) {
-            mInputLocationDialog = new InputLocationDialog(this, this);
-        }
-        mInputLocationDialog.show();
+//        if (mInputLocationDialog == null) {
+//            mInputLocationDialog = new InputLocationDialog(this, this);
+//        }
+//        mInputLocationDialog.show();
+        Intent intent = new Intent(ScheduleDetailActivity.this, InputLocationDialog.class);
+        startActivityForResult(intent, 3000);
     }
+
 
     private void setScheduleData() {
         Log.d(TAG, "set eventid ==>"+ mSchedule.getEventSetId());
@@ -740,14 +744,26 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
 //        location = mSchedule.getLocation();
 
-        Log.d(TAG, "location ->" + location);
-        if (TextUtils.isEmpty(mSchedule.getLocation())) {
-            Log.d(TAG, "mSchedule location - >" + mSchedule.getLocation());
-            tvLocation.setText(R.string.click_here_select_location);
+        Log.d(TAG, "location ->" + location + "//"  +isSetLocation);
+        if (isSetLocation) {
+            //지도에서 위치를 정해줬을 경우.
+            if (TextUtils.isEmpty(location)) {
+                Log.d(TAG, "mSchedule location true - >" + location);
+                tvLocation.setText(R.string.click_here_select_location);
+            } else {
+                Log.d(TAG, "mschedule location true2- >" + location);
+//                location = mSchedule.getLocation();
+                tvLocation.setText(location);
+            }
         } else {
-            Log.d(TAG, "mschedule location 2- >" + mSchedule.getLocation());
-            location = mSchedule.getLocation();
-            tvLocation.setText(location);
+            if (TextUtils.isEmpty(mSchedule.getLocation())) {
+                Log.d(TAG, "mSchedule location - >" + mSchedule.getLocation());
+                tvLocation.setText(R.string.click_here_select_location);
+            } else {
+                Log.d(TAG, "mschedule location 2- >" + mSchedule.getLocation());
+                location = mSchedule.getLocation();
+                tvLocation.setText(location);
+            }
         }
     }
 
@@ -786,6 +802,24 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                      * Broadcast로 좌측메뉴에도 그 항목을 추가한다고 전송.
                      */
                 }
+            } else if (resultCode == RESULT_OK) {
+                switch (requestCode) {
+                    //위치 선택 화면에서 위치를 선택하고 확인버튼을 눌렀을 경우 호출.
+                    case 3000:
+                        Log.d(TAG, "Location FINISH");
+                        isSetLocation = true;
+                        location = data.getStringExtra("location");
+
+                        Log.d(TAG, "onLocationBack -> " +location);
+                        Log.d(TAG, "mschedule location -> " + mSchedule.getLocation());
+
+                        if (TextUtils.isEmpty(location)) {
+                            tvLocation.setText(R.string.click_here_select_location);
+                        } else {
+                            tvLocation.setText(location);
+                        }
+                        break;
+                }
             }
         }
 
@@ -816,35 +850,6 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
             tvTime.setText(DateUtils.timeStamp2Date(resTime, getString(R.string.date_format)));
         }
-    }
-
-    //위치 설정 다이얼로그 완료 버튼클릭
-    @Override
-    public void onLocationBack(final String text) {
-
-      /*  realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                mSchedule.setLocation(text);
-
-                if (TextUtils.isEmpty(mSchedule.getLocation())) {
-                    tvLocation.setText(R.string.click_here_select_location);
-                } else {
-                    tvLocation.setText(mSchedule.getLocation());
-                }
-            }
-        });*/
-
-      Log.d(TAG, "onLocationBack -> " +text);
-      Log.d(TAG, "mschedule location -> " + mSchedule.getLocation());
-      location = text;
-
-        if (TextUtils.isEmpty(location)) {
-            tvLocation.setText(R.string.click_here_select_location);
-        } else {
-            tvLocation.setText(location);
-        }
-
     }
     //스케줄 목록다이얼로그 클릭
    @Override
