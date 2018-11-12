@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,13 +27,13 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
     static final String TAG = InputLocationDialog.class.getSimpleName();
 
-    private OnLocationBackListener mOnLocationBackListener;
     private EditText etLocationContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_input_location);
+        etLocationContent = findViewById(R.id.etLocationContent);
         findViewById(R.id.tvConfirm).setOnClickListener(this);
         findViewById(R.id.tvCancel).setOnClickListener(this);
 
@@ -90,15 +91,16 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                 finish();
                 break;
             case R.id.tvConfirm:
-                if (mOnLocationBackListener != null) {
-                    mOnLocationBackListener.onLocationBack(etLocationContent.getText().toString());
-                }
+//                if (mOnLocationBackListener != null) {
+//                    mOnLocationBackListener.onLocationBack(etLocationContent.getText().toString());
+//                }
 
+                Log.d(TAG, "Location Result ->" + etLocationContent.getText().toString());
+                Intent intent = new Intent();
+                intent.putExtra("location",etLocationContent.getText().toString());
+                setResult(RESULT_OK, intent);
                 finish();
                 break;
         }
     }
-        public interface OnLocationBackListener {
-            void onLocationBack(String text);
-        }
 }
