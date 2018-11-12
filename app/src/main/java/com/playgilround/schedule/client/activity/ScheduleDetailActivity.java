@@ -714,10 +714,12 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
     //위치 설정 레이아웃 클릭
     private void showInputLocationDialog() {
-        if (mInputLocationDialog == null) {
-            mInputLocationDialog = new InputLocationDialog(this, this);
-        }
-        mInputLocationDialog.show();
+//        if (mInputLocationDialog == null) {
+//            mInputLocationDialog = new InputLocationDialog(this, this);
+//        }
+//        mInputLocationDialog.show();
+        Intent intent = new Intent(ScheduleDetailActivity.this, InputLocationDialog.class);
+        startActivity(intent);
     }
 
     private void setScheduleData() {

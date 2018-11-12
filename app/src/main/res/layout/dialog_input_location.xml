@@ -25,7 +25,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/schedule_hint_dash_line_width"
             android:background="@color/color_select_date_dialog_line"/>
-<!--
         <EditText
             android:id="@+id/etLocationContent"
             android:layout_width="match_parent"
@@ -39,7 +38,7 @@
             android:paddingTop="@dimen/space_10dp"
             android:textColor="@color/color_input_location_text"
             android:textColorHint="@color/color_input_location_text_hint"
-            android:textSize="@dimen/text_size_14sp"/>-->
+            android:textSize="@dimen/text_size_14sp"/>
 
         <View
             android:layout_width="match_parent"
@@ -49,7 +48,7 @@
         <fragment
             android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             class="com.google.android.gms.maps.MapFragment" />
 
 

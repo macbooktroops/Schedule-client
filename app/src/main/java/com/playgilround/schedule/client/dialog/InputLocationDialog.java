@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,13 +22,30 @@ import com.playgilround.schedule.client.activity.MainActivity;
  * 18-07-05
  * 위치 설정 다이얼로그
  */
-public class InputLocationDialog extends Dialog implements View.OnClickListener, OnMapReadyCallback {
+public class InputLocationDialog extends Activity implements View.OnClickListener, OnMapReadyCallback {
 
     static final String TAG = InputLocationDialog.class.getSimpleName();
 
     private OnLocationBackListener mOnLocationBackListener;
     private EditText etLocationContent;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_input_location);
+        findViewById(R.id.tvConfirm).setOnClickListener(this);
+        findViewById(R.id.tvCancel).setOnClickListener(this);
+
+        FragmentManager fragmentManager = getFragmentManager();
+
+        Log.d(TAG, "fragment state -> " + fragmentManager);
+        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+        Log.d(TAG, "fragment state 2-> " + mapFragment);
+
+        mapFragment.getMapAsync(this);
+
+    }
+/*
     public InputLocationDialog(Context context, OnLocationBackListener onLocationBackListener) {
         super(context, R.style.DialogFullScreen);
         mOnLocationBackListener = onLocationBackListener;
@@ -48,6 +66,7 @@ public class InputLocationDialog extends Dialog implements View.OnClickListener,
 
         mapFragment.getMapAsync(this);
     }
+*/
 
     @Override
     public void onMapReady(final GoogleMap map) {
@@ -68,14 +87,14 @@ public class InputLocationDialog extends Dialog implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvCancel:
-                dismiss();
+                finish();
                 break;
             case R.id.tvConfirm:
                 if (mOnLocationBackListener != null) {
                     mOnLocationBackListener.onLocationBack(etLocationContent.getText().toString());
                 }
 
-                dismiss();
+                finish();
                 break;
         }
     }
