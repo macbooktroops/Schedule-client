@@ -3,6 +3,7 @@ package com.playgilround.schedule.client.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -33,6 +34,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
     private EditText etLocationContent;
     double latitude;
     double longitude;
+    ProgressDialog progress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,10 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
             Log.d(TAG, "Request Location Updates");
+            progress = new ProgressDialog(this);
+            progress.setTitle("위치");
+            progress.setMessage("계신 곳에 위치를 탐색 중입니다.");
+            progress.show();
 
         } catch (SecurityException e) {
             e.printStackTrace();
@@ -59,6 +66,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
     @Override
     public void onMapReady(final GoogleMap map) {
 //        LatLng SEOUL = new LatLng(37.56, 126.97);
+        progress.cancel();
         Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
             LatLng SEOUL = new LatLng(latitude, longitude);
 
@@ -88,6 +96,12 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         }
     }
 
+
+    public void finishLocation() {
+        FragmentManager fragmentManager = getFragmentManager();
+        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -104,9 +118,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
             Log.d(TAG, "위치정보 : " + provider + "\n위도 : " + longitude + "\n경도 : " + latitude
                     + "\n고도 : " + altitude + "\n정확도 : "  + accuracy);
-            FragmentManager fragmentManager = getFragmentManager();
-            MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
-            mapFragment.getMapAsync(InputLocationDialog.this::onMapReady);
+
+            finishLocation();
         }
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
