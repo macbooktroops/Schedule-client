@@ -1,5 +1,6 @@
 package com.playgilround.schedule.client.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
 import com.playgilround.schedule.client.gson.HolidayJsonData;
@@ -82,6 +85,13 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     RealmList<Integer> arrUserId; //userId, NickName 은 배열형태로 넣음.
     RealmList<String> arrNickName;
 
+    private String[] PERMISSION_STORAGE = {
+
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.INTERNET
+
+    };
     int arrScheId; //자기 자신 스케줄 아이디만 저장.
     public static String getTime(String strDate, String Time, String result) {
         SimpleDateFormat df;
@@ -103,6 +113,25 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
+
+        final PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                Log.d(TAG, "onPermissionGranted");
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                Log.d(TAG, "onPermissionDeined");
+            }
+        };
+
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setDeniedMessage("권한 요청을 해주세요.")
+                .setPermissions(PERMISSION_STORAGE)
+                .check();
+
         pref = getSharedPreferences("loginData", MODE_PRIVATE);
         editor = pref.edit();
 
@@ -116,6 +145,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         loginBtn = (Button) findViewById(R.id.loginBtn);
 
         findBtn = findViewById(R.id.findBtn);
+
 
         realm = Realm.getDefaultInstance();
 
