@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.playgilround.schedule.client.R;
@@ -99,7 +100,10 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
     public void finishLocation() {
         FragmentManager fragmentManager = getFragmentManager();
-        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+        /*MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
+        MapFragment mapFragment = (MapFragment) fragmentManager
+                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
     private final LocationListener mLocationListener = new LocationListener() {
