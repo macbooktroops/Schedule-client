@@ -4,7 +4,9 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -105,6 +107,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
 
     public boolean isSetLocation = false;
+    public boolean isGpsEnable = false;
+
 
     //realm 에 time을 보기 편하게 변환
     private String HUMAN_TIME_FORMAT = "";
@@ -656,13 +660,24 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 //            mInputLocationDialog = new InputLocationDialog(this, this);
 //        }
 //        mInputLocationDialog.show();
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Log.d(TAG, "ShowInputLocation -> " +latitude + "--" + longitude + isGpsEnable);
+            Intent intent = new Intent(ScheduleDetailActivity.this, InputLocationDialog.class);
+            intent.putExtra("latitude", latitude);
+            intent.putExtra("longitude", longitude);
+            intent.putExtra("location", location);
+            startActivityForResult(intent, 3000);
+            isGpsEnable = true;
+        } else {
+            Toast.makeText(getApplicationContext(), "현재 위치를 얻기 위해 \n GPS 위치 기능을 켜주세요!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+            isGpsEnable = false;
+        }
 
-        Log.d(TAG, "ShowInputLocation -> " +latitude + "--" + longitude);
-        Intent intent = new Intent(ScheduleDetailActivity.this, InputLocationDialog.class);
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
-        intent.putExtra("location", location);
-        startActivityForResult(intent, 3000);
+
+
     }
 
 
