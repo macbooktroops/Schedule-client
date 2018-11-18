@@ -10,6 +10,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
 
@@ -28,7 +31,8 @@ import com.playgilround.schedule.client.activity.MainActivity;
  * 18-07-05
  * 위치 설정 다이얼로그
  */
-public class InputLocationDialog extends Activity implements View.OnClickListener, OnMapReadyCallback {
+public class InputLocationDialog extends Activity implements View.OnClickListener, OnMapReadyCallback,
+        MaterialSearchBar.OnSearchActionListener {
 
     static final String TAG = InputLocationDialog.class.getSimpleName();
 
@@ -36,6 +40,10 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
     double latitude;
     double longitude;
     ProgressDialog progress;
+
+    private MaterialSearchBar searchBar;
+    private boolean isInit = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +65,59 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         } catch (SecurityException e) {
             e.printStackTrace();
         }
+
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.setHint("위치 검색");
+        searchBar.setSpeechMode(false);
+
+        searchBar.setOnSearchActionListener(this);
+        searchBar.addTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d(TAG, "Material Text ->" + getClass().getSimpleName() + "text changed ->" + searchBar.getText());
+                isInit = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
         etLocationContent = findViewById(R.id.etLocationContent);
         findViewById(R.id.tvConfirm).setOnClickListener(this);
         findViewById(R.id.tvCancel).setOnClickListener(this);
+    }
 
+    @Override
+    public void onButtonClicked(int buttonCode) {
+        switch (buttonCode) {
+            case MaterialSearchBar.BUTTON_NAVIGATION:
+                Log.d(TAG, "Button Navigation MaterialSearchBar");
+                break;
+
+            case MaterialSearchBar.BUTTON_SPEECH:
+                Log.d(TAG, "Button speech MaterialSearchBar..");
+                break;
+        }
+    }
+
+    @Override
+    public void onSearchStateChanged(boolean enabled) {
+        String s = enabled ? "enabled" : "disabled";
+    }
+
+    @Override
+    public void onSearchConfirmed(CharSequence text) {
+        if (isInit) {
+            Log.d(TAG, "Confirmed -> " +text.toString());
+        }
     }
 
 
