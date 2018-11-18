@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/space_30dp"
@@ -25,20 +26,17 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/schedule_hint_dash_line_width"
             android:background="@color/color_select_date_dialog_line"/>
-        <EditText
-            android:id="@+id/etLocationContent"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@color/color_input_location_bg"
-            android:gravity="top"
-            android:hint="@string/click_input_location"
-            android:paddingBottom="@dimen/space_10dp"
-            android:paddingLeft="@dimen/space_12dp"
-            android:paddingRight="@dimen/space_12dp"
-            android:paddingTop="@dimen/space_10dp"
-            android:textColor="@color/color_input_location_text"
-            android:textColorHint="@color/color_input_location_text_hint"
-            android:textSize="@dimen/text_size_14sp"/>
+
+
+        <com.mancj.materialsearchbar.MaterialSearchBar
+            style="@style/MaterialSearchBarDark"
+            app:mt_speechMode="false"
+            app:mt_hint="위치 검색"
+            app:mt_placeholder="위치 검색"
+            app:mt_maxSuggestionsCount="30"
+            android:id="@+id/searchBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <View
             android:layout_width="match_parent"

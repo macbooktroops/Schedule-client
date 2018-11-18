@@ -322,9 +322,9 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
             case MaterialSearchBar.BUTTON_NAVIGATION:
                 Log.d(TAG, "Button Navigation MaterialSearchBar");
                 break;
-                case MaterialSearchBar.BUTTON_SPEECH:
-                    Log.d(TAG, "Button Speech MaterialSearchBar");
-                    break;
+            case MaterialSearchBar.BUTTON_SPEECH:
+                Log.d(TAG, "Button Speech MaterialSearchBar");
+                break;
         }
     }
 

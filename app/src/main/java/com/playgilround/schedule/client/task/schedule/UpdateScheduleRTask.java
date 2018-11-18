@@ -19,7 +19,7 @@ public class UpdateScheduleRTask extends BaseAsyncTask<Boolean> {
     static final String TAG = UpdateScheduleRTask.class.getSimpleName();
     Realm realm;
 
-    public UpdateScheduleRTask(Context context, OnTaskFinishedListener<Boolean> onTaskFinishedListener, ScheduleR schedule) {
+    public UpdateScheduleRTask(Context context, Realm realm, OnTaskFinishedListener<Boolean> onTaskFinishedListener, ScheduleR schedule) {
         super(context, onTaskFinishedListener);
         mSchedule = schedule;
     }
