@@ -43,6 +43,11 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
     double latitude;
     double longitude;
+
+    double scheLatitude; //위도
+    double scheLongitude; //경도
+    String scheLocation;
+
     ProgressDialog progress;
 
     private MaterialSearchBar searchBar;
@@ -61,6 +66,11 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_input_location);
 
+        Intent intent = getIntent();
+        scheLatitude = intent.getDoubleExtra("latitude", 0);
+        scheLongitude = intent.getDoubleExtra("longitude", 0);
+        scheLocation = intent.getStringExtra("location");
+
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
             //Gps 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기
@@ -71,7 +81,12 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             progress = new ProgressDialog(this);
             progress.setCanceledOnTouchOutside(false);
             progress.setTitle("위치");
-            progress.setMessage("계신 곳에 위치를 탐색 중입니다.");
+
+            if (scheLatitude == 0.0 && scheLongitude == 0.0) {
+                progress.setMessage("계신 곳에 위치를 탐색 중입니다.");
+            } else {
+                progress.setMessage("설정 된 위치로 표시됩니다.");
+            }
             progress.show();
 
         } catch (SecurityException e) {
@@ -184,17 +199,37 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 //        LatLng SEOUL = new LatLng(37.56, 126.97);
         geocoder = new Geocoder(this);
         progress.cancel();
-        Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
-            LatLng SEOUL = new LatLng(latitude, longitude);
 
-            MarkerOptions markerOptions = new MarkerOptions();
+        Log.d(TAG, "Result Get Ready ->" + scheLatitude + "--" + scheLongitude);
+        MarkerOptions markerOptions = new MarkerOptions();
+
+        if (scheLatitude != 0.0 && scheLongitude != 0.0) {
+            Log.d(TAG, "설정된 장소가 이미 지정된경우");
+            //설정된 장소가 이미 지정된경우
+            LatLng SEOUL = new LatLng(scheLatitude, scheLongitude);
             markerOptions.position(SEOUL);
             markerOptions.title("내 위치");
-            markerOptions.snippet("니 위치");
-            map.addMarker(markerOptions);
+            markerOptions.snippet(scheLocation);
 
+            resLocation = scheLocation;
+            resLatitude = scheLatitude;
+            resLongitude = scheLongitude;
+
+            map.addMarker(markerOptions);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(15));
+        } else {
+            Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
+            LatLng SEOUL = new LatLng(latitude, longitude);
+
+            markerOptions.position(SEOUL);
+            markerOptions.title("내 위치");
+            markerOptions.snippet("내 위치");
+            map.addMarker(markerOptions);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
+            map.animateCamera(CameraUpdateFactory.zoomTo(15));
+        }
+
     }
 
     @Override

@@ -721,7 +721,12 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 //            mInputLocationDialog = new InputLocationDialog(this, this);
 //        }
 //        mInputLocationDialog.show();
+
+        Log.d(TAG, "ShowInputLocation -> " +latitude + "--" + longitude);
         Intent intent = new Intent(ScheduleDetailActivity.this, InputLocationDialog.class);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        intent.putExtra("location", location);
         startActivityForResult(intent, 3000);
     }
 
