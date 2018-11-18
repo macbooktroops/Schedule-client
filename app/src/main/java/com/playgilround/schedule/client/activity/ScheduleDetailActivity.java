@@ -535,84 +535,11 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         });
 
         finish();
-
-    }
-    //공유 유저 칸 입력을 위해, 자기자신의 id 값 얻기
-   private void getMyUserID() {
-
-       /**
-        * {
-        *     "user" : {
-        *        "name" : "test4"
-        *     }
-        * }
-        */
-        //자기 자신 유저 아이디 얻기
+        addScheduleServer(mSchedule.getScheId());
+//        getMyUserID();
 
 
-        String nickName = pref.getString("loginName", "");
-        Log.d(TAG, "friend nickName -->" + nickName);
 
-        JsonObject jsonObject = new JsonObject();
-        JsonObject userJsonObject = new JsonObject();
-
-        userJsonObject.addProperty("name", nickName);
-
-        jsonObject.add("user", userJsonObject);
-        Retrofit retrofit = APIClient.getClient();
-        APIInterface getUserId = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = getUserId.postUserSearch(jsonObject, authToken);
-
-        result.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    String strResponse = response.body().toString();
-
-                    Type list  = new TypeToken<UserJsonData>() {
-                    }.getType();
-
-                    Log.d(TAG, "get DetailUser Id ->" + strResponse);
-
-                    UserJsonData userList = new Gson().fromJson(strResponse, list);
-
-                    userId = userList.id;
-
-                    if (userList == null) {
-                        Log.d(TAG, "error Detail UserInfo");
-                    } else {
-                        Log.d(TAG, "userId ---->" + userId);
-                        addScheduleServer(userId);
-                    }
-                } else {
-                    try {
-                        String error = response.errorBody().string();
-
-                        Log.d(TAG, "response Detail Error -->" + error);
-
-                        Result result = new Gson().fromJson(error, Result.class);
-
-                        int code = result.code;
-                        List<String> message = result.message;
-
-                        Log.d(TAG, "Detail Info fail...-->" + code + "--"+ message);
-
-
-                        if (message.contains("Not found user.") || message.contains("Unauthorized auth_token.")) {
-                            Log.d(TAG, "message ->" + message);
-                            Toast.makeText(getApplicationContext(), "그런 유저는 없어요 ㅋ", Toast.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.d(TAG, "fail Detail Id ->" + t.toString());
-            }
-        });
     }
 
     //서버에 스케줄 추가된 내용 저장
@@ -626,37 +553,43 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
      *     "user_ids" [ 2, 3 ]
      * }
      */
-    public void addScheduleServer(int userId) {
-        Log.d(TAG, "addScheduleServer -->" + userId);
-        Log.d(TAG, "addSchedule ->" + etTitle.getText().toString() + "--" + resTime + "--" + etDesc.getText().toString());
+    public void addScheduleServer(int scheId) {
+        Log.d(TAG, "addScheduleServer -->" + scheId);
+        Log.d(TAG, "addSchedule ->" + etTitle.getText().toString() + "--" + resTime + "--" + etDesc.getText().toString() + latitude + longitude);
         JsonObject jsonObject = new JsonObject();
-        JsonArray jsonArray = new JsonArray();
         jsonObject.addProperty("title", etTitle.getText().toString());
         jsonObject.addProperty("start_time", resYear +"-"+resMonth+"-"+resDay);
         jsonObject.addProperty("content", etDesc.getText().toString());
-        jsonObject.addProperty("latitude", 37.6237604);
-        jsonObject.addProperty("longitude", 126.9218479);
-        jsonArray.add(userId);
-//        jsonObject.addProperty("user_ids", [1]);
+        jsonObject.addProperty("latitude", latitude);
+        jsonObject.addProperty("longitude", longitude);
 
-        jsonObject.add("users_ids", jsonArray);
         Log.d(TAG, "jsonObject add ->" + jsonObject + "--" + authToken);
 
         Retrofit retrofit = APIClient.getClient();
         APIInterface postNewSche = retrofit.create(APIInterface.class);
-        Call<JsonObject> result = postNewSche.postNewSchedule(jsonObject,  authToken);
+        Call<JsonObject> result = postNewSche.postUpdateSchedule(jsonObject, scheId, authToken);
 
         result.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     String success = response.body().toString();
-                    Log.d(TAG, "success schedule -->" + success);
                 } else  {
                     try {
                         String error = response.errorBody().string();
 
-                        Log.d(TAG, "error schedule -->" + error);
+
+                        Result result = new Gson().fromJson(error, Result.class);
+
+                        List<String> message = result.message;
+
+                        if (message.contains("Unauthorized auth_token.")) {
+
+                        } else if (message.contains("Do not update.")) {
+
+                        } else if (message.contains("Not found schedule.")) {
+
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -770,7 +703,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             }
         } else {
             if (TextUtils.isEmpty(mSchedule.getLocation())) {
-                Log.d(TAG, "mSchedule location - >" + mSchedule.getLocation());
+                Log.d(TAG, "mSchedule location - >" + mSchedule.getLocation() + mSchedule.getLatitude() + "--" + mSchedule.getLongitude());
+                latitude = mSchedule.getLatitude();
+                longitude = mSchedule.getLongitude();
                 tvLocation.setText(R.string.click_here_select_location);
             } else {
                 Log.d(TAG, "mschedule location 2- >" + mSchedule.getLocation());
