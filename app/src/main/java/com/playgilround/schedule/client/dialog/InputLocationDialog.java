@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -184,6 +185,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                 // 해당 좌표로 화면 줌
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
 
+            } else if (addressList.size() == 0) {
+                Toast.makeText(getApplicationContext(), "그런 장소는 없습니다.", Toast.LENGTH_LONG).show();
             }
 
 

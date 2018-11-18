@@ -510,6 +510,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                      * onLocationBack
                      */
                     mSchedule.setLocation(location);
+                    mSchedule.setLatitude(latitude);
+                    mSchedule.setLongitude(longitude);
 
 //                    mSchedule.setEventSetId();
                     setResult(UPDATE_SCHEDULE_FINISH);
@@ -758,9 +760,13 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                 Log.d(TAG, "mSchedule location true - >" + location);
                 tvLocation.setText(R.string.click_here_select_location);
             } else {
-                Log.d(TAG, "mschedule location true2- >" + location);
 //                location = mSchedule.getLocation();
                 tvLocation.setText(location);
+//                latitude = mSchedule.getLatitude();
+//                longitude = mSchedule.getLongitude();
+                Log.d(TAG, "mschedule location true2- >" + location + latitude + longitude);
+
+
             }
         } else {
             if (TextUtils.isEmpty(mSchedule.getLocation())) {
@@ -769,6 +775,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             } else {
                 Log.d(TAG, "mschedule location 2- >" + mSchedule.getLocation());
                 location = mSchedule.getLocation();
+                latitude = mSchedule.getLatitude();
+                longitude = mSchedule.getLongitude();
                 tvLocation.setText(location);
             }
         }
