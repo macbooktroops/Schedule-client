@@ -459,7 +459,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                     Log.d(TAG, "fail FCM ->" + t.toString());
                 }
             });
-            isInit = false;
+//            isInit = false;
         }
     }
 
