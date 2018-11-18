@@ -49,6 +49,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
     private boolean isInit = true;
     private boolean isLocation = false; //최초만.
 
+    Double resLatitude;
+    Double resLongitude;
     private Geocoder geocoder;
     private GoogleMap mMap;
 
@@ -150,6 +152,10 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                 Log.d(TAG, "latitude ->" + latitude);
                 Log.d(TAG, "longitude ->" + longitude);
 
+                resLatitude = Double.parseDouble(latitude);
+                resLongitude = Double.parseDouble(longitude);
+
+
 
                 // 좌표(위도, 경도) 생성
                 LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
@@ -201,6 +207,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                 Log.d(TAG, "Location Result ->" + resLocation);
                 Intent intent = new Intent();
                 intent.putExtra("location",resLocation);
+                intent.putExtra("latitude", resLatitude);
+                intent.putExtra("longitude", resLongitude);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

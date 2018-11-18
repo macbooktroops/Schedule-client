@@ -95,6 +95,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     Realm realm;
 
     String location; //위치
+    Double latitude; //위도
+    Double longitude; //경도
     int eventColor, eventSetId; //뷰 색상, 스케줄분류 아이디
     int resYear, resMonth, resDay;
     long resTime;
@@ -809,8 +811,10 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                         Log.d(TAG, "Location FINISH");
                         isSetLocation = true;
                         location = data.getStringExtra("location");
-
+                        latitude = data.getDoubleExtra("latitude", 0);
+                        longitude = data.getDoubleExtra("longitude", 0);
                         Log.d(TAG, "onLocationBack -> " +location);
+                        Log.d(TAG, "result 위도 경도 "+ latitude + "--" + longitude);
                         Log.d(TAG, "mschedule location -> " + mSchedule.getLocation());
 
                         if (TextUtils.isEmpty(location)) {
