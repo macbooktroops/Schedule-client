@@ -6,6 +6,8 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,22 +29,29 @@ import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
 
+import java.io.IOException;
+import java.util.List;
+
 /**
  * 18-07-05
  * 위치 설정 다이얼로그
  */
 public class InputLocationDialog extends Activity implements View.OnClickListener, OnMapReadyCallback,
         MaterialSearchBar.OnSearchActionListener {
-
+    String resLocation;
     static final String TAG = InputLocationDialog.class.getSimpleName();
 
-    private EditText etLocationContent;
     double latitude;
     double longitude;
     ProgressDialog progress;
 
     private MaterialSearchBar searchBar;
     private boolean isInit = true;
+    private boolean isLocation = false; //최초만.
+
+    private Geocoder geocoder;
+    private GoogleMap mMap;
+
 
 
     @Override
@@ -58,6 +67,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
             Log.d(TAG, "Request Location Updates");
             progress = new ProgressDialog(this);
+            progress.setCanceledOnTouchOutside(false);
             progress.setTitle("위치");
             progress.setMessage("계신 곳에 위치를 탐색 중입니다.");
             progress.show();
@@ -89,8 +99,6 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             }
         });
 
-
-        etLocationContent = findViewById(R.id.etLocationContent);
         findViewById(R.id.tvConfirm).setOnClickListener(this);
         findViewById(R.id.tvCancel).setOnClickListener(this);
     }
@@ -117,13 +125,58 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
     public void onSearchConfirmed(CharSequence text) {
         if (isInit) {
             Log.d(TAG, "Confirmed -> " +text.toString());
+            resLocation = text.toString();
+            List<Address> addressList = null;
+
+            try {
+                //GeoCoding
+                addressList = geocoder.getFromLocationName(resLocation, 10);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG, "Check Size -> " + addressList.size());
+
+            if (addressList.size() != 0) {
+                Log.d(TAG, "Address ---> " + addressList.get(0).toString());
+
+                String []splitStr = addressList.get(0).toString().split(",");
+
+                String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
+                String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+                String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+
+                Log.d(TAG, "Address -> " + address);
+                Log.d(TAG, "latitude ->" + latitude);
+                Log.d(TAG, "longitude ->" + longitude);
+
+
+                // 좌표(위도, 경도) 생성
+                LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                // 마커 생성
+                MarkerOptions mOptions2 = new MarkerOptions();
+                mOptions2.title(address);
+                mOptions2.snippet(address);
+                mOptions2.position(point);
+                // 마커 추가
+                mMap.addMarker(mOptions2);
+                // 해당 좌표로 화면 줌
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
+
+            }
+
+
+//            isInit = false;
         }
     }
 
 
     @Override
     public void onMapReady(final GoogleMap map) {
+
+        mMap = map;
 //        LatLng SEOUL = new LatLng(37.56, 126.97);
+        geocoder = new Geocoder(this);
         progress.cancel();
         Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
             LatLng SEOUL = new LatLng(latitude, longitude);
@@ -134,8 +187,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             markerOptions.snippet("니 위치");
             map.addMarker(markerOptions);
 
-            map.moveCamera(CameraUpdateFactory.newLatLng(SEOUL));
-            map.animateCamera(CameraUpdateFactory.zoomTo(10));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
+            map.animateCamera(CameraUpdateFactory.zoomTo(15));
     }
 
     @Override
@@ -145,9 +198,9 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                 finish();
                 break;
             case R.id.tvConfirm:
-                Log.d(TAG, "Location Result ->" + etLocationContent.getText().toString());
+                Log.d(TAG, "Location Result ->" + resLocation);
                 Intent intent = new Intent();
-                intent.putExtra("location",etLocationContent.getText().toString());
+                intent.putExtra("location",resLocation);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
@@ -162,6 +215,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         MapFragment mapFragment = (MapFragment) fragmentManager
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        isLocation = true;
     }
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -180,7 +234,9 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             Log.d(TAG, "위치정보 : " + provider + "\n위도 : " + longitude + "\n경도 : " + latitude
                     + "\n고도 : " + altitude + "\n정확도 : "  + accuracy);
 
-            finishLocation();
+            if (!isLocation) {
+                finishLocation();
+            }
         }
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
