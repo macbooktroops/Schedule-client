@@ -53,6 +53,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
     private MaterialSearchBar searchBar;
     private boolean isInit = true;
+    private boolean isSearch = true;
     private boolean isLocation = false; //최초만.
 
     Double resLatitude;
@@ -141,56 +142,60 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
-        if (isInit) {
-            Log.d(TAG, "Confirmed -> " +text.toString());
-            resLocation = text.toString();
-            List<Address> addressList = null;
 
-            try {
-                //GeoCoding
-                addressList = geocoder.getFromLocationName(resLocation, 10);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (isSearch) {
+            if (isInit) {
+                Log.d(TAG, "Confirmed -> " + text.toString());
+                resLocation = text.toString();
+                List<Address> addressList = null;
+
+                try {
+                    //GeoCoding
+                    addressList = geocoder.getFromLocationName(resLocation, 10);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Log.d(TAG, "Check Size -> " + addressList.size());
+
+                if (addressList.size() != 0) {
+                    Log.d(TAG, "Address ---> " + addressList.get(0).toString());
+
+                    String[] splitStr = addressList.get(0).toString().split(",");
+
+                    String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
+                    String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+                    String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+
+                    Log.d(TAG, "Address -> " + address);
+                    Log.d(TAG, "latitude ->" + latitude);
+                    Log.d(TAG, "longitude ->" + longitude);
+
+                    resLatitude = Double.parseDouble(latitude);
+                    resLongitude = Double.parseDouble(longitude);
+
+
+                    // 좌표(위도, 경도) 생성
+                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                    // 마커 생성
+                    MarkerOptions mOptions2 = new MarkerOptions();
+                    mOptions2.title(address);
+                    mOptions2.snippet(address);
+                    mOptions2.position(point);
+                    // 마커 추가
+                    mMap.addMarker(mOptions2);
+                    // 해당 좌표로 화면 줌
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+
+                } else if (addressList.size() == 0) {
+                    Toast.makeText(getApplicationContext(), "그런 장소는 없습니다.", Toast.LENGTH_LONG).show();
+                }
+
+                isSearch = false;
             }
-
-            Log.d(TAG, "Check Size -> " + addressList.size());
-
-            if (addressList.size() != 0) {
-                Log.d(TAG, "Address ---> " + addressList.get(0).toString());
-
-                String []splitStr = addressList.get(0).toString().split(",");
-
-                String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
-                String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-                String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-
-                Log.d(TAG, "Address -> " + address);
-                Log.d(TAG, "latitude ->" + latitude);
-                Log.d(TAG, "longitude ->" + longitude);
-
-                resLatitude = Double.parseDouble(latitude);
-                resLongitude = Double.parseDouble(longitude);
-
-
-
-                // 좌표(위도, 경도) 생성
-                LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                // 마커 생성
-                MarkerOptions mOptions2 = new MarkerOptions();
-                mOptions2.title(address);
-                mOptions2.snippet(address);
-                mOptions2.position(point);
-                // 마커 추가
-                mMap.addMarker(mOptions2);
-                // 해당 좌표로 화면 줌
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
-
-            } else if (addressList.size() == 0) {
-                Toast.makeText(getApplicationContext(), "그런 장소는 없습니다.", Toast.LENGTH_LONG).show();
-            }
-
-
-//            isInit = false;
+        } else {
+            Log.d(TAG, "Already to INputLocation.");
+            isSearch = true;
         }
     }
 
