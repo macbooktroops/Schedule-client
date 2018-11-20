@@ -11,7 +11,7 @@ android {
         applicationId "com.playgilround.schedule.client"
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 5
+        versionCode 6
         versionName "1.2"
     }
     buildTypes {

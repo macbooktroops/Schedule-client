@@ -86,6 +86,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     String formattedDate;
 
     RequestFriendDialog mRequestFriendDialog;
+    UserSearchFragment us;
 
     public static FriendFragment getInstance() {
         FriendFragment fragment = new FriendFragment();
@@ -331,12 +332,21 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
     @Override
     public void onSearchStateChanged(boolean enabled) {
         String s = enabled ? "enabled" : "disabled";
+        Log.d(TAG, "state -> " +enabled);
 //        Toast.makeText(getContext(), "Search " + s, Toast.LENGTH_LONG).show();
     }
 
 
     @Override
     public void onSearchConfirmed(CharSequence text) {
+//        Log.d(TAG, "isVIsible  -> " +us.getView().);
+        if (us != null) {
+                isInit = false;
+                us = null;
+
+        } else {
+            isInit = true;
+        }
 
         if (isInit) {
             Log.d(TAG, "Confirmed --->" + text.toString());
@@ -420,7 +430,7 @@ public class FriendFragment extends BaseFragment implements MaterialSearchBar.On
                              * userFriend 1 = 친구 요청 중
                              * userFriend 2 = 친구
                              */
-                            final UserSearchFragment us = UserSearchFragment.getInstance(userId, userName,  formattedDate, userFriend);
+                            us = UserSearchFragment.getInstance(userId, userName,  formattedDate, userFriend);
                             final android.app.FragmentManager fm = getActivity().getFragmentManager();
                             us.show(fm, "TAG");
 //                            mUserSearchFragment.show(fm, "TAG");
