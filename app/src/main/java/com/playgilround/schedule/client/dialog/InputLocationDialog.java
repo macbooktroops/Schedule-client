@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mancj.materialsearchbar.MaterialSearchBar;
@@ -216,6 +218,13 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             //설정된 장소가 이미 지정된경우
             LatLng SEOUL = new LatLng(scheLatitude, scheLongitude);
             markerOptions.position(SEOUL);
+
+            // 반경 300M원
+            CircleOptions circle300M = new CircleOptions().center(SEOUL) //원점
+                    .radius(300)      //반지름 단위 : m
+                    .strokeWidth(0f)  //선너비 0f : 선없음
+                    .fillColor(Color.parseColor("#880000ff")); //배경색
+
             markerOptions.title("내 위치");
             markerOptions.snippet(scheLocation);
 
@@ -224,6 +233,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             resLongitude = scheLongitude;
 
             map.addMarker(markerOptions);
+            map.addCircle(circle300M);
+
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(15));
         } else {
@@ -231,12 +242,22 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             LatLng SEOUL = new LatLng(latitude, longitude);
 
             markerOptions.position(SEOUL);
+
+            // 반경 300M원
+            CircleOptions circle300M = new CircleOptions().center(SEOUL) //원점
+                    .radius(300)      //반지름 단위 : m
+                    .strokeWidth(0f)  //선너비 0f : 선없음
+                    .fillColor(Color.parseColor("#880000ff")); //배경색
+
             markerOptions.title("내 위치");
             markerOptions.snippet("내 위치");
             map.addMarker(markerOptions);
+            map.addCircle(circle300M);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
+
+
 
     }
 
