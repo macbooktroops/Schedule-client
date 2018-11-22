@@ -473,10 +473,16 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
                                                                                 } else {
                                                                                     mScheduleAdapter.removeShareItem(deleteData);
                                                                                     deleteData.deleteAllFromRealm();
-                                                                                    onReset();
                                                                                 }
 
                                                                                 mScheduleAdapter.insertItem(shareR);
+
+                                                                                //공유된 데이터 표시완료 시, 로컬 데이터 삭제.
+                                                                                if (data.getTitle().equals(shareR.getTitle())) {
+                                                                                    mScheduleAdapter.removeItem(data);
+                                                                                    data.deleteFromRealm();
+                                                                                    onReset();
+                                                                                }
 
                                                                             }
                                                                             arrUserId.clear();
