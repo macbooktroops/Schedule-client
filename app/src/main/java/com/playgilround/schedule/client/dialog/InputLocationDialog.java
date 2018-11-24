@@ -186,8 +186,26 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
                     // 마커 추가
                     mMap.addMarker(mOptions2);
+
+
+                    //내 위치, 목적지 거리 계산
+                    Location curLocation = new Location("Current");
+                    curLocation.setLatitude(latitude);
+                    curLocation.setLongitude(longitude);
+
+
+
+                    Location destLocation = new Location("destination");
+                    destLocation.setLatitude(resLatitude);
+                    destLocation.setLongitude(resLongitude);
+ 
+                    double distance = curLocation.distanceTo(destLocation);
+
+                    Log.d(TAG, "Distance state - >" + distance + "m" + "//" + latitude + "//" + longitude);
+
+
                     // 해당 좌표로 화면 줌
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, setZoomLevel(distance)));
 
                 } else if (addressList.size() == 0) {
                     Toast.makeText(getApplicationContext(), "그런 장소는 없습니다.", Toast.LENGTH_LONG).show();
@@ -226,7 +244,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
      * 목적지와, 내위치거리를 계산해서,
      * Google map zoom level을 결정함.
      */
-    public int setZoomeLevel(Double distance) {
+    public int setZoomLevel(Double distance) {
+        Log.d(TAG, "distance setting -> " +distance);
         if (distance < 38.31482042) {
             return 19;
         } else if (distance < 76.62964083) {
@@ -267,8 +286,10 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             return 1;
         } else if (distance < 20088000.56607700) {
             return 0;
+        } else {
+            return 0;
         }
-        return 0;
+
     }
 
 
@@ -335,7 +356,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
 
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destMap, 15));
-            map.animateCamera(CameraUpdateFactory.zoomTo(15));
+            map.animateCamera(CameraUpdateFactory.zoomTo(setZoomLevel(distance)));
         } else {
             Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
             LatLng destMap = new LatLng(latitude, longitude);
