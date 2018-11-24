@@ -142,6 +142,28 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         String s = enabled ? "enabled" : "disabled";
     }
 
+
+    /**
+     * Address[addressLines=[0:"Gongdeog-Yeog,
+     * Seoul,
+     * South Korea"],
+     * feature=Gongdeog-Yeog,
+     * admin=Seoul,
+     * sub-admin=null,
+     * locality=null,
+     * thoroughfare=null,
+     * postalCode=null,
+     * countryCode=KR,
+     * countryName=South Korea,
+     * hasLatitude=true,
+     * latitude=37.54322,
+     * hasLongitude=true,
+     * longitude=126.95157599999999,
+     * phone=null,
+     * url=null,
+     * extras=null]
+     * @param text
+     */
     @Override
     public void onSearchConfirmed(CharSequence text) {
 
@@ -153,7 +175,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
                 try {
                     //GeoCoding
-                    addressList = geocoder.getFromLocationName(resLocation, 10);
+                    addressList = geocoder.getFromLocationName(resLocation, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -161,28 +183,20 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                 Log.d(TAG, "Check Size -> " + addressList.size());
 
                 if (addressList.size() != 0) {
-                    Log.d(TAG, "Address ---> " + addressList.get(0).toString());
 
-                    String[] splitStr = addressList.get(0).toString().split(",");
+//
+                    String title = addressList.get(0).getFeatureName();
+                    String snippet = addressList.get(0).getCountryName();
 
-                    String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
-                    String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-                    String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-
-                    Log.d(TAG, "Address -> " + address);
-                    Log.d(TAG, "latitude ->" + latitude);
-                    Log.d(TAG, "longitude ->" + longitude);
-
-                    resLatitude = Double.parseDouble(latitude);
-                    resLongitude = Double.parseDouble(longitude);
-
+                    resLatitude =  addressList.get(0).getLatitude();
+                    resLongitude = addressList.get(0).getLongitude();
 
                     // 좌표(위도, 경도) 생성
-                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                    LatLng point = new LatLng(resLatitude, resLongitude);
                     // 마커 생성
                     MarkerOptions mOptions2 = new MarkerOptions();
-                    mOptions2.title(address);
-                    mOptions2.snippet(address);
+                    mOptions2.title(title);
+                    mOptions2.snippet(snippet);
                     mOptions2.position(point);
                     // 마커 추가
                     mMap.addMarker(mOptions2);
