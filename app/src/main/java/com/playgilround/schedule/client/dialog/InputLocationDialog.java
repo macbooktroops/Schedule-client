@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -38,6 +39,7 @@ import java.util.List;
 /**
  * 18-07-05
  * 위치 설정 다이얼로그
+ *
  */
 public class InputLocationDialog extends Activity implements View.OnClickListener, OnMapReadyCallback,
         MaterialSearchBar.OnSearchActionListener {
@@ -142,6 +144,10 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         String s = enabled ? "enabled" : "disabled";
     }
 
+
+    /**
+     * @param text
+     */
     @Override
     public void onSearchConfirmed(CharSequence text) {
 
@@ -153,7 +159,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
                 try {
                     //GeoCoding
-                    addressList = geocoder.getFromLocationName(resLocation, 10);
+                    addressList = geocoder.getFromLocationName(resLocation, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -161,33 +167,45 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                 Log.d(TAG, "Check Size -> " + addressList.size());
 
                 if (addressList.size() != 0) {
-                    Log.d(TAG, "Address ---> " + addressList.get(0).toString());
 
-                    String[] splitStr = addressList.get(0).toString().split(",");
+//
+                    String title = addressList.get(0).getFeatureName();
+                    String snippet = addressList.get(0).getCountryName();
 
-                    String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
-                    String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-                    String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-
-                    Log.d(TAG, "Address -> " + address);
-                    Log.d(TAG, "latitude ->" + latitude);
-                    Log.d(TAG, "longitude ->" + longitude);
-
-                    resLatitude = Double.parseDouble(latitude);
-                    resLongitude = Double.parseDouble(longitude);
-
+                    resLatitude =  addressList.get(0).getLatitude();
+                    resLongitude = addressList.get(0).getLongitude();
 
                     // 좌표(위도, 경도) 생성
-                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                    LatLng point = new LatLng(resLatitude, resLongitude);
                     // 마커 생성
                     MarkerOptions mOptions2 = new MarkerOptions();
-                    mOptions2.title(address);
-                    mOptions2.snippet(address);
+                    mOptions2.title(title);
+                    mOptions2.snippet(snippet);
                     mOptions2.position(point);
+                    mOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
                     // 마커 추가
                     mMap.addMarker(mOptions2);
+
+
+                    //내 위치, 목적지 거리 계산
+                    Location curLocation = new Location("Current");
+                    curLocation.setLatitude(latitude);
+                    curLocation.setLongitude(longitude);
+
+
+
+                    Location destLocation = new Location("destination");
+                    destLocation.setLatitude(resLatitude);
+                    destLocation.setLongitude(resLongitude);
+ 
+                    double distance = curLocation.distanceTo(destLocation);
+
+                    Log.d(TAG, "Distance state - >" + distance + "m" + "//" + latitude + "//" + longitude);
+
+
                     // 해당 좌표로 화면 줌
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, setZoomLevel(distance)));
 
                 } else if (addressList.size() == 0) {
                     Toast.makeText(getApplicationContext(), "그런 장소는 없습니다.", Toast.LENGTH_LONG).show();
@@ -201,7 +219,83 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         }
     }
 
+    /**
+     * Zoom level 0 1:20088000.56607700 meters
+     * Zoom level 1 1:10044000.28303850 meters
+     * Zoom level 2 1:5022000.14151925 meters
+     * Zoom level 3 1:2511000.07075963 meters
+     * Zoom level 4 1:1255500.03537981 meters
+     * Zoom level 5 1:627750.01768991 meters
+     * Zoom level 6 1:313875.00884495 meters
+     * Zoom level 7 1:156937.50442248 meters
+     * Zoom level 8 1:78468.75221124 meters
+     * Zoom level 9 1:39234.37610562 meters
+     * Zoom level 10 1:19617.18805281 meters
+     * Zoom level 11 1:9808.59402640 meters
+     * Zoom level 12 1:4909.29701320 meters
+     * Zoom level 13 1:2452.14850660 meters
+     * Zoom level 14 1:1226.07425330 meters
+     * Zoom level 15 1:613.03712665 meters
+     * Zoom level 16 1:306.51856332 meters
+     * Zoom level 17 1:153.25928166 meters
+     * Zoom level 18 1:76.62964083 meters
+     * Zoom level 19 1:38.31482042 meters
+     *
+     * 목적지와, 내위치거리를 계산해서,
+     * Google map zoom level을 결정함.
+     */
+    public int setZoomLevel(Double distance) {
+        Log.d(TAG, "distance setting -> " +distance);
+        if (distance < 38.31482042) {
+            return 19;
+        } else if (distance < 76.62964083) {
+            return 18;
+        } else if (distance < 153.25928166) {
+            return 17;
+        } else if (distance < 306.51856332) {
+            return 16;
+        } else if (distance < 613.03712665) {
+            return 15;
+        } else if (distance < 1226.07425330) {
+            return 14;
+        } else if (distance < 2452.14850660) {
+            return 13;
+        } else if (distance < 4909.29701320) {
+            return 12;
+        } else if (distance < 9808.59402640) {
+            return 11;
+        } else if (distance < 19617.18805281) {
+            return 10;
+        } else if (distance < 39234.37610562) {
+            return 9;
+        } else if (distance < 78468.75221124) {
+            return 8;
+        } else if (distance < 156937.50442248) {
+            return 7;
+        } else if (distance < 313875.00884495) {
+            return 6;
+        } else if (distance < 627750.01768991) {
+            return 5;
+        } else if (distance < 1255500.03537981) {
+            return 4;
+        } else if (distance < 2511000.07075963) {
+            return 3;
+        } else if (distance < 5022000.14151925) {
+            return 2;
+        } else if (distance < 10044000.28303850) {
+            return 1;
+        } else if (distance < 20088000.56607700) {
+            return 0;
+        } else {
+            return 0;
+        }
 
+    }
+
+
+     /**
+     * @param map
+     */
     @Override
     public void onMapReady(final GoogleMap map) {
 
@@ -214,46 +308,72 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         MarkerOptions markerOptions = new MarkerOptions();
 
         if (scheLatitude != 0.0 && scheLongitude != 0.0) {
-            Log.d(TAG, "설정된 장소가 이미 지정된경우");
+            Log.d(TAG, "설정된 장소가 이미 지정된경우" + scheLatitude + "//" + scheLongitude + "지금 내 위치 --> " + latitude + "//" + longitude);
             //설정된 장소가 이미 지정된경우
-            LatLng SEOUL = new LatLng(scheLatitude, scheLongitude);
-            markerOptions.position(SEOUL);
+            LatLng destMap = new LatLng(scheLatitude, scheLongitude);
+            markerOptions.position(destMap);
 
-            // 반경 300M원
-            CircleOptions circle300M = new CircleOptions().center(SEOUL) //원점
-                    .radius(300)      //반지름 단위 : m
+            // 반경 500M원
+            CircleOptions circle500M = new CircleOptions().center(destMap) //원점
+                    .radius(500)      //반지름 단위 : m
                     .strokeWidth(0f)  //선너비 0f : 선없음
                     .fillColor(Color.parseColor("#880000ff")); //배경색
 
-            markerOptions.title("내 위치");
+            markerOptions.title("도착지");
             markerOptions.snippet(scheLocation);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
 
             resLocation = scheLocation;
             resLatitude = scheLatitude;
             resLongitude = scheLongitude;
 
-            map.addMarker(markerOptions);
-            map.addCircle(circle300M);
 
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
-            map.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+            //내 위치가 표시될 마커 생성
+            MarkerOptions currentMarker = new MarkerOptions();
+            currentMarker.position(new LatLng(latitude, longitude));
+            currentMarker.title("내 위치");
+
+            map.addCircle(circle500M);
+            map.addMarker(markerOptions);
+            map.addMarker(currentMarker);
+
+            //내 위치, 목적지 거리 계산
+            Location curLocation = new Location("Current");
+            curLocation.setLatitude(latitude);
+            curLocation.setLongitude(longitude);
+
+
+            Location destLocation = new Location("destination");
+            destLocation.setLatitude(scheLatitude);
+            destLocation.setLongitude(scheLongitude);
+
+            double distance = curLocation.distanceTo(destLocation);
+
+            Log.d(TAG, "Distance state - >" + distance + "m");
+
+
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(destMap, 15));
+            map.animateCamera(CameraUpdateFactory.zoomTo(setZoomLevel(distance)));
         } else {
             Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
-            LatLng SEOUL = new LatLng(latitude, longitude);
+            LatLng destMap = new LatLng(latitude, longitude);
 
-            markerOptions.position(SEOUL);
+            markerOptions.position(destMap);
 
-            // 반경 300M원
-            CircleOptions circle300M = new CircleOptions().center(SEOUL) //원점
-                    .radius(300)      //반지름 단위 : m
+            // 반경 500M원
+            CircleOptions circle500M = new CircleOptions().center(destMap) //원점
+                    .radius(500)      //반지름 단위 : m
                     .strokeWidth(0f)  //선너비 0f : 선없음
                     .fillColor(Color.parseColor("#880000ff")); //배경색
 
             markerOptions.title("내 위치");
             markerOptions.snippet("내 위치");
             map.addMarker(markerOptions);
-            map.addCircle(circle300M);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
+            map.addCircle(circle500M);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(destMap, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
 
