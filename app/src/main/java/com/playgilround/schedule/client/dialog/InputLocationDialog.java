@@ -39,6 +39,7 @@ import java.util.List;
 /**
  * 18-07-05
  * 위치 설정 다이얼로그
+ *
  */
 public class InputLocationDialog extends Activity implements View.OnClickListener, OnMapReadyCallback,
         MaterialSearchBar.OnSearchActionListener {
@@ -145,24 +146,6 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
 
     /**
-     * Address[addressLines=[0:"Gongdeog-Yeog,
-     * Seoul,
-     * South Korea"],
-     * feature=Gongdeog-Yeog,
-     * admin=Seoul,
-     * sub-admin=null,
-     * locality=null,
-     * thoroughfare=null,
-     * postalCode=null,
-     * countryCode=KR,
-     * countryName=South Korea,
-     * hasLatitude=true,
-     * latitude=37.54322,
-     * hasLongitude=true,
-     * longitude=126.95157599999999,
-     * phone=null,
-     * url=null,
-     * extras=null]
      * @param text
      */
     @Override
@@ -218,7 +201,80 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         }
     }
 
+    /**
+     * Zoom level 0 1:20088000.56607700 meters
+     * Zoom level 1 1:10044000.28303850 meters
+     * Zoom level 2 1:5022000.14151925 meters
+     * Zoom level 3 1:2511000.07075963 meters
+     * Zoom level 4 1:1255500.03537981 meters
+     * Zoom level 5 1:627750.01768991 meters
+     * Zoom level 6 1:313875.00884495 meters
+     * Zoom level 7 1:156937.50442248 meters
+     * Zoom level 8 1:78468.75221124 meters
+     * Zoom level 9 1:39234.37610562 meters
+     * Zoom level 10 1:19617.18805281 meters
+     * Zoom level 11 1:9808.59402640 meters
+     * Zoom level 12 1:4909.29701320 meters
+     * Zoom level 13 1:2452.14850660 meters
+     * Zoom level 14 1:1226.07425330 meters
+     * Zoom level 15 1:613.03712665 meters
+     * Zoom level 16 1:306.51856332 meters
+     * Zoom level 17 1:153.25928166 meters
+     * Zoom level 18 1:76.62964083 meters
+     * Zoom level 19 1:38.31482042 meters
+     *
+     * 목적지와, 내위치거리를 계산해서,
+     * Google map zoom level을 결정함.
+     */
+    public int setZoomeLevel(Double distance) {
+        if (distance < 38.31482042) {
+            return 19;
+        } else if (distance < 76.62964083) {
+            return 18;
+        } else if (distance < 153.25928166) {
+            return 17;
+        } else if (distance < 306.51856332) {
+            return 16;
+        } else if (distance < 613.03712665) {
+            return 15;
+        } else if (distance < 1226.07425330) {
+            return 14;
+        } else if (distance < 2452.14850660) {
+            return 13;
+        } else if (distance < 4909.29701320) {
+            return 12;
+        } else if (distance < 9808.59402640) {
+            return 11;
+        } else if (distance < 19617.18805281) {
+            return 10;
+        } else if (distance < 39234.37610562) {
+            return 9;
+        } else if (distance < 78468.75221124) {
+            return 8;
+        } else if (distance < 156937.50442248) {
+            return 7;
+        } else if (distance < 313875.00884495) {
+            return 6;
+        } else if (distance < 627750.01768991) {
+            return 5;
+        } else if (distance < 1255500.03537981) {
+            return 4;
+        } else if (distance < 2511000.07075963) {
+            return 3;
+        } else if (distance < 5022000.14151925) {
+            return 2;
+        } else if (distance < 10044000.28303850) {
+            return 1;
+        } else if (distance < 20088000.56607700) {
+            return 0;
+        }
+        return 0;
+    }
 
+
+     /**
+     * @param map
+     */
     @Override
     public void onMapReady(final GoogleMap map) {
 
@@ -258,9 +314,25 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
             currentMarker.position(new LatLng(latitude, longitude));
             currentMarker.title("내 위치");
 
-            map.addMarker(markerOptions);
             map.addCircle(circle500M);
+            map.addMarker(markerOptions);
             map.addMarker(currentMarker);
+
+            //내 위치, 목적지 거리 계산
+            Location curLocation = new Location("Current");
+            curLocation.setLatitude(latitude);
+            curLocation.setLongitude(longitude);
+
+
+            Location destLocation = new Location("destination");
+            destLocation.setLatitude(scheLatitude);
+            destLocation.setLongitude(scheLongitude);
+
+            double distance = curLocation.distanceTo(destLocation);
+
+            Log.d(TAG, "Distance state - >" + distance + "m");
+
+
 
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destMap, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(15));
