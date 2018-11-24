@@ -25,6 +25,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -198,6 +199,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                     mOptions2.title(title);
                     mOptions2.snippet(snippet);
                     mOptions2.position(point);
+                    mOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
                     // 마커 추가
                     mMap.addMarker(mOptions2);
                     // 해당 좌표로 화면 줌
@@ -228,46 +231,56 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         MarkerOptions markerOptions = new MarkerOptions();
 
         if (scheLatitude != 0.0 && scheLongitude != 0.0) {
-            Log.d(TAG, "설정된 장소가 이미 지정된경우");
+            Log.d(TAG, "설정된 장소가 이미 지정된경우" + scheLatitude + "//" + scheLongitude + "지금 내 위치 --> " + latitude + "//" + longitude);
             //설정된 장소가 이미 지정된경우
-            LatLng SEOUL = new LatLng(scheLatitude, scheLongitude);
-            markerOptions.position(SEOUL);
+            LatLng destMap = new LatLng(scheLatitude, scheLongitude);
+            markerOptions.position(destMap);
 
-            // 반경 300M원
-            CircleOptions circle300M = new CircleOptions().center(SEOUL) //원점
-                    .radius(300)      //반지름 단위 : m
+            // 반경 500M원
+            CircleOptions circle500M = new CircleOptions().center(destMap) //원점
+                    .radius(500)      //반지름 단위 : m
                     .strokeWidth(0f)  //선너비 0f : 선없음
                     .fillColor(Color.parseColor("#880000ff")); //배경색
 
-            markerOptions.title("내 위치");
+            markerOptions.title("도착지");
             markerOptions.snippet(scheLocation);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
 
             resLocation = scheLocation;
             resLatitude = scheLatitude;
             resLongitude = scheLongitude;
 
-            map.addMarker(markerOptions);
-            map.addCircle(circle300M);
 
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
+
+            //내 위치가 표시될 마커 생성
+            MarkerOptions currentMarker = new MarkerOptions();
+            currentMarker.position(new LatLng(latitude, longitude));
+            currentMarker.title("내 위치");
+
+            map.addMarker(markerOptions);
+            map.addCircle(circle500M);
+            map.addMarker(currentMarker);
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(destMap, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(15));
         } else {
             Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
-            LatLng SEOUL = new LatLng(latitude, longitude);
+            LatLng destMap = new LatLng(latitude, longitude);
 
-            markerOptions.position(SEOUL);
+            markerOptions.position(destMap);
 
-            // 반경 300M원
-            CircleOptions circle300M = new CircleOptions().center(SEOUL) //원점
-                    .radius(300)      //반지름 단위 : m
+            // 반경 500M원
+            CircleOptions circle500M = new CircleOptions().center(destMap) //원점
+                    .radius(500)      //반지름 단위 : m
                     .strokeWidth(0f)  //선너비 0f : 선없음
                     .fillColor(Color.parseColor("#880000ff")); //배경색
 
             markerOptions.title("내 위치");
             markerOptions.snippet("내 위치");
             map.addMarker(markerOptions);
-            map.addCircle(circle300M);
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 15));
+            map.addCircle(circle500M);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(destMap, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
 
