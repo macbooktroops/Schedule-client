@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.activity.MainActivity;
@@ -176,6 +177,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
                     resLongitude = addressList.get(0).getLongitude();
 
                     // 좌표(위도, 경도) 생성
+                    LatLng curMap = new LatLng(latitude, longitude);
+
                     LatLng point = new LatLng(resLatitude, resLongitude);
                     // 마커 생성
                     MarkerOptions mOptions2 = new MarkerOptions();
@@ -206,6 +209,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
                     // 해당 좌표로 화면 줌
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, setZoomLevel(distance)));
+                    mMap.addPolyline(new PolylineOptions().add(curMap, point).width(5).color(Color.RED));
+
 
                 } else if (addressList.size() == 0) {
                     Toast.makeText(getApplicationContext(), "그런 장소는 없습니다.", Toast.LENGTH_LONG).show();
@@ -310,6 +315,7 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         if (scheLatitude != 0.0 && scheLongitude != 0.0) {
             Log.d(TAG, "설정된 장소가 이미 지정된경우" + scheLatitude + "//" + scheLongitude + "지금 내 위치 --> " + latitude + "//" + longitude);
             //설정된 장소가 이미 지정된경우
+            LatLng curMap = new LatLng(latitude, longitude);
             LatLng destMap = new LatLng(scheLatitude, scheLongitude);
             markerOptions.position(destMap);
 
@@ -357,6 +363,8 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
 
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(destMap, 15));
             map.animateCamera(CameraUpdateFactory.zoomTo(setZoomLevel(distance)));
+            map.addPolyline(new PolylineOptions().add(curMap, destMap).width(5).color(Color.RED));
+
         } else {
             Log.d(TAG, "Result Map Ready ->" + latitude + "--" + longitude);
             LatLng destMap = new LatLng(latitude, longitude);
