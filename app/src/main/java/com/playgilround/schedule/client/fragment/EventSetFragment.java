@@ -4,8 +4,10 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -676,9 +678,16 @@ public class EventSetFragment extends BaseFragment implements View.OnClickListen
     public void onClick(ScheduleR schedule) {
 
         Log.d(TAG, "schedule fragment -->" + schedule.getSeq());
-        startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
-                                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule.getSeq()) //primary key seq
-                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION,  -1));
+        LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
+                    .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule.getSeq()) //primary key seq
+                    .putExtra(ScheduleDetailActivity.CALENDAR_POSITION, -1));
+        } else {
+            Toast.makeText(getContext(), "현재 위치를 얻기 위해 \n GPS 위치 기능을 켜주세요!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
     }
 
     @Override

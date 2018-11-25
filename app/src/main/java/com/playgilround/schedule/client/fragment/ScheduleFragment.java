@@ -4,7 +4,9 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -780,11 +782,18 @@ public class ScheduleFragment extends BaseFragment implements OnCalendarClickLis
     @Override
     public void onClick(ScheduleR schedule) {
         Log.d(TAG," schedule onClick --->" + schedule.getSeq());
+        LocationManager manager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 
-        startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
-                //https://stackoverflow.com/questions/40648380/how-to-pass-data-via-intent-in-realm
-                .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule.getSeq()) //primary key seq
-                .putExtra(ScheduleDetailActivity.CALENDAR_POSITION, getCurrentCalendarPosition()));
+            startActivity(new Intent(getActivity(), ScheduleDetailActivity.class)
+                    //https://stackoverflow.com/questions/40648380/how-to-pass-data-via-intent-in-realm
+                    .putExtra(ScheduleDetailActivity.SCHEDULE_OBJ, schedule.getSeq()) //primary key seq
+                    .putExtra(ScheduleDetailActivity.CALENDAR_POSITION, getCurrentCalendarPosition()));
+        } else {
+            Toast.makeText(getContext(), "현재 위치를 얻기 위해 \n GPS 위치 기능을 켜주세요!", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
     }
 
     @Override
