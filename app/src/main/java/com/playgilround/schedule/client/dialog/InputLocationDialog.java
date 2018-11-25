@@ -66,6 +66,9 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
     private Geocoder geocoder;
     private GoogleMap mMap;
 
+    public boolean isFirst = false;
+
+
 
 
     @Override
@@ -421,21 +424,25 @@ public class InputLocationDialog extends Activity implements View.OnClickListene
         @Override
         public void onLocationChanged(Location location) {
             //위치값 갱신 시
-            Log.d("test", "onLocationChanged, location:" + location);
+            if (!isFirst) {
+                isFirst = true;
 
-            latitude = location.getLatitude();   //위도
-            longitude = location.getLongitude(); //경도
-            double altitude = location.getAltitude();   //고도
-            float accuracy = location.getAccuracy();    //정확도
-            String provider = location.getProvider();   //위치제공자
-            //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
-            //Network 위치제공자에 의한 위치변화
-            //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
-            Log.d(TAG, "위치정보 : " + provider + "\n위도 : " + longitude + "\n경도 : " + latitude
-                    + "\n고도 : " + altitude + "\n정확도 : "  + accuracy);
+                Log.d("test", "onLocationChanged, location:" + location);
 
-            if (!isLocation) {
-                finishLocation();
+                latitude = location.getLatitude();   //위도
+                longitude = location.getLongitude(); //경도
+                double altitude = location.getAltitude();   //고도
+                float accuracy = location.getAccuracy();    //정확도
+                String provider = location.getProvider();   //위치제공자
+                //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
+                //Network 위치제공자에 의한 위치변화
+                //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
+                Log.d(TAG, "위치정보 : " + provider + "\n위도 : " + longitude + "\n경도 : " + latitude
+                        + "\n고도 : " + altitude + "\n정확도 : " + accuracy);
+
+                if (!isLocation) {
+                    finishLocation();
+                }
             }
         }
         @Override

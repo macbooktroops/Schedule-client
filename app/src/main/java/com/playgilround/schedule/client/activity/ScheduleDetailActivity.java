@@ -136,6 +136,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     //도착 시간 여부, arrived_at 이 없으면 도착하지않음.
     //arrived_at 이 있으면 도착버튼 클릭 안되도록.
     ArrayList<String> arrArrived;
+
+    public boolean isFirst = false;
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
@@ -885,72 +887,76 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
         @Override
         public void onLocationChanged(Location location) {
             //위치값 갱신 시
-            Log.d("test", "onLocationChanged, location:" + location);
+            if (!isFirst) {
 
-            curLatitude = location.getLatitude();   //위도
-            curLongitude = location.getLongitude(); //경도
+                isFirst = true;
+                Log.d("test", "onLocationChanged, location:" + location);
 
-            Log.d(TAG, "위도 : " + curLatitude + "\n경도 : " + curLongitude);
+                curLatitude = location.getLatitude();   //위도
+                curLongitude = location.getLongitude(); //경도
 
-            progress.cancel();
+                Log.d(TAG, "위도 : " + curLatitude + "\n경도 : " + curLongitude);
 
-            isArrivedSchedule(new LoginActivity.ApiCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    Log.d(TAG, "Result arrived ->" + result);
-                    if (result == null) {
+                progress.cancel();
 
-                        //내 위치, 목적지 거리 계산
-                        Location curLocation = new Location("Current");
-                        curLocation.setLatitude(curLatitude);
-                        curLocation.setLongitude(curLongitude);
+                isArrivedSchedule(new LoginActivity.ApiCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        Log.d(TAG, "Result arrived ->" + result);
+                        if (result == null) {
 
-                        Location destLocation = new Location("destination");
-                        destLocation.setLatitude(mSchedule.getLatitude());
-                        destLocation.setLongitude(mSchedule.getLongitude());
+                            //내 위치, 목적지 거리 계산
+                            Location curLocation = new Location("Current");
+                            curLocation.setLatitude(curLatitude);
+                            curLocation.setLongitude(curLongitude);
 
-                        double distance = curLocation.distanceTo(destLocation);
+                            Location destLocation = new Location("destination");
+                            destLocation.setLatitude(mSchedule.getLatitude());
+                            destLocation.setLongitude(mSchedule.getLongitude());
 
-                        /**
-                         * 기본적으로 공유된 스케줄에서만, 도착완료 기능 사용이 가능하다.
-                         * 도착지를 설정하지않았을 경우 도착지 설정해달라고 표시되고,
-                         * 내 위치와 목적지 거리가 500m 내외일경우 도착지에 왔냐고 물어보고,
-                         * 500m 이상일 경우 도착지 주변이 아니라고 표시된다.
-                         *
-                         */
-                        if (mSchedule.getEventSetId() == -2) {
-                            btnArrived.setVisibility(View.VISIBLE);
-                            if (mSchedule.getLatitude() == 0 || mSchedule.getLongitude() == 0) {
-                                btnArrived.setText("도착지를 설정해주세요.");
-                                btnArrived.setEnabled(false);
-                            } else {
-                                if (distance < 500.0) {
-                                    Log.d(TAG, "목적지에 근접했습니다.");
-                                    btnArrived.setText("도착지에 오셨나요?");
-                                    btnArrived.setEnabled(true);
-                                } else {
-                                    Log.d(TAG, "목적지에 오려면 아직멀었습니다.");
-                                    btnArrived.setText("아직 도착지 주변이 아닙니다.");
+                            double distance = curLocation.distanceTo(destLocation);
+
+                            /**
+                             * 기본적으로 공유된 스케줄에서만, 도착완료 기능 사용이 가능하다.
+                             * 도착지를 설정하지않았을 경우 도착지 설정해달라고 표시되고,
+                             * 내 위치와 목적지 거리가 500m 내외일경우 도착지에 왔냐고 물어보고,
+                             * 500m 이상일 경우 도착지 주변이 아니라고 표시된다.
+                             *
+                             */
+                            if (mSchedule.getEventSetId() == -2) {
+                                btnArrived.setVisibility(View.VISIBLE);
+                                if (mSchedule.getLatitude() == 0 || mSchedule.getLongitude() == 0) {
+                                    btnArrived.setText("도착지를 설정해주세요.");
                                     btnArrived.setEnabled(false);
+                                } else {
+                                    if (distance < 500.0) {
+                                        Log.d(TAG, "목적지에 근접했습니다.");
+                                        btnArrived.setText("도착지에 오셨나요?");
+                                        btnArrived.setEnabled(true);
+                                    } else {
+                                        Log.d(TAG, "목적지에 오려면 아직멀었습니다.");
+                                        btnArrived.setText("아직 도착지 주변이 아닙니다.");
+                                        btnArrived.setEnabled(false);
+                                    }
                                 }
+                                //20.593684//78.96288
+                                Log.d(TAG, "Setting Location -> " + mSchedule.getLatitude() + "//" + mSchedule.getLongitude() + "//" + curLatitude + "//" + curLongitude + "//" + distance);
                             }
-                            //20.593684//78.96288
-                            Log.d(TAG, "Setting Location -> " + mSchedule.getLatitude() + "//" + mSchedule.getLongitude() + "//" + curLatitude + "//" + curLongitude +  "//" + distance);
-                        }
-                    } else {
-                        if (mSchedule.getEventSetId() == -2) {
-                            btnArrived.setVisibility(View.VISIBLE);
-                            btnArrived.setText("도착 완료!");
-                            btnArrived.setEnabled(false);
+                        } else {
+                            if (mSchedule.getEventSetId() == -2) {
+                                btnArrived.setVisibility(View.VISIBLE);
+                                btnArrived.setText("도착 완료!");
+                                btnArrived.setEnabled(false);
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onFail(String result) {
+                    @Override
+                    public void onFail(String result) {
 
-                }
-            });
+                    }
+                });
+            }
         }
         @Override
         public void onStatusChanged(String s, int i, Bundle bundle) {
