@@ -219,35 +219,40 @@ public class MonthView extends View {
                                      @Override
                                      public void execute(Realm realm) {
                                          try {
-                                             JSONArray jsonArray = new JSONArray(response.body().toString());
-                                             Type list = new TypeToken<List<HolidayJsonData>>() {
-                                             }.getType();
+                                             if (response.isSuccessful()) {
+                                                 Log.d(TAG, "Success getHoliday");
+                                                 JSONArray jsonArray = new JSONArray(response.body().toString());
+                                                 Type list = new TypeToken<List<HolidayJsonData>>() {
+                                                 }.getType();
 
-                                             List<HolidayJsonData> holidayList = new Gson().fromJson(jsonArray.toString(), list);
+                                                 List<HolidayJsonData> holidayList = new Gson().fromJson(jsonArray.toString(), list);
 
 
-                                             for (HolidayJsonData resHoliday : holidayList) {
-                                                 Number currentIdNum = realm.where(ScheduleR.class).max("seq");
+                                                 for (HolidayJsonData resHoliday : holidayList) {
+                                                     Number currentIdNum = realm.where(ScheduleR.class).max("seq");
 
-                                                 int nextId;
+                                                     int nextId;
 
-                                                 if (currentIdNum == null) {
-                                                     nextId = 0;
-                                                 } else {
-                                                     nextId = currentIdNum.intValue() +1;
+                                                     if (currentIdNum == null) {
+                                                         nextId = 0;
+                                                     } else {
+                                                         nextId = currentIdNum.intValue() + 1;
+                                                     }
+
+                                                     ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
+
+
+                                                     holidayR.setId(resHoliday.id);
+                                                     holidayR.setYear(resHoliday.year);
+                                                     holidayR.setMonth(resHoliday.month);
+                                                     holidayR.setDay(resHoliday.day);
+                                                     holidayR.setTitle(resHoliday.name);
+                                                     holidayR.setEventSetId(-1);
+                                                     holidayR.setColor(-1);
+                                                     holidayR.setState(-1);
                                                  }
-
-                                                 ScheduleR holidayR = realm.createObject(ScheduleR.class, nextId);
-
-
-                                                 holidayR.setId(resHoliday.id);
-                                                 holidayR.setYear(resHoliday.year);
-                                                 holidayR.setMonth(resHoliday.month);
-                                                 holidayR.setDay(resHoliday.day);
-                                                 holidayR.setTitle(resHoliday.name);
-                                                 holidayR.setEventSetId(-1);
-                                                 holidayR.setColor(-1);
-                                                 holidayR.setState(-1);
+                                             } else {
+                                                Log.d(TAG, "Error get Holiday");
                                              }
                                          } catch (JSONException e) {
                                              e.printStackTrace();
