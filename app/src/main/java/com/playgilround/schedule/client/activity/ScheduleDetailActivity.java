@@ -1,11 +1,15 @@
 package com.playgilround.schedule.client.activity;
 
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -99,6 +103,9 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     String location; //위치
     Double latitude; //위도
     Double longitude; //경도
+
+    Double curLatitude; //현재 위도
+    Double curLongitude; //현재 경도
     int eventColor, eventSetId; //뷰 색상, 스케줄분류 아이디
     int resYear, resMonth, resDay;
     long resTime;
@@ -122,6 +129,7 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     int userId;
 
     String authToken;
+    ProgressDialog progress;
 
     ArrayList<String> arrName; //도착 랭킹 이름
 
@@ -131,6 +139,24 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     @Override
     protected void bindView() {
         setContentView(R.layout.activity_schedule_detail);
+
+        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        try {
+            //목적지 도착 주변일 경우 판단하기 위해, 현재 위치를 얻어옴
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1, mLocationListener);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1, mLocationListener);
+
+            progress = new ProgressDialog(this);
+            progress.setCanceledOnTouchOutside(false);
+            progress.setTitle("위치");
+            progress.setMessage("계신 곳에 위치를 탐색 중입니다.");
+            progress.show();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+
         TextView tvTitle = searchViewById(R.id.tvTitle);
         tvTitle.setText(getString(R.string.schedule_event_detail_setting));
 
@@ -187,29 +213,6 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
                  mSchedule = resScheduleR;
 
                 scheId = mSchedule.getScheId();
-                isArrivedSchedule(new LoginActivity.ApiCallback() {
-                    @Override
-                    public void onSuccess(String result) {
-                        if (result == null) {
-                            if (mSchedule.getEventSetId() == -2) {
-                                btnArrived.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            if (mSchedule.getEventSetId() == -2) {
-                                btnArrived.setVisibility(View.VISIBLE);
-                                btnArrived.setText("도착 완료!");
-                                btnArrived.setEnabled(false);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFail(String result) {
-
-                    }
-                                  }
-                );
-
             }
         });
 
@@ -877,20 +880,62 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
             tvTime.setText(DateUtils.timeStamp2Date(resTime, getString(R.string.date_format)));
         }
     }
-   /*     if (mSchedule.getTime() == 0) {
-            if (mSchedule.getYear() != 0) {
-                tvTime.setText(String.format(getString(R.string.date_format_no_time), mSchedule.getYear(), mSchedule.getMonth() , mSchedule.getDay()));
-            } else {
-                tvTime.setText(R.string.click_here_select_date);
-            }
-        } else {
-            tvTime.setText(DateUtils.timeStamp2Date(mSchedule.getTime(), getString(R.string.date_format)));
-        }
-                resetDateTimeUi();
-            }*/
-//        });
 
-//    }
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            //위치값 갱신 시
+            Log.d("test", "onLocationChanged, location:" + location);
+
+            curLatitude = location.getLatitude();   //위도
+            curLongitude = location.getLongitude(); //경도
+
+            Log.d(TAG, "위도 : " + curLatitude + "\n경도 : " + curLongitude);
+
+            progress.cancel();;
+
+            isArrivedSchedule(new LoginActivity.ApiCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    if (result == null) {
+                        if (mSchedule.getEventSetId() == -2) {
+                            btnArrived.setVisibility(View.VISIBLE);
+                            //20.593684//78.96288
+                            Log.d(TAG, "Setting Location -> " + mSchedule.getLatitude() + "//" + mSchedule.getLongitude() + "//" + curLatitude + "//" + curLongitude);
+                        }
+                    } else {
+                        if (mSchedule.getEventSetId() == -2) {
+                            btnArrived.setVisibility(View.VISIBLE);
+                            btnArrived.setText("도착 완료!");
+                            btnArrived.setEnabled(false);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFail(String result) {
+
+                }
+            });
+        }
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+            Log.d("test", "onStatusChanged, provider:" + s + ", status:" + i + " ,Bundle:" + bundle);
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+            Log.d("test", "onProviderEnabled, provider:" + s);
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+            Log.d("test", "onProviderDisabled, provider:" + s);
+
+        }
+    };
 
 
 
