@@ -104,8 +104,8 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
     Double latitude; //위도
     Double longitude; //경도
 
-    Double curLatitude; //현재 위도
-    Double curLongitude; //현재 경도
+    double curLatitude; //현재 위도
+    double curLongitude; //현재 경도
     int eventColor, eventSetId; //뷰 색상, 스케줄분류 아이디
     int resYear, resMonth, resDay;
     long resTime;
@@ -892,16 +892,50 @@ public class ScheduleDetailActivity extends BaseActivity implements View.OnClick
 
             Log.d(TAG, "위도 : " + curLatitude + "\n경도 : " + curLongitude);
 
-            progress.cancel();;
+            progress.cancel();
 
             isArrivedSchedule(new LoginActivity.ApiCallback() {
                 @Override
                 public void onSuccess(String result) {
+                    Log.d(TAG, "Result arrived ->" + result);
                     if (result == null) {
+
+                        //내 위치, 목적지 거리 계산
+                        Location curLocation = new Location("Current");
+                        curLocation.setLatitude(curLatitude);
+                        curLocation.setLongitude(curLongitude);
+
+                        Location destLocation = new Location("destination");
+                        destLocation.setLatitude(mSchedule.getLatitude());
+                        destLocation.setLongitude(mSchedule.getLongitude());
+
+                        double distance = curLocation.distanceTo(destLocation);
+
+                        /**
+                         * 기본적으로 공유된 스케줄에서만, 도착완료 기능 사용이 가능하다.
+                         * 도착지를 설정하지않았을 경우 도착지 설정해달라고 표시되고,
+                         * 내 위치와 목적지 거리가 500m 내외일경우 도착지에 왔냐고 물어보고,
+                         * 500m 이상일 경우 도착지 주변이 아니라고 표시된다.
+                         *
+                         */
                         if (mSchedule.getEventSetId() == -2) {
                             btnArrived.setVisibility(View.VISIBLE);
+                            if (mSchedule.getLatitude() == 0 || mSchedule.getLongitude() == 0) {
+                                btnArrived.setText("도착지를 설정해주세요.");
+                                btnArrived.setEnabled(false);
+                            } else {
+                                if (distance < 500.0) {
+                                    Log.d(TAG, "목적지에 근접했습니다.");
+                                    btnArrived.setText("도착지에 오셨나요?");
+                                    btnArrived.setEnabled(true);
+                                } else {
+                                    Log.d(TAG, "목적지에 오려면 아직멀었습니다.");
+                                    btnArrived.setText("아직 도착지 주변이 아닙니다.");
+                                    btnArrived.setEnabled(false);
+                                }
+                            }
                             //20.593684//78.96288
-                            Log.d(TAG, "Setting Location -> " + mSchedule.getLatitude() + "//" + mSchedule.getLongitude() + "//" + curLatitude + "//" + curLongitude);
+                            Log.d(TAG, "Setting Location -> " + mSchedule.getLatitude() + "//" + mSchedule.getLongitude() + "//" + curLatitude + "//" + curLongitude +  "//" + distance);
                         }
                     } else {
                         if (mSchedule.getEventSetId() == -2) {
