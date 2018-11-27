@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -40,6 +43,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Type;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -113,6 +118,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
+
 
         final PermissionListener permissionListener = new PermissionListener() {
             @Override
@@ -558,7 +564,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         });
 
     }
-
     public void checkHoliday(final ApiCallback callback) {
         int nYear;
 
