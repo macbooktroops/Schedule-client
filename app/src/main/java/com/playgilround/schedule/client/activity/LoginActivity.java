@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -22,6 +25,14 @@ import com.google.gson.reflect.TypeToken;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.kakao.auth.ErrorCode;
+import com.kakao.auth.ISessionCallback;
+import com.kakao.auth.Session;
+import com.kakao.network.ErrorResult;
+import com.kakao.usermgmt.UserManagement;
+import com.kakao.usermgmt.callback.MeResponseCallback;
+import com.kakao.usermgmt.response.model.UserProfile;
+import com.kakao.util.exception.KakaoException;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
 import com.playgilround.schedule.client.gson.HolidayJsonData;
@@ -40,6 +51,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Type;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,6 +98,9 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     RealmList<Integer> arrUserId; //userId, NickName 은 배열형태로 넣음.
     RealmList<String> arrNickName;
 
+    SessionCallback callback;
+
+
     private String[] PERMISSION_STORAGE = {
 
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -114,6 +130,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
         setContentView(R.layout.activity_login);
 
+
         final PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
@@ -131,6 +148,10 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
                 .setDeniedMessage("권한 요청을 해주세요.")
                 .setPermissions(PERMISSION_STORAGE)
                 .check();
+
+        callback = new SessionCallback();
+        Session.getCurrentSession().addCallback(callback);
+        requestMe();
 
         pref = getSharedPreferences("loginData", MODE_PRIVATE);
         editor = pref.edit();
@@ -558,7 +579,6 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         });
 
     }
-
     public void checkHoliday(final ApiCallback callback) {
         int nYear;
 
@@ -913,4 +933,80 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
     }
 
+    //카카오톡 유저정보 관련
+    public void requestMe() {
+        //유저의 정보를 받아오는 함수
+        UserManagement.requestMe(new MeResponseCallback() {
+            @Override
+            public void onSessionClosed(ErrorResult errorResult) {
+                Log.d(TAG, "onSessionClose --> " + errorResult);
+            }
+
+            @Override
+            public void onNotSignedUp() {
+                //카카오톡 회원이 아닐시
+                Log.d(TAG, "onNotSignedUp ");
+            }
+
+            @Override
+            public void onSuccess(UserProfile result) {
+                Log.d(TAG, "Kakako user profile ->"+result.toString());
+                Log.d(TAG, "Kakako user profile ->"+result.getId());
+            }
+
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                Log.d(TAG, "error Result ->" + errorResult);
+            }
+        });
+    }
+
+
+    //Kakao Callback Listener
+    class SessionCallback implements ISessionCallback {
+
+        @Override
+        public void onSessionOpened() {
+            UserManagement.requestMe(new MeResponseCallback() {
+                @Override
+                public void onSessionClosed(ErrorResult errorResult) {
+                    Log.d(TAG, "Kakao onSessionClose -->" + errorResult);
+                }
+
+                @Override
+                public void onNotSignedUp() {
+                    Log.d(TAG, "Kakao onNotSignedUp -->");
+
+                }
+
+                @Override
+                public void onSuccess(UserProfile result) {
+                    Log.d(TAG, "Kakao onSuccess");
+                    //로그인 성공 시 , 로그인한 사용자에 일련번호, 이미지 url, 닉네임 리턴
+                    //사용자 아이디는 보안상의 문제로 제공하지않고 일련번호만 제공.
+                    long number = result.getId();
+                }
+
+                @Override
+                public void onFailure(ErrorResult errorResult) {
+                    String message = "failed to get user info. msg = " + errorResult;
+
+                    ErrorCode result = ErrorCode.valueOf(errorResult.getErrorCode());
+
+                    if (result == ErrorCode.CLIENT_ERROR_CODE) {
+                        //에러로 인한 로그인 실패
+                        Log.d(TAG, "Error login fail..");
+                    } else {
+
+                    }
+                }
+
+            });
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+            Log.d(TAG, "Kakao onSessionOpenFailed -> " +exception);
+        }
+    }
 }

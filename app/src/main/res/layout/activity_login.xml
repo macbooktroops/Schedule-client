@@ -48,11 +48,19 @@
         android:textAllCaps="false" />
 
     <CheckBox
+        android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remember login"
-        android:id="@+id/checkbox"
-        android:layout_marginTop="20dp"
         android:layout_below="@id/loginBtn"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="97dp"
+        android:text="Remember login" />
+
+    <com.kakao.usermgmt.LoginButton
+        android:id="@+id/com_kakao_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="173dp" />
 </RelativeLayout>

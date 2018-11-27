@@ -40,6 +40,12 @@ import java.util.List;
 /**
  * 18-07-05
  * 위치 설정 다이얼로그
+ * Authorization failure.  Please see https://developers.google.com/maps/documentation/android-api/start for how to correctly set up the map.
+ *E/Google Maps Android API: In the Google Developer Console (https://console.developers.google.com)
+ *     Ensure that the "Google Maps Android API v2" is enabled.
+ *     Ensure that the following Android Key exists:
+ *     	API Key: AIzaSyBtfoWf45RbAnQ7mDul2qiW37sB5jEy_Ho
+ *     	Android Application (<cert_fingerprint>;<package_name>): C3:07:FD:01:7A:D7:8F:83:9B:29:E1:A4:D5:84:2D:D8:A6:43:D5:0E;com.playgilround.schedule.client
  *
  */
 public class InputLocationDialog extends Activity implements View.OnClickListener, OnMapReadyCallback,
