@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/loginBtn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="97dp"
+        android:layout_marginTop="146dp"
         android:text="Remember login" />
 
     <com.kakao.usermgmt.LoginButton
@@ -62,5 +62,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="173dp" />
+        android:layout_marginBottom="163dp" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/btn_facebook_login"
+        android:layout_width="wrap_content"
+        android:layout_alignLeft="@+id/com_kakao_login"
+        android:layout_alignRight="@+id/com_kakao_login"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp" />
 </RelativeLayout>

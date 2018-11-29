@@ -2,12 +2,14 @@ package com.playgilround.schedule.client.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,8 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.login.widget.LoginButton;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -35,6 +39,7 @@ import com.kakao.usermgmt.response.model.UserProfile;
 import com.kakao.util.exception.KakaoException;
 import com.playgilround.schedule.client.R;
 import com.playgilround.schedule.client.dialog.SelectFindDialog;
+import com.playgilround.schedule.client.facebook.LoginCallback;
 import com.playgilround.schedule.client.gson.HolidayJsonData;
 import com.playgilround.schedule.client.gson.LoginJsonData;
 import com.playgilround.schedule.client.gson.ShareScheduleJsonData;
@@ -56,6 +61,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -87,6 +93,10 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
     SharedPreferences.Editor editor;
 
     Boolean loginChecked;
+
+    private LoginButton btn_facebook;
+    private LoginCallback mLoginCallback;
+    private CallbackManager mCallbackManager;
 
     SelectFindDialog mSelectFindDialog;
 
@@ -130,7 +140,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
         setContentView(R.layout.activity_login);
 
-
+//        getHashKey(this);
         final PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
@@ -143,6 +153,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
             }
         };
 
+
         TedPermission.with(this)
                 .setPermissionListener(permissionListener)
                 .setDeniedMessage("권한 요청을 해주세요.")
@@ -153,6 +164,8 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         Session.getCurrentSession().addCallback(callback);
         requestMe();
 
+        mCallbackManager = CallbackManager.Factory.create();
+        mLoginCallback = new LoginCallback();
         pref = getSharedPreferences("loginData", MODE_PRIVATE);
         editor = pref.edit();
 
@@ -166,6 +179,10 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         loginBtn = (Button) findViewById(R.id.loginBtn);
 
         findBtn = findViewById(R.id.findBtn);
+
+        btn_facebook = (LoginButton) findViewById(R.id.btn_facebook_login);
+        btn_facebook.setReadPermissions(Arrays.asList("public_profile", "email"));
+        btn_facebook.registerCallback(mCallbackManager, mLoginCallback);
 
 
         realm = Realm.getDefaultInstance();
@@ -1008,5 +1025,40 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         public void onSessionOpenFailed(KakaoException exception) {
             Log.d(TAG, "Kakao onSessionOpenFailed -> " +exception);
         }
+    }
+
+
+    // 프로젝트의 해시키를 반환
+    @Nullable
+    public static String getHashKey(Context context) {
+        final String TAG = "KeyHash";
+        String keyHash = null;
+        try {
+            PackageInfo info =
+                    context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                keyHash = new String(Base64.encode(md.digest(), 0));
+                Log.d(TAG, keyHash);
+            }
+        } catch (Exception e) {
+            Log.e("name not found", e.toString());
+        }
+
+        if (keyHash != null) {
+            return keyHash;
+        } else {
+            return null;
+        }
+    }
+
+    //Facebook onActivityResult
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
