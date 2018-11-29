@@ -32,6 +32,8 @@
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBtfoWf45RbAnQ7mDul2qiW37sB5jEy_Ho</string>
     <string name="kakao_app_key">c6731f0670f86e0a8c073526aca85a17</string>
+    <string name="facebook_app_key">msM0LivIUp/unpcjUiGUAIsjfEo=</string>
+
     <!-- 스케줄 -->
     <string name="schedule_event_detail_setting">스케줄 세팅</string>
     <string name="schedule_title">스케줄..</string>
