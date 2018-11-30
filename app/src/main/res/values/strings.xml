@@ -111,6 +111,10 @@
 
     <string name="hint_email">E-mail</string>
     <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="hint_nick_name">NickName</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_birth">Birth(19950818)</string>
 
     <string name="btn_sign_in">Login</string>
     <string name="btn_facebook_sign_in">Login in with Facebook</string>

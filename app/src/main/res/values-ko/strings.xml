@@ -111,6 +111,10 @@
 
     <string name="hint_email">이메일</string>
     <string name="hint_password">패스워드</string>
+    <string name="hint_confirm_password">패스워드 확인</string>
+    <string name="hint_nick_name">닉네임</string>
+    <string name="hint_phone">핸드폰 번호</string>
+    <string name="hint_birth">생년월일(19950818)</string>
 
     <string name="btn_sign_in">로그인</string>
     <string name="btn_facebook_sign_in">페이스북으로 로그인</string>
