@@ -1,76 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:id="@+id/idInput"
-        android:layout_centerHorizontal="true"
-        android:hint="E-mail"
-        android:layout_marginTop="151dp"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/pwInput"
-        android:inputType="textPassword"
-        android:hint="password"
-        android:layout_below="@+id/idInput"/>
+    <LinearLayout
+        android:id="@+id/linearLayout_focus"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
 
-    <Button
-        android:id="@+id/loginBtn"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:layout_alignStart="@+id/idInput"
-        android:layout_marginTop="@dimen/space_20dp"
-        android:layout_below="@+id/pwInput"
-        android:text="Login"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/registBtn"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:layout_alignTop="@+id/loginBtn"
-        android:layout_centerHorizontal="true"
-        android:text="Regist"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/findBtn"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:layout_alignEnd="@+id/idInput"
-        android:layout_alignTop="@+id/loginBtn"
-        android:text="Find"
-        android:textAllCaps="false" />
-
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loginBtn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="146dp"
-        android:text="Remember login" />
+        android:layout_centerInParent="true">
 
-    <com.kakao.usermgmt.LoginButton
-        android:id="@+id/com_kakao_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="163dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginEnd="36dp"
+            android:orientation="vertical">
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/btn_facebook_login"
-        android:layout_width="wrap_content"
-        android:layout_alignLeft="@+id/com_kakao_login"
-        android:layout_alignRight="@+id/com_kakao_login"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp" />
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/idInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_email"
+                    android:inputType="textEmailAddress" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/pwInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_password"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_remember_login" />
+
+            <Button
+                android:id="@+id/loginBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_sign_in" />
+
+            <com.kakao.usermgmt.LoginButton
+                android:id="@+id/com_kakao_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <com.facebook.login.widget.LoginButton
+                xmlns:facebook="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/btn_facebook_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                facebook:com_facebook_login_text="@string/btn_facebook_sign_in"
+                facebook:com_facebook_logout_text="" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/registBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/btn_sign_up" />
+
+                <Button
+                    android:id="@+id/findBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/btn_find_password" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </RelativeLayout>

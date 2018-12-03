@@ -109,21 +109,18 @@
         <item>Sat</item>
     </string-array>
 
-    <string name="hint_email">E-mail</string>
-    <string name="hint_password">Password</string>
-    <string name="hint_confirm_password">Confirm Password</string>
-    <string name="hint_nick_name">NickName</string>
-    <string name="hint_phone">Phone</string>
-    <string name="hint_birth">Birth(19950818)</string>
+    <string name="hint_email">이메일</string>
+    <string name="hint_password">패스워드</string>
+    <string name="hint_confirm_password">패스워드 확인</string>
+    <string name="hint_nick_name">닉네임</string>
+    <string name="hint_phone">핸드폰 번호</string>
+    <string name="hint_birth">생년월일(19950818)</string>
 
-    <string name="btn_sign_in">Login</string>
-    <string name="btn_facebook_sign_in">Login in with Facebook</string>
+    <string name="btn_sign_in">로그인</string>
+    <string name="btn_facebook_sign_in">페이스북으로 로그인</string>
 
-    <string name="btn_sign_up">Sign Up</string>
-    <string name="btn_find_password">Forgot Password</string>
+    <string name="btn_sign_up">회원가입</string>
+    <string name="btn_find_password">비밀번호 찾기</string>
 
-    <string name="text_remember_login">Remember Login</string>
-
+    <string name="text_remember_login">자동 로그인</string>
 </resources>
-
-
