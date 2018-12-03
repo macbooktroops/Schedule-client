@@ -998,7 +998,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
 
                 @Override
                 public void onSuccess(UserProfile result) {
-                    Log.d(TAG, "Kakao onSuccess");
+                    Log.d(TAG, "Kakao onSuccess" + result.toString());
                     //로그인 성공 시 , 로그인한 사용자에 일련번호, 이미지 url, 닉네임 리턴
                     //사용자 아이디는 보안상의 문제로 제공하지않고 일련번호만 제공.
                     long number = result.getId();
