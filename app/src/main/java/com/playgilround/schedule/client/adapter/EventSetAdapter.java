@@ -67,8 +67,9 @@ public class EventSetAdapter extends RecyclerView.Adapter<EventSetAdapter.EventS
 
     @Override
     public void onBindViewHolder(EventSetViewHolder holder, final int position) {
-//        holder.bind(position);
+        holder.bind(position);
         final EventSetR eventSet = mEventSets.get(position);
+        Log.d(TAG, "Bind sdvEventSet ->" + holder.sdvEventSet + "//" + holder.tvEventSetName);
         holder.sdvEventSet.close(false);
         holder.tvEventSetName.setText(eventSet.getName()); //name
         holder.vEventSetColor.setBackgroundResource(CalUtils.getEventSetColor(eventSet.getColor()));
