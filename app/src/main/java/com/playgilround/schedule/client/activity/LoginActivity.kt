@@ -1,3 +1,4 @@
+/*
 package com.playgilround.schedule.client.activity
 
 import android.Manifest
@@ -43,10 +44,12 @@ import retrofit2.Retrofit
 import java.lang.reflect.Type
 import java.util.*
 
+*/
 /**
  * 18-12-20
  * 로그인 화면
- */
+ *//*
+
 class LoginActivity : Activity, SelectFindDialog.OnFindSetListener {
 
     lateinit var idInput : EditText
@@ -130,10 +133,12 @@ class LoginActivity : Activity, SelectFindDialog.OnFindSetListener {
 
         realm = Realm.getDefaultInstance()
 
-        /**
+        */
+/**
          * Retrofit Holiday
-         */
-        check
+         *//*
+
+//        check
     }
 
     fun checkHoliday(callback : ApiCallback) {
@@ -157,9 +162,11 @@ class LoginActivity : Activity, SelectFindDialog.OnFindSetListener {
                         val holidayRS = realm.where(ScheduleR::class.java).equalTo("eventSetId", -1).findAll()
                         if (holidayRS.size == 0) {
                             //ScheduleR Table 에 공휴일정보가 저장이 되어있지 않음
-                            /**
+                            */
+/**
                              * Use gson json parsing..
-                             */
+                             *//*
+
                             val list = object : TypeToken<List<HolidayJsonData>>(){}.type
                             var holidays: List<HolidayJsonData> = Gson().fromJson(response.body().toString(), list)
 
@@ -277,3 +284,4 @@ class LoginActivity : Activity, SelectFindDialog.OnFindSetListener {
     }
 
 }
+*/
