@@ -611,7 +611,7 @@ public class LoginActivity extends Activity implements SelectFindDialog.OnFindSe
         result.enqueue(new Callback<ArrayList<JsonObject>>() {
             @Override
             public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
-                // Log.v(TAG, "Response - " + response.code());
+                 Log.v(TAG, "Response - " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
 
                     realm.executeTransaction(new Realm.Transaction() {

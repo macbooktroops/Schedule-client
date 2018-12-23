@@ -3,9 +3,9 @@ package com.playgilround.schedule.client.retrofit;
 public class BaseUrl {
 
 //    public static final String BASE_URL = "http://schedule.mactroops.com";
-    public static final String BASE_URL = "http://schedule-prod.ap-northeast-2.elasticbeanstalk.com/";
-//
-//     public static final String BASE_URL = "http://172.16.6.203:3000";
+//    public static final String BASE_URL = "http://schedule-prod.ap-northeast-2.elasticbeanstalk.com/";
+
+     public static final String BASE_URL = "http://172.16.6.203:3000";
 //
 //     public static final String BASE_URL = "http://192.168.0.140:3000";
 //     public static final String BASE_URL = "http://192.168.3.243:3000/";
