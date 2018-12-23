@@ -49,6 +49,7 @@ public class LoginCallback implements FacebookCallback<LoginResult> {
         parameters.putString("fields", "id,name,email,gender,birthday");
         graphRequest.setParameters(parameters);
         graphRequest.executeAsync();
+        //dddddddd
     }
 }
 
